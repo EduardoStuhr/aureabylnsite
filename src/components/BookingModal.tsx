@@ -80,6 +80,7 @@ export function BookingModal({
       preferredDate,
       notes,
     };
+    if (!STUDIO_PROFILE.whatsappPhone) return;
     const result = validateBookingInput(input);
     if (!result.valid) {
       setErrors(result.errors);
@@ -351,8 +352,12 @@ export function BookingModal({
                 </p>
               </div>
 
+              {!STUDIO_PROFILE.whatsappPhone && (
+                <p role="status" className="text-sm">Prévia de demonstração. Agendamento indisponível até confirmação do WhatsApp comercial.</p>
+              )}
               <button
                 type="submit"
+                disabled={!STUDIO_PROFILE.whatsappPhone}
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center rounded-full bg-[#141210] px-7 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
               >
                 Continuar para WhatsApp

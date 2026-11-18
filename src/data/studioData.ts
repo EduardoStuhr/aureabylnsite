@@ -44,9 +44,9 @@ export const STUDIO_PROFILE = {
   roleTitle: 'Lash Designer & Educadora · Embaixadora Florescer Beauty',
   city: 'Afonso Cláudio / ES',
   instagramUrl: 'https://www.instagram.com/aureabyln/',
-  whatsappPhone: '5527999990000',
-  heroImage: '/assets/hero-lorrayne-cutout.png',
-  instagramSpotlightImage: '/src/assets/images/studio_instagram_portrait_1795028764302.jpg',
+  whatsappPhone: '',
+  heroImage: import.meta.env.BASE_URL + 'assets/hero-lorrayne-cutout.png',
+  instagramSpotlightImage: import.meta.env.BASE_URL + 'src/assets/images/studio_instagram_portrait_1795028764302.jpg',
   manifestoQuote:
     'Cuidar de você também é saúde, autoestima e bem-estar. Pequenos detalhes fazem grandes diferenças.',
 };
@@ -85,7 +85,7 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     serviceId: 'srv-volume-brasileiro',
     technicalNote:
       'Construção de linha superior uniforme com isolamento fio a fio preservando a saúde dos cílios naturais.',
-    imageSrc: '/src/assets/images/work_volume_lash_1795028761250.jpg',
+    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_volume_lash_1795028761250.jpg',
     imageAlt: 'Trabalho real de Volume Brasileiro realizado por Lorrayne Nunes (@aureabyln)',
   },
   {
@@ -98,7 +98,7 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     serviceId: 'srv-fio-a-fio',
     technicalNote:
       'Técnica clássica voltada para quem busca definição discreta, alinhamento leve e efeito natural.',
-    imageSrc: '/src/assets/images/work_fio_claro_1795028763860.jpg',
+    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fio_claro_1795028763860.jpg',
     imageAlt: 'Trabalho real de extensão Fio a Fio em cliente de olhos claros no Áurea Studio Beauty',
   },
   {
@@ -111,7 +111,7 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     serviceId: 'srv-fox-eyes',
     technicalNote:
       'Transição progressiva de comprimentos até o canto externo para criar efeito lifting imediato sem pesar.',
-    imageSrc: '/src/assets/images/work_fox_beleza_1795028758742.jpg',
+    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fox_beleza_1795028758742.jpg',
     imageAlt: 'Resultado real de Fox Eyes realizado no estúdio Áurea Studio Beauty (@aureabyln)',
   },
   {
@@ -124,35 +124,10 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     serviceId: 'srv-design-sobrancelhas',
     technicalNote:
       'Desenho sob medida respeitando a estrutura óssea e o caimento natural dos fios para equilibrar toda a expressão.',
-    imageSrc: '/src/assets/images/work_espelho_brows_1795028763579.jpg',
+    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_espelho_brows_1795028763579.jpg',
     imageAlt: 'Cliente conferindo resultado real do design de sobrancelhas no espelho iluminado',
   },
-  {
-    id: 'work-brow-precisao',
-    title: 'Alinhamento & Arquitetura de Fios',
-    category: 'Sobrancelhas',
-    technique: 'Brow Lamination + Design',
-    mappingSpec: 'Alinhamento direcionado · Nutrição dos fios · Simetria limpa',
-    publishedLabel: '22 mai · @aureabyln',
-    serviceId: 'srv-brow-lamination',
-    technicalNote:
-      'Execução minuciosa com pinça e escova de precisão para estruturar sobrancelhas encorpadas e alinhadas.',
-    imageSrc: '/src/assets/images/work_brow_precisao_1795028763536.jpg',
-    imageAlt: 'Lorrayne Nunes demonstrando precisão técnica em design de sobrancelhas',
-  },
-  {
-    id: 'work-editorial-aureabyln',
-    title: 'Assinatura & Olhar Editorial',
-    category: 'Estúdio',
-    technique: 'Visagismo & Lash Design Autoral',
-    mappingSpec: 'Atendimento exclusivo · Afonso Cláudio / ES',
-    publishedLabel: '05 nov · @aureabyln',
-    serviceId: 'srv-curso-lash',
-    technicalNote:
-      'Curadoria de técnicas focadas em naturalidade, conforto ocular e identidade visual única em cada atendimento.',
-    imageSrc: '/src/assets/images/work_editorial_lorrayne_1795028795818.jpg',
-    imageAlt: 'Retrato editorial de Lorrayne Nunes (@aureabyln)',
-  },
+
 ];
 
 export const STUDIO_SERVICES: ServiceItem[] = [

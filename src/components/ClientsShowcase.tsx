@@ -11,7 +11,7 @@ interface ClientsShowcaseProps {
   onBookService: (serviceId: string) => void;
 }
 
-const CATEGORIES: WorkCategory[] = ['Todos', 'Lash Design', 'Fox Eyes', 'Sobrancelhas', 'Estúdio'];
+const CATEGORIES: WorkCategory[] = ['Todos', ...new Set(STUDIO_WORKS.map((work) => work.category))];
 
 export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
   const [selectedCategory, setSelectedCategory] = useState<WorkCategory>('Todos');
@@ -120,7 +120,7 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
         ) : (
           <div
             data-testid="clients-grid"
-            className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
           >
             {filteredWorks.map((work) => {
               const isBroken = failedImages[work.id];
