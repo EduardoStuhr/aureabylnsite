@@ -1,0 +1,6 @@
+{
+  "name": "Áurea Studio Beauty — @aureabyln",
+  "description": "Estúdio de Lash Design, Sobrancelhas e Formação Profissional por Lorrayne Nunes (@aureabyln) em Afonso Cláudio/ES.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
