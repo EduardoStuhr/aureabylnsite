@@ -1,6 +1,6 @@
 # Preview no GitHub Pages
 
-O build Pages usa /aureabylnsite/. Instalar com `npx --yes bun@1.4.4 install --frozen-lockfile`, executar `npm run lint`, `GITHUB_PAGES=true npm run build` e `npm run preview`. O lockfile original é preservado. O script lint executa TypeScript.
+O build Pages usa /aureabylnsite/. Instalar com `npx --yes bun@1.4.4 install --frozen-lockfile`, executar `npm run lint`, `GITHUB_PAGES=true npm run build` e `GITHUB_PAGES=true npm run preview`. O lockfile original é preservado. O script lint executa TypeScript.
 
 O workflow valida Pull Requests e publica somente após entrada na main. Em Settings → Pages → Build and deployment → Source, selecionar GitHub Actions. Após merge aprovado, acompanhar o workflow Preview on GitHub Pages. Destino previsto: https://eduardostuhr.github.io/aureabylnsite/.
 
