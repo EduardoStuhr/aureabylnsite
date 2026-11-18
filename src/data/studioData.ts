@@ -1,28 +1,23 @@
-export type ClientCategory = 'Todos' | 'Lash Design' | 'Fox Eyes' | 'Sobrancelhas';
+export type WorkCategory = 'Todos' | 'Lash Design' | 'Fox Eyes' | 'Sobrancelhas' | 'Estúdio';
 
-export interface ClientShowcaseItem {
+export interface StudioWorkItem {
   id: string;
-  clientName: string;
-  city: string;
-  category: Exclude<ClientCategory, 'Todos'>;
+  title: string;
+  category: Exclude<WorkCategory, 'Todos'>;
   technique: string;
   mappingSpec: string;
-  retention: string;
-  durationMinutes: number;
+  publishedLabel: string;
   serviceId: string;
-  quote: string;
+  technicalNote: string;
   imageSrc: string;
   imageAlt: string;
-  featured?: boolean;
 }
 
 export interface ServiceItem {
   id: string;
   name: string;
   category: 'Cílios' | 'Sobrancelhas' | 'Formação';
-  priceBRL: number;
-  durationMinutes: number;
-  maintenanceInfo: string;
+  availabilityNote: string;
   description: string;
   highlights: string[];
 }
@@ -30,8 +25,7 @@ export interface ServiceItem {
 export interface AddOnItem {
   id: string;
   name: string;
-  priceBRL: number;
-  durationMinutes: number;
+  detail: string;
 }
 
 export interface FeedMoment {
@@ -51,126 +45,113 @@ export const STUDIO_PROFILE = {
   city: 'Afonso Cláudio / ES',
   instagramUrl: 'https://www.instagram.com/aureabyln/',
   whatsappPhone: '5527999990000',
-  heroImage: '/assets/aistudio/image_fa1a6dd6.png',
-  feedBoardImage: '/assets/aistudio/image_26f8e3f4.png',
+  heroImage: '/assets/hero-lorrayne-cutout.png',
+  instagramSpotlightImage: '/src/assets/images/studio_instagram_portrait_1795028764302.jpg',
   manifestoQuote:
     'Cuidar de você também é saúde, autoestima e bem-estar. Pequenos detalhes fazem grandes diferenças.',
 };
 
 export const STUDIO_METRICS = [
   {
-    value: '+480',
-    label: 'Olhares transformados',
-    detail: 'Atendimentos com visagismo individual',
+    value: 'Lash Design',
+    label: 'Volume & Fio a Fio',
+    detail: 'Curvatura desenhada para o seu olhar',
   },
   {
-    value: '35 dias',
-    label: 'Retenção média real',
-    detail: 'Fios tecnológicos e isolamento seguro',
-  },
-  {
-    value: '100%',
-    label: 'Mapping exclusivo',
-    detail: 'Curvatura desenhada para seu rosto',
+    value: 'Sobrancelhas',
+    label: 'Design & Visagismo',
+    detail: 'Simetria natural respeitando seus fios',
   },
   {
     value: 'Turmas',
     label: 'Curso de Lash Design',
-    detail: 'Embaixadora Florescer Beauty',
+    detail: 'Formação presencial em Afonso Cláudio',
+  },
+  {
+    value: 'Florescer',
+    label: 'Embaixadora Beauty',
+    detail: 'Lorrayne Nunes · @aureabyln',
   },
 ];
 
-export const CLIENT_SHOWCASE: ClientShowcaseItem[] = [
+export const STUDIO_WORKS: StudioWorkItem[] = [
   {
-    id: 'client-camila',
-    clientName: 'Camila Ferreira',
-    city: 'Afonso Cláudio · ES',
+    id: 'work-volume-brasileiro',
+    title: 'Volume & Definição do Olhar',
     category: 'Lash Design',
     technique: 'Volume Brasileiro Personalizado',
-    mappingSpec: 'Curvatura C · Tamanhos 8–12mm · Efeito Boneca Suave',
-    retention: 'Retenção 32 dias',
-    durationMinutes: 120,
+    mappingSpec: 'Fios tecnológicos em Y · Curvatura C · Acabamento denso e leve',
+    publishedLabel: '03 nov · @aureabyln',
     serviceId: 'srv-volume-brasileiro',
-    quote:
-      'Acordar pronta todos os dias sem precisar de rímel mudou minha rotina. O isolamento é tão leve que nem sinto que estou de extensão.',
-    imageSrc: '/src/assets/images/client_lash_volume_1795019859471.jpg',
-    imageAlt: 'Camila Ferreira com extensão de cílios Volume Brasileiro no Áurea Studio Beauty',
-    featured: true,
+    technicalNote:
+      'Construção de linha superior uniforme com isolamento fio a fio preservando a saúde dos cílios naturais.',
+    imageSrc: '/src/assets/images/work_volume_lash_1795028761250.jpg',
+    imageAlt: 'Trabalho real de Volume Brasileiro realizado por Lorrayne Nunes (@aureabyln)',
   },
   {
-    id: 'client-mariana',
-    clientName: 'Mariana Costa',
-    city: 'Afonso Cláudio · ES',
-    category: 'Fox Eyes',
-    technique: 'Fox Eyes & Delineado Sutil',
-    mappingSpec: 'Curvatura L/M · Tamanhos 7–13mm · Alongamento Lateral',
-    retention: 'Retenção 30 dias',
-    durationMinutes: 130,
-    serviceId: 'srv-fox-eyes',
-    quote:
-      'Eu queria um olhar mais marcante e alongado, sem perder a elegância natural. A Lorrayne acertou o desenho logo no primeiro atendimento.',
-    imageSrc: '/src/assets/images/client_fox_eyes_1795019864863.jpg',
-    imageAlt: 'Mariana Costa admirando resultado Fox Eyes no espelho do estúdio',
-  },
-  {
-    id: 'client-beatriz',
-    clientName: 'Beatriz Alvarenga',
-    city: 'Venda Nova · ES',
-    category: 'Sobrancelhas',
-    technique: 'Brow Lamination + Design Estratégico',
-    mappingSpec: 'Alinhamento de fios · Nutrição com queratina · Acabamento natural',
-    retention: 'Duração 45 dias',
-    durationMinutes: 60,
-    serviceId: 'srv-brow-lamination',
-    quote:
-      'Minhas sobrancelhas ficaram encorpadas e simétricas mantendo a textura natural. O cuidado com cada fio faz toda a diferença.',
-    imageSrc: '/src/assets/images/client_brow_design_1795019872373.jpg',
-    imageAlt: 'Beatriz Alvarenga com Brow Lamination e design estratégico de sobrancelhas',
-  },
-  {
-    id: 'client-julia',
-    clientName: 'Júlia Motta',
-    city: 'Afonso Cláudio · ES',
+    id: 'work-natural-claro',
+    title: 'Realce Natural para Olhos Claros',
     category: 'Lash Design',
-    technique: 'Fio a Fio Clássico Elegante',
-    mappingSpec: 'Curvatura C · Espessura 0.15 · Efeito Rímel Leve',
-    retention: 'Retenção 28 dias',
-    durationMinutes: 105,
+    technique: 'Fio a Fio Clássico Leve',
+    mappingSpec: 'Curvatura C · Mapping aberto suave · Acabamento limpo',
+    publishedLabel: '04 nov · @aureabyln',
     serviceId: 'srv-fio-a-fio',
-    quote:
-      'Perfeito para meu trabalho e dia a dia: realça o olhar com discrição e extrema delicadeza.',
-    imageSrc: '/src/assets/images/client_lash_volume_1795019859471.jpg',
-    imageAlt: 'Júlia Motta com técnica Fio a Fio Clássico',
+    technicalNote:
+      'Técnica clássica voltada para quem busca definição discreta, alinhamento leve e efeito natural.',
+    imageSrc: '/src/assets/images/work_fio_claro_1795028763860.jpg',
+    imageAlt: 'Trabalho real de extensão Fio a Fio em cliente de olhos claros no Áurea Studio Beauty',
   },
   {
-    id: 'client-larissa',
-    clientName: 'Larissa Teixeira',
-    city: 'Laranja da Terra · ES',
+    id: 'work-beleza-transforma',
+    title: 'Beleza que Transforma — Fox Soft',
     category: 'Fox Eyes',
-    technique: 'Volume Egípcio Fox',
-    mappingSpec: 'Fios 3D em W · Curvatura M · Efeito Gatinho Alongado',
-    retention: 'Retenção 35 dias',
-    durationMinutes: 135,
+    technique: 'Fox Eyes & Alongamento Lateral',
+    mappingSpec: 'Curvatura especial gradual · Direcionamento alongado externo',
+    publishedLabel: 'Feed oficial · @aureabyln',
     serviceId: 'srv-fox-eyes',
-    quote:
-      'Faço manutenção há mais de um ano com a Lorrayne. Meus cílios naturais continuam saudáveis e o resultado sempre recebe elogios.',
-    imageSrc: '/src/assets/images/client_fox_eyes_1795019864863.jpg',
-    imageAlt: 'Larissa Teixeira com Volume Egípcio Fox no Áurea Studio Beauty',
+    technicalNote:
+      'Transição progressiva de comprimentos até o canto externo para criar efeito lifting imediato sem pesar.',
+    imageSrc: '/src/assets/images/work_fox_beleza_1795028758742.jpg',
+    imageAlt: 'Resultado real de Fox Eyes realizado no estúdio Áurea Studio Beauty (@aureabyln)',
   },
   {
-    id: 'client-rafaela',
-    clientName: 'Rafaela Dias',
-    city: 'Afonso Cláudio · ES',
+    id: 'work-espelho-brows',
+    title: 'Design Estratégico de Sobrancelhas',
     category: 'Sobrancelhas',
-    technique: 'Design Personalizado com Henna',
-    mappingSpec: 'Visagismo facial · Pigmentação degradê · Pinça de precisão',
-    retention: 'Duração 15 dias',
-    durationMinutes: 45,
+    technique: 'Design Personalizado & Visagismo',
+    mappingSpec: 'Mapeamento facial · Pinça de precisão · Finalização natural',
+    publishedLabel: '21 ago · @aureabyln',
     serviceId: 'srv-design-sobrancelhas',
-    quote:
-      'Fazer sobrancelhas aqui é realmente um momento de terapia. Saio renovada e com a autoestima lá em cima.',
-    imageSrc: '/src/assets/images/client_brow_design_1795019872373.jpg',
-    imageAlt: 'Rafaela Dias com Design Personalizado de Sobrancelhas',
+    technicalNote:
+      'Desenho sob medida respeitando a estrutura óssea e o caimento natural dos fios para equilibrar toda a expressão.',
+    imageSrc: '/src/assets/images/work_espelho_brows_1795028763579.jpg',
+    imageAlt: 'Cliente conferindo resultado real do design de sobrancelhas no espelho iluminado',
+  },
+  {
+    id: 'work-brow-precisao',
+    title: 'Alinhamento & Arquitetura de Fios',
+    category: 'Sobrancelhas',
+    technique: 'Brow Lamination + Design',
+    mappingSpec: 'Alinhamento direcionado · Nutrição dos fios · Simetria limpa',
+    publishedLabel: '22 mai · @aureabyln',
+    serviceId: 'srv-brow-lamination',
+    technicalNote:
+      'Execução minuciosa com pinça e escova de precisão para estruturar sobrancelhas encorpadas e alinhadas.',
+    imageSrc: '/src/assets/images/work_brow_precisao_1795028763536.jpg',
+    imageAlt: 'Lorrayne Nunes demonstrando precisão técnica em design de sobrancelhas',
+  },
+  {
+    id: 'work-editorial-aureabyln',
+    title: 'Assinatura & Olhar Editorial',
+    category: 'Estúdio',
+    technique: 'Visagismo & Lash Design Autoral',
+    mappingSpec: 'Atendimento exclusivo · Afonso Cláudio / ES',
+    publishedLabel: '05 nov · @aureabyln',
+    serviceId: 'srv-curso-lash',
+    technicalNote:
+      'Curadoria de técnicas focadas em naturalidade, conforto ocular e identidade visual única em cada atendimento.',
+    imageSrc: '/src/assets/images/work_editorial_lorrayne_1795028795818.jpg',
+    imageAlt: 'Retrato editorial de Lorrayne Nunes (@aureabyln)',
   },
 ];
 
@@ -179,88 +160,68 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     id: 'srv-volume-brasileiro',
     name: 'Volume Brasileiro',
     category: 'Cílios',
-    priceBRL: 165,
-    durationMinutes: 120,
-    maintenanceInfo: 'Manutenção a partir de 15–21 dias',
+    availabilityNote: 'Consultar horários e valores',
     description:
-      'Fios tecnológicos em formato Y que entregam preenchimento marcante, leveza extrema e retenção superior sem pesar no fio natural.',
+      'Fios tecnológicos em formato Y que entregam preenchimento marcante, leveza e excelente acoplagem sem pesar no fio natural.',
     highlights: ['Mapping visagista', 'Fios em seda fosca', 'Higienização prévia inclusa'],
   },
   {
     id: 'srv-fox-eyes',
     name: 'Fox Eyes / Efeito Delineado',
     category: 'Cílios',
-    priceBRL: 180,
-    durationMinutes: 130,
-    maintenanceInfo: 'Manutenção a partir de 15–21 dias',
+    availabilityNote: 'Consultar horários e valores',
     description:
-      'Direcionamento estratégico com curvatura L ou M no canto externo para alongar e levantar o olhar com sofisticação.',
-    highlights: ['Curvatura especial L/M', 'Efeito lifting imediato', 'Acabamento sem excessos'],
+      'Direcionamento estratégico no canto externo para alongar e levantar o olhar com sofisticação e acabamento leve.',
+    highlights: ['Curvatura especial', 'Efeito lifting imediato', 'Acabamento sem excessos'],
   },
   {
     id: 'srv-fio-a-fio',
     name: 'Fio a Fio Clássico',
     category: 'Cílios',
-    priceBRL: 140,
-    durationMinutes: 105,
-    maintenanceInfo: 'Manutenção a partir de 15–20 dias',
+    availabilityNote: 'Consultar horários e valores',
     description:
       'Um fio acoplado a cada cílio natural saudável. Ideal para quem busca naturalidade refinada com efeito de máscara de cílios.',
-    highlights: ['Máxima naturalidade', 'Isolamento 100% preservado', 'Conforto absoluto'],
+    highlights: ['Máxima naturalidade', 'Isolamento preservado', 'Conforto absoluto'],
   },
   {
     id: 'srv-brow-lamination',
     name: 'Brow Lamination',
     category: 'Sobrancelhas',
-    priceBRL: 135,
-    durationMinutes: 60,
-    maintenanceInfo: 'Duração média de 4 a 6 semanas',
+    availabilityNote: 'Consultar horários e valores',
     description:
-      'Alinhamento e reconstrução dos fios naturais das sobrancelhas com hidratação profunda, criando volume elegante e simetria.',
-    highlights: ['Design na linha/pinça', 'Nutrição pós-química', 'Aspecto encorpado natural'],
+      'Alinhamento e cuidado dos fios naturais das sobrancelhas, criando volume elegante, controle de direcionamento e simetria.',
+    highlights: ['Design na pinça', 'Alinhamento direcionado', 'Aspecto encorpado natural'],
   },
   {
     id: 'srv-design-sobrancelhas',
     name: 'Design de Sobrancelhas',
     category: 'Sobrancelhas',
-    priceBRL: 55,
-    durationMinutes: 45,
-    maintenanceInfo: 'Recomendado a cada 15–20 dias',
+    availabilityNote: 'Consultar horários e valores',
     description:
-      'Mapeamento geométrico exclusivo respeitando a estrutura óssea do rosto, com opção de aplicação suave de henna ou tintura.',
-    highlights: ['Mapeamento facial', 'Epilações precisas', 'Finalização calmante'],
+      'Mapeamento personalizado respeitando a estrutura do rosto e o desenho natural dos fios para valorizar toda a expressão.',
+    highlights: ['Mapeamento facial', 'Acabamento preciso', 'Cuidado individualizado'],
   },
   {
     id: 'srv-curso-lash',
     name: 'Curso VIP de Lash Design',
     category: 'Formação',
-    priceBRL: 1490,
-    durationMinutes: 480,
-    maintenanceInfo: 'Turmas abertas · Certificado & Mentoria',
+    availabilityNote: 'Consultar datas e investimento',
     description:
-      'Formação prática presencial com Lorrayne Nunes (Embaixadora Florescer Beauty). Do isolamento perfeito ao posicionamento profissional.',
-    highlights: ['Apostila e kit inicial', 'Prática em modelo real', 'Suporte pós-curso'],
+      'Formação prática presencial com Lorrayne Nunes (Embaixadora Florescer Beauty). Do isolamento seguro ao posicionamento profissional.',
+    highlights: ['Material de apoio', 'Prática orientada', 'Mentoria presencial'],
   },
 ];
 
 export const BOOKING_ADDONS: AddOnItem[] = [
   {
     id: 'addon-sobrancelha',
-    name: 'Combo Design de Sobrancelhas',
-    priceBRL: 40,
-    durationMinutes: 30,
-  },
-  {
-    id: 'addon-spa-labial',
-    name: 'Hidratação & Spa Labial durante o procedimento',
-    priceBRL: 25,
-    durationMinutes: 0,
+    name: 'Incluir Design de Sobrancelhas no mesmo atendimento',
+    detail: 'Combo cílios + sobrancelhas',
   },
   {
     id: 'addon-remocao',
-    name: 'Remoção Segura de Extensão Anterior',
-    priceBRL: 35,
-    durationMinutes: 25,
+    name: 'Preciso de remoção de extensão anterior',
+    detail: 'Avaliação segura no estúdio',
   },
 ];
 

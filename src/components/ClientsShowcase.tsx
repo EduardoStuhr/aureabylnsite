@@ -1,26 +1,26 @@
 import { useMemo, useState } from 'react';
 import { ArrowUpRight, Search, X } from 'lucide-react';
 import {
-  CLIENT_SHOWCASE,
-  type ClientCategory,
-  type ClientShowcaseItem,
+  STUDIO_WORKS,
+  type StudioWorkItem,
+  type WorkCategory,
 } from '../data/studioData';
-import { filterClientsByCategory, formatDuration } from '../utils/studioLogic';
+import { filterWorksByCategory } from '../utils/studioLogic';
 
 interface ClientsShowcaseProps {
   onBookService: (serviceId: string) => void;
 }
 
-const CATEGORIES: ClientCategory[] = ['Todos', 'Lash Design', 'Fox Eyes', 'Sobrancelhas'];
+const CATEGORIES: WorkCategory[] = ['Todos', 'Lash Design', 'Fox Eyes', 'Sobrancelhas', 'Estúdio'];
 
 export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
-  const [selectedCategory, setSelectedCategory] = useState<ClientCategory>('Todos');
+  const [selectedCategory, setSelectedCategory] = useState<WorkCategory>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeClient, setActiveClient] = useState<ClientShowcaseItem | null>(null);
+  const [activeWork, setActiveWork] = useState<StudioWorkItem | null>(null);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
-  const filteredClients = useMemo(
-    () => filterClientsByCategory(CLIENT_SHOWCASE, selectedCategory, searchQuery),
+  const filteredWorks = useMemo(
+    () => filterWorksByCategory(STUDIO_WORKS, selectedCategory, searchQuery),
     [selectedCategory, searchQuery],
   );
 
@@ -31,48 +31,48 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
   return (
     <section
       id="clientes"
-      aria-labelledby="clientes-heading"
-      className="border-b border-[#141210]/10 bg-[#FAF8F5] py-14 sm:py-20"
+      aria-labelledby="trabalhos-heading"
+      className="scroll-mt-20 border-b border-[#141210]/10 bg-[#FAF8F5] py-14 sm:py-20"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
         {/* Section Header */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="text-xs font-medium tracking-wide text-[#5C564E]">
-              Portfólio Real · @aureabyln
+              Portfólio Oficial · Fotos reais de @aureabyln
             </p>
             <h2
-              id="clientes-heading"
+              id="trabalhos-heading"
               className="font-display mt-2 text-[clamp(2rem,4vw,3.1rem)] leading-[1.08] font-medium tracking-tight text-[#141210]"
               style={{ textWrap: 'balance' }}
             >
-              Principais clientes &amp; resultados que acompanham sua rotina.
+              Trabalhos realizados &amp; resultados do estúdio.
             </h2>
           </div>
 
           {/* Interactive Search & Filter Controls */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative">
-              <label htmlFor="client-search" className="sr-only">
-                Buscar cliente ou técnica
+              <label htmlFor="work-search" className="sr-only">
+                Buscar trabalho ou técnica
               </label>
               <Search
                 className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#5C564E]"
                 aria-hidden="true"
               />
               <input
-                id="client-search"
+                id="work-search"
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar cliente ou técnica..."
+                placeholder="Buscar trabalho ou técnica..."
                 className="min-h-[44px] w-full rounded-full border border-[#141210]/15 bg-[#F1EDE6]/70 pr-4 pl-10 text-sm text-[#141210] placeholder:text-[#5C564E] focus:border-[#9A742E] focus:bg-[#FAF8F5] focus:outline-none sm:w-60"
               />
             </div>
 
             <div
               role="group"
-              aria-label="Filtrar clientes por técnica"
+              aria-label="Filtrar trabalhos por técnica"
               className="flex items-center gap-1 overflow-x-auto rounded-full border border-[#141210]/10 bg-[#F1EDE6] p-1"
             >
               {CATEGORIES.map((category) => {
@@ -97,11 +97,11 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
           </div>
         </div>
 
-        {/* Client Cards Grid — Mobile-first stack / Desktop 3-column gallery */}
-        {filteredClients.length === 0 ? (
+        {/* Real Studio Works Gallery — HD Photography */}
+        {filteredWorks.length === 0 ? (
           <div className="mt-10 rounded-2xl border border-[#141210]/10 bg-[#F1EDE6]/60 p-10 text-center">
             <p className="font-display text-2xl font-medium text-[#141210]">
-              Nenhuma transformação encontrada para essa busca.
+              Nenhum trabalho encontrado para essa busca.
             </p>
             <p className="mt-2 text-sm text-[#5C564E]">
               Tente outro termo ou exiba todas as técnicas realizadas no estúdio.
@@ -122,40 +122,40 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
             data-testid="clients-grid"
             className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {filteredClients.map((client) => {
-              const isBroken = failedImages[client.id];
+            {filteredWorks.map((work) => {
+              const isBroken = failedImages[work.id];
               return (
                 <article
-                  key={client.id}
+                  key={work.id}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-[#141210]/10 bg-[#F1EDE6]/45 transition-colors duration-200 hover:border-[#141210]/25"
                 >
                   <button
                     type="button"
-                    onClick={() => setActiveClient(client)}
-                    aria-label={`Ver detalhes de ${client.clientName} — ${client.technique}`}
+                    onClick={() => setActiveWork(work)}
+                    aria-label={`Ver trabalho ${work.title} — ${work.technique}`}
                     className="flex flex-1 cursor-pointer flex-col text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#9A742E]"
                   >
-                    <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#E7E1D7]">
+                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#E7E1D7]">
                       {!isBroken ? (
                         <img
-                          src={client.imageSrc}
-                          alt={client.imageAlt}
+                          src={work.imageSrc}
+                          alt={work.imageAlt}
                           referrerPolicy="no-referrer"
-                          onError={() => handleImageError(client.id)}
-                          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                          onError={() => handleImageError(work.id)}
+                          className="h-full w-full object-cover object-[center_22%] transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                       ) : (
                         <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[#EDE7DD] to-[#D8CEBE] p-6 text-center">
                           <span className="font-display text-2xl font-medium text-[#141210]">
-                            {client.clientName}
+                            {work.title}
                           </span>
-                          <span className="mt-1 text-xs text-[#5C564E]">{client.technique}</span>
+                          <span className="mt-1 text-xs text-[#5C564E]">{work.technique}</span>
                         </div>
                       )}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#141210]/80 via-[#141210]/30 to-transparent px-4 pt-12 pb-3.5 text-[#FAF8F5]">
-                        <p className="text-xs font-medium text-[#E7D5B3]">{client.category}</p>
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#141210]/85 via-[#141210]/35 to-transparent px-4 pt-14 pb-3.5 text-[#FAF8F5]">
+                        <p className="text-xs font-medium text-[#E7D5B3]">{work.category}</p>
                         <h3 className="font-display text-2xl font-medium text-[#FAF8F5]">
-                          {client.clientName}
+                          {work.title}
                         </h3>
                       </div>
                     </div>
@@ -163,22 +163,18 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
                     <div className="flex flex-1 flex-col justify-between p-5">
                       <div>
                         <p className="text-sm font-semibold text-[#141210]">
-                          {client.technique}
+                          {work.technique}
                         </p>
-                        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-[#5C564E] tabular-nums">
-                          <span>{client.city}</span>
-                          <span aria-hidden="true">·</span>
-                          <span>{client.retention}</span>
-                          <span aria-hidden="true">·</span>
-                          <span>{formatDuration(client.durationMinutes)}</span>
-                        </div>
-                        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#46413B]">
-                          “{client.quote}”
+                        <p className="mt-1 text-xs text-[#5C564E]">
+                          {work.publishedLabel}
+                        </p>
+                        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-[#46413B]">
+                          {work.technicalNote}
                         </p>
                       </div>
 
                       <div className="mt-4 flex items-center justify-between border-t border-[#141210]/10 pt-3 text-xs font-semibold text-[#141210]">
-                        <span>Ver mapping &amp; detalhes</span>
+                        <span>Ver detalhes &amp; agendar</span>
                         <ArrowUpRight
                           className="h-4 w-4 text-[#9A742E] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                           aria-hidden="true"
@@ -193,43 +189,42 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
         )}
       </div>
 
-      {/* Client Detail Modal / Mobile Sheet */}
-      {activeClient && (
+      {/* Work Detail Modal / Mobile Sheet */}
+      {activeWork && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-labelledby="client-modal-title"
+          aria-labelledby="work-modal-title"
           className="fixed inset-0 z-50 flex items-end justify-center bg-[#141210]/65 p-0 sm:items-center sm:p-6"
-          onClick={() => setActiveClient(null)}
+          onClick={() => setActiveWork(null)}
         >
           <div
             className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-[#FAF8F5] text-[#141210] shadow-2xl sm:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Mobile Drag Handle */}
             <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-[#141210]/15 sm:hidden" />
 
             <button
               type="button"
-              onClick={() => setActiveClient(null)}
-              aria-label="Fechar detalhes da cliente"
+              onClick={() => setActiveWork(null)}
+              aria-label="Fechar detalhes do trabalho"
               className="absolute top-4 right-4 z-10 flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[#141210]/15 bg-[#FAF8F5] text-[#141210] transition-colors hover:bg-[#F1EDE6]"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-12">
-              <div className="aspect-[4/3] w-full overflow-hidden bg-[#E7E1D7] sm:col-span-5 sm:aspect-auto sm:min-h-[380px]">
-                {!failedImages[activeClient.id] ? (
+              <div className="aspect-[3/4] w-full overflow-hidden bg-[#E7E1D7] sm:col-span-5 sm:aspect-auto sm:min-h-[380px]">
+                {!failedImages[activeWork.id] ? (
                   <img
-                    src={activeClient.imageSrc}
-                    alt={activeClient.imageAlt}
+                    src={activeWork.imageSrc}
+                    alt={activeWork.imageAlt}
                     referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover object-top"
+                    className="h-full w-full object-cover object-center"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center p-6 text-center">
-                    <span className="font-display text-2xl">{activeClient.clientName}</span>
+                    <span className="font-display text-2xl">{activeWork.title}</span>
                   </div>
                 )}
               </div>
@@ -237,57 +232,51 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
               <div className="flex flex-col justify-between p-6 sm:col-span-7 sm:p-8">
                 <div>
                   <div className="flex items-center gap-2 text-xs text-[#5C564E]">
-                    <span>{activeClient.category}</span>
+                    <span>{activeWork.category}</span>
                     <span aria-hidden="true">·</span>
-                    <span>{activeClient.city}</span>
+                    <span>{activeWork.publishedLabel}</span>
                   </div>
                   <h3
-                    id="client-modal-title"
+                    id="work-modal-title"
                     className="font-display mt-2 text-3xl font-medium text-[#141210]"
                   >
-                    {activeClient.clientName}
+                    {activeWork.title}
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-[#9A742E]">
-                    {activeClient.technique}
+                    {activeWork.technique}
                   </p>
 
                   <dl className="mt-5 space-y-2.5 border-y border-[#141210]/10 py-4 text-xs">
                     <div className="flex justify-between gap-4">
                       <dt className="text-[#5C564E]">Especificação</dt>
                       <dd className="text-right font-medium text-[#141210]">
-                        {activeClient.mappingSpec}
+                        {activeWork.mappingSpec}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-[#5C564E]">Durabilidade</dt>
-                      <dd className="font-medium tabular-nums text-[#141210]">
-                        {activeClient.retention}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-[#5C564E]">Tempo de sessão</dt>
-                      <dd className="font-medium tabular-nums text-[#141210]">
-                        {formatDuration(activeClient.durationMinutes)}
+                      <dt className="text-[#5C564E]">Atendimento</dt>
+                      <dd className="font-medium text-[#141210]">
+                        Com hora marcada · Valores sob consulta
                       </dd>
                     </div>
                   </dl>
 
-                  <blockquote className="font-display mt-5 text-lg italic leading-relaxed text-[#2B2621]">
-                    “{activeClient.quote}”
-                  </blockquote>
+                  <p className="mt-5 text-sm leading-relaxed text-[#2B2621]">
+                    {activeWork.technicalNote}
+                  </p>
                 </div>
 
                 <div className="mt-6 flex flex-col gap-2 sm:flex-row">
                   <button
                     type="button"
                     onClick={() => {
-                      const targetServiceId = activeClient.serviceId;
-                      setActiveClient(null);
+                      const targetServiceId = activeWork.serviceId;
+                      setActiveWork(null);
                       onBookService(targetServiceId);
                     }}
                     className="inline-flex min-h-[48px] flex-1 cursor-pointer items-center justify-center rounded-full bg-[#141210] px-5 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
                   >
-                    Quero este resultado
+                    Agendar esse trabalho
                   </button>
                 </div>
               </div>

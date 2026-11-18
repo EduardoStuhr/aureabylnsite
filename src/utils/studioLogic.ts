@@ -1,4 +1,4 @@
-import type { AddOnItem, ClientCategory, ClientShowcaseItem, ServiceItem } from '../data/studioData';
+import type { AddOnItem, ServiceItem, StudioWorkItem, WorkCategory } from '../data/studioData';
 
 export interface BookingInput {
   clientName: string;
@@ -14,54 +14,22 @@ export interface BookingValidationResult {
   errors: Partial<Record<keyof BookingInput, string>>;
 }
 
-export function formatBRL(value: number): string {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-  }).format(value);
-}
-
-export function formatDuration(minutes: number): string {
-  if (minutes <= 0) return 'Incluso';
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hours === 0) return `${mins} min`;
-  if (mins === 0) return `${hours}h`;
-  return `${hours}h ${mins}min`;
-}
-
-export function filterClientsByCategory(
-  clients: ClientShowcaseItem[],
-  category: ClientCategory,
+export function filterWorksByCategory(
+  works: StudioWorkItem[],
+  category: WorkCategory,
   searchQuery = '',
-): ClientShowcaseItem[] {
+): StudioWorkItem[] {
   const normalizedQuery = searchQuery.trim().toLowerCase();
-  return clients.filter((client) => {
-    const matchesCategory = category === 'Todos' || client.category === category;
+  return works.filter((work) => {
+    const matchesCategory = category === 'Todos' || work.category === category;
     if (!matchesCategory) return false;
     if (!normalizedQuery) return true;
     return (
-      client.clientName.toLowerCase().includes(normalizedQuery) ||
-      client.technique.toLowerCase().includes(normalizedQuery) ||
-      client.city.toLowerCase().includes(normalizedQuery)
+      work.title.toLowerCase().includes(normalizedQuery) ||
+      work.technique.toLowerCase().includes(normalizedQuery) ||
+      work.mappingSpec.toLowerCase().includes(normalizedQuery)
     );
   });
-}
-
-export function calculateBookingSummary(
-  service: ServiceItem | undefined,
-  selectedAddOns: AddOnItem[],
-): { totalBRL: number; totalMinutes: number } {
-  const basePrice = service ? service.priceBRL : 0;
-  const baseMinutes = service ? service.durationMinutes : 0;
-  return selectedAddOns.reduce(
-    (acc, item) => ({
-      totalBRL: acc.totalBRL + item.priceBRL,
-      totalMinutes: acc.totalMinutes + item.durationMinutes,
-    }),
-    { totalBRL: basePrice, totalMinutes: baseMinutes },
-  );
 }
 
 export function validateBookingInput(input: BookingInput): BookingValidationResult {
@@ -101,20 +69,18 @@ export function buildWhatsAppBookingUrl(
   service: ServiceItem,
   addOns: AddOnItem[],
 ): string {
-  const summary = calculateBookingSummary(service, addOns);
   const addOnNames = addOns.length > 0 ? addOns.map((a) => a.name).join(', ') : 'Nenhum adicional';
   const lines = [
-    `Olá, Lorrayne! Gostaria de solicitar um agendamento no *Áurea Studio Beauty* (@aureabyln).`,
+    `Olá, Lorrayne! Gostaria de consultar horários e valores no *Áurea Studio Beauty* (@aureabyln).`,
     ``,
-    `*Cliente:* ${input.clientName.trim()}`,
+    `*Nome:* ${input.clientName.trim()}`,
     `*WhatsApp:* ${input.whatsapp.trim()}`,
-    `*Serviço:* ${service.name}`,
-    `*Adicionais:* ${addOnNames}`,
-    `*Data desejada:* ${input.preferredDate} · ${input.preferredPeriod}`,
-    `*Investimento estimado:* ${formatBRL(summary.totalBRL)} (${formatDuration(summary.totalMinutes)})`,
+    `*Interesse:* ${service.name}`,
+    `*Observações adicionais:* ${addOnNames}`,
+    `*Preferência de data:* ${input.preferredDate} · ${input.preferredPeriod}`,
   ];
   if (input.notes.trim()) {
-    lines.push(`*Observações:* ${input.notes.trim()}`);
+    lines.push(`*Mensagem:* ${input.notes.trim()}`);
   }
   const encoded = encodeURIComponent(lines.join('\n'));
   const sanitizedPhone = studioPhone.replace(/\D/g, '');

@@ -37,7 +37,7 @@ export function MobileBottomNav({
           className={navItemClass(activeSection === 'clientes')}
         >
           <Users className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
-          <span>Clientes</span>
+          <span>Trabalhos</span>
         </a>
 
         <a

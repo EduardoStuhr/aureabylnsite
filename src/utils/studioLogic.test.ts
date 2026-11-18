@@ -2,33 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildWhatsAppBookingUrl,
-  calculateBookingSummary,
-  filterClientsByCategory,
-  formatBRL,
-  formatDuration,
+  filterWorksByCategory,
   validateBookingInput,
 } from './studioLogic';
-import { BOOKING_ADDONS, CLIENT_SHOWCASE, STUDIO_SERVICES } from '../data/studioData';
+import { BOOKING_ADDONS, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
 
-test('filterClientsByCategory filters by category and search query accurately', () => {
-  const all = filterClientsByCategory(CLIENT_SHOWCASE, 'Todos');
-  assert.equal(all.length, CLIENT_SHOWCASE.length);
+test('filterWorksByCategory filters by category and search query accurately', () => {
+  const all = filterWorksByCategory(STUDIO_WORKS, 'Todos');
+  assert.equal(all.length, STUDIO_WORKS.length);
 
-  const foxOnly = filterClientsByCategory(CLIENT_SHOWCASE, 'Fox Eyes');
+  const foxOnly = filterWorksByCategory(STUDIO_WORKS, 'Fox Eyes');
   assert.ok(foxOnly.length > 0);
-  assert.ok(foxOnly.every((c) => c.category === 'Fox Eyes'));
+  assert.ok(foxOnly.every((w) => w.category === 'Fox Eyes'));
 
-  const camila = filterClientsByCategory(CLIENT_SHOWCASE, 'Todos', 'camila');
-  assert.equal(camila.length, 1);
-  assert.equal(camila[0].clientName, 'Camila Ferreira');
-});
-
-test('calculateBookingSummary computes price and duration including add-ons', () => {
-  const service = STUDIO_SERVICES.find((s) => s.id === 'srv-volume-brasileiro');
-  assert.ok(service);
-  const summary = calculateBookingSummary(service, [BOOKING_ADDONS[0], BOOKING_ADDONS[1]]);
-  assert.equal(summary.totalBRL, 165 + 40 + 25);
-  assert.equal(summary.totalMinutes, 120 + 30 + 0);
+  const natural = filterWorksByCategory(STUDIO_WORKS, 'Todos', 'olhos claros');
+  assert.equal(natural.length, 1);
+  assert.equal(natural[0].id, 'work-natural-claro');
 });
 
 test('validateBookingInput rejects empty/invalid fields and accepts valid input', () => {
@@ -59,7 +48,7 @@ test('validateBookingInput rejects empty/invalid fields and accepts valid input'
   assert.deepEqual(valid.errors, {});
 });
 
-test('buildWhatsAppBookingUrl encodes studio booking message cleanly', () => {
+test('buildWhatsAppBookingUrl encodes consultation message cleanly without fictional prices', () => {
   const service = STUDIO_SERVICES[0];
   const url = buildWhatsAppBookingUrl(
     '5527999990000',
@@ -78,12 +67,6 @@ test('buildWhatsAppBookingUrl encodes studio booking message cleanly', () => {
   const decoded = decodeURIComponent(url.split('?text=')[1]);
   assert.ok(decoded.includes('Beatriz Souza'));
   assert.ok(decoded.includes(service.name));
-  assert.ok(decoded.includes('Combo Design de Sobrancelhas'));
-});
-
-test('formatBRL and formatDuration produce clean Portuguese formatting', () => {
-  assert.match(formatBRL(165), /R\$\s*165,00/);
-  assert.equal(formatDuration(120), '2h');
-  assert.equal(formatDuration(135), '2h 15min');
-  assert.equal(formatDuration(45), '45 min');
+  assert.ok(decoded.includes('Incluir Design de Sobrancelhas no mesmo atendimento'));
+  assert.ok(!decoded.includes('R$'));
 });

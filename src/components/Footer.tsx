@@ -33,12 +33,12 @@ export function Footer({ onOpenBooking }: FooterProps) {
               </li>
               <li>
                 <a href="#clientes" className="hover:text-[#FAF8F5]">
-                  Principais Clientes
+                  Trabalhos Realizados
                 </a>
               </li>
               <li>
                 <a href="#servicos" className="hover:text-[#FAF8F5]">
-                  Serviços &amp; Valores
+                  Serviços
                 </a>
               </li>
               <li>

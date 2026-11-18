@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import { STUDIO_SERVICES, type ServiceItem } from '../data/studioData';
-import { formatBRL, formatDuration } from '../utils/studioLogic';
 
 interface ServicesAndAcademyProps {
   onSelectService: (serviceId: string) => void;
@@ -22,7 +21,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
     <section
       id="servicos"
       aria-labelledby="servicos-heading"
-      className="border-b border-[#141210]/10 bg-[#F1EDE6]/60 py-14 sm:py-20"
+      className="scroll-mt-20 border-b border-[#141210]/10 bg-[#F1EDE6]/60 py-14 sm:py-20"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
         {/* Menu de Serviços */}
@@ -35,7 +34,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
               id="servicos-heading"
               className="font-display mt-2 text-[clamp(2rem,4vw,3.1rem)] leading-[1.08] font-medium tracking-tight text-[#141210]"
             >
-              Menu de serviços &amp; valores
+              Menu de serviços
             </h2>
           </div>
 
@@ -66,22 +65,23 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
           </div>
         </div>
 
-        {/* Clean Service Rows — zero nested card clutter */}
+        {/* Clean Clickable Service Rows — zero invented prices, click anywhere to book & consult pricing directly */}
         <div className="mt-8 divide-y divide-[#141210]/12 border-y border-[#141210]/12">
           {visibleServices.map((service, index) => (
-            <div
+            <button
               key={service.id}
-              className="grid grid-cols-1 items-start gap-4 py-6 lg:grid-cols-12 lg:items-center lg:gap-8"
+              type="button"
+              onClick={() => onSelectService(service.id)}
+              aria-label={`Agendar e consultar valor para ${service.name}`}
+              className="group grid w-full cursor-pointer grid-cols-1 items-start gap-4 px-2 py-6 text-left transition-colors duration-150 hover:bg-[#FAF8F5]/75 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#9A742E] lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-4"
             >
               <div className="lg:col-span-4">
                 <div className="flex items-center gap-2 text-xs text-[#5C564E]">
                   <span className="tabular-nums">0{index + 1}.</span>
                   <span aria-hidden="true">·</span>
                   <span>{service.category}</span>
-                  <span aria-hidden="true">·</span>
-                  <span className="tabular-nums">{formatDuration(service.durationMinutes)}</span>
                 </div>
-                <h3 className="font-display mt-1 text-2xl font-semibold text-[#141210]">
+                <h3 className="font-display mt-1 text-2xl font-semibold text-[#141210] transition-colors group-hover:text-[#9A742E]">
                   {service.name}
                 </h3>
               </div>
@@ -99,29 +99,23 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
               </div>
 
               <div className="flex items-center justify-between gap-4 lg:col-span-3 lg:justify-end">
-                <div className="text-left lg:text-right">
-                  <p className="font-display text-2xl font-semibold tabular-nums text-[#141210]">
-                    {formatBRL(service.priceBRL)}
-                  </p>
-                  <p className="text-[11px] text-[#5C564E]">{service.maintenanceInfo}</p>
-                </div>
+                <span className="text-xs font-medium text-[#5C564E] lg:hidden">
+                  {service.availabilityNote}
+                </span>
 
-                <button
-                  type="button"
-                  onClick={() => onSelectService(service.id)}
-                  className="inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-full border border-[#141210]/20 bg-[#FAF8F5] px-5 py-2.5 text-xs font-semibold text-[#141210] whitespace-nowrap shrink-0 transition-colors hover:border-[#141210] hover:bg-[#141210] hover:text-[#FAF8F5]"
-                >
-                  Reservar
-                </button>
+                <span className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-[#141210]/20 bg-[#FAF8F5] px-5 py-2.5 text-xs font-semibold text-[#141210] whitespace-nowrap shrink-0 transition-colors group-hover:border-[#141210] group-hover:bg-[#141210] group-hover:text-[#FAF8F5]">
+                  <span>Agendar &amp; consultar</span>
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </span>
               </div>
-            </div>
+            </button>
           ))}
         </div>
 
-        {/* Curso de Lash Design Spotlight */}
+        {/* Curso de Lash Design Spotlight — contact-only, zero invented price */}
         <div
           id="curso"
-          className="mt-14 grid grid-cols-1 items-stretch overflow-hidden rounded-2xl border border-[#141210]/12 bg-[#141210] text-[#FAF8F5] lg:grid-cols-12"
+          className="mt-14 grid scroll-mt-24 grid-cols-1 items-stretch overflow-hidden rounded-2xl border border-[#141210]/12 bg-[#141210] text-[#FAF8F5] lg:grid-cols-12"
         >
           <div className="flex flex-col justify-between p-6 sm:p-10 lg:col-span-6">
             <div>
@@ -136,8 +130,8 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
               </h3>
               <p className="mt-4 text-sm leading-relaxed text-[#D7D0C6] sm:text-base">
                 “Não é sorte. É preparação, disciplina e constância.” Transforme sua
-                paixão pela beleza em uma profissão de sucesso com formação presencial,
-                prática em modelo real e mentoria direta com Lorrayne Nunes.
+                paixão pela beleza em uma profissão de sucesso com formação presencial e
+                mentoria direta com Lorrayne Nunes.
               </p>
 
               <ul className="mt-6 space-y-2.5 text-sm text-[#EDE7DF]">
@@ -151,7 +145,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-4 w-4 shrink-0 text-[#C6A464]" aria-hidden="true" />
-                  <span>Apostila exclusiva, kit inicial e certificado reconhecido</span>
+                  <span>Prática orientada presencial e suporte pós-curso</span>
                 </li>
               </ul>
             </div>
@@ -159,8 +153,8 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[#FAF8F5]/15 pt-6">
               <div>
                 <p className="text-xs text-[#D7D0C6]">Formação VIP Presencial</p>
-                <p className="font-display text-2xl font-semibold tabular-nums text-[#E7D5B3]">
-                  {formatBRL(1490)}
+                <p className="font-display text-xl font-medium text-[#E7D5B3]">
+                  Consulte datas e condições
                 </p>
               </div>
               <button
@@ -168,7 +162,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
                 onClick={() => onSelectService('srv-curso-lash')}
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-full bg-[#E7D5B3] px-6 py-3 text-xs font-semibold text-[#141210] whitespace-nowrap transition-colors hover:bg-[#FAF8F5]"
               >
-                <span>Garantir vaga na turma</span>
+                <span>Entrar em contato</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>

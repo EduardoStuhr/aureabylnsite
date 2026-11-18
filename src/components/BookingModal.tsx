@@ -7,9 +7,6 @@ import {
 } from '../data/studioData';
 import {
   buildWhatsAppBookingUrl,
-  calculateBookingSummary,
-  formatBRL,
-  formatDuration,
   validateBookingInput,
   type BookingInput,
 } from '../utils/studioLogic';
@@ -63,11 +60,6 @@ export function BookingModal({
   const selectedAddOns = useMemo(
     () => BOOKING_ADDONS.filter((a) => selectedAddOnIds.includes(a.id)),
     [selectedAddOnIds],
-  );
-
-  const summary = useMemo(
-    () => calculateBookingSummary(selectedService, selectedAddOns),
-    [selectedService, selectedAddOns],
   );
 
   if (!isOpen) return null;
@@ -127,7 +119,7 @@ export function BookingModal({
               id="booking-modal-title"
               className="font-display mt-1 text-3xl font-medium text-[#141210]"
             >
-              Solicitar agendamento
+              Agendar &amp; consultar valores
             </h2>
           </div>
 
@@ -150,10 +142,9 @@ export function BookingModal({
               </h3>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-[#46413B]">
-              Seu resumo foi montado com todos os detalhes do procedimento{' '}
-              <strong>{selectedService.name}</strong> ({formatBRL(summary.totalBRL)} ·{' '}
-              {formatDuration(summary.totalMinutes)}). Clique abaixo para confirmar o
-              horário diretamente com a equipe da Lorrayne Nunes no WhatsApp.
+              Seu resumo para <strong>{selectedService.name}</strong> está pronto.
+              Clique abaixo para confirmar horários disponíveis e valores diretamente
+              com a Lorrayne Nunes no WhatsApp.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -163,7 +154,7 @@ export function BookingModal({
                 rel="noopener noreferrer"
                 className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-full bg-[#141210] px-6 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
               >
-                <span>Enviar no WhatsApp</span>
+                <span>Conversar no WhatsApp</span>
                 <ExternalLink className="h-4 w-4 text-[#C6A464]" aria-hidden="true" />
               </a>
               <button
@@ -238,7 +229,7 @@ export function BookingModal({
               >
                 {STUDIO_SERVICES.map((srv) => (
                   <option key={srv.id} value={srv.id}>
-                    {srv.name} — {formatBRL(srv.priceBRL)} ({formatDuration(srv.durationMinutes)})
+                    {srv.name} — {srv.category}
                   </option>
                 ))}
               </select>
@@ -251,7 +242,7 @@ export function BookingModal({
 
             <fieldset>
               <legend className="text-xs font-semibold text-[#141210]">
-                Adicionais opcionais
+                Complementos (opcional)
               </legend>
               <div className="mt-2 space-y-2">
                 {BOOKING_ADDONS.map((addon) => {
@@ -274,9 +265,7 @@ export function BookingModal({
                         />
                         <span className="font-medium text-[#141210]">{addon.name}</span>
                       </span>
-                      <span className="font-semibold tabular-nums text-[#5C564E]">
-                        +{formatBRL(addon.priceBRL)}
-                      </span>
+                      <span className="text-[11px] text-[#5C564E]">{addon.detail}</span>
                     </label>
                   );
                 })}
@@ -351,15 +340,14 @@ export function BookingModal({
               />
             </div>
 
-            {/* Summary & Submit */}
+            {/* Direct Contact Footer & Submit */}
             <div className="flex flex-col gap-4 border-t border-[#141210]/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs text-[#5C564E]">
-                  Investimento estimado ·{' '}
-                  <span className="tabular-nums">{formatDuration(summary.totalMinutes)}</span>
+                <p className="text-xs font-medium text-[#141210]">
+                  Atendimento direto com Lorrayne Nunes
                 </p>
-                <p className="font-display text-2xl font-semibold tabular-nums text-[#141210]">
-                  {formatBRL(summary.totalBRL)}
+                <p className="text-[11px] text-[#5C564E]">
+                  Valores e horários confirmados diretamente via WhatsApp
                 </p>
               </div>
 
@@ -367,7 +355,7 @@ export function BookingModal({
                 type="submit"
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center rounded-full bg-[#141210] px-7 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
               >
-                Confirmar solicitação
+                Continuar para WhatsApp
               </button>
             </div>
           </form>
