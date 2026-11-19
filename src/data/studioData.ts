@@ -37,13 +37,13 @@ export interface FeedMoment {
 }
 
 export const STUDIO_PROFILE = {
-  brandName: 'ÁUREA',
-  fullTitle: 'Áurea Studio Beauty',
-  handle: '@aureabyln',
+  brandName: 'ÁURA',
+  fullTitle: 'ÁURA Studio Beauty',
+  handle: '@aurabyln',
   founderName: 'Lorrayne Nunes',
   roleTitle: 'Lash Designer & Educadora · Embaixadora Florescer Beauty',
   city: 'Afonso Cláudio / ES',
-  instagramUrl: 'https://www.instagram.com/aureabyln/',
+  instagramUrl: 'https://www.instagram.com/aurabyln/',
   whatsappPhone: '',
   heroImage: import.meta.env.BASE_URL + 'assets/hero-lorrayne-cutout.png',
   instagramSpotlightImage: import.meta.env.BASE_URL + 'src/assets/images/studio_instagram_portrait_1795028764302.jpg',
@@ -70,7 +70,7 @@ export const STUDIO_METRICS = [
   {
     value: 'Florescer',
     label: 'Embaixadora Beauty',
-    detail: 'Lorrayne Nunes · @aureabyln',
+    detail: 'Lorrayne Nunes · @aurabyln',
   },
 ];
 
@@ -81,12 +81,12 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     category: 'Lash Design',
     technique: 'Volume Brasileiro Personalizado',
     mappingSpec: 'Fios tecnológicos em Y · Curvatura C · Acabamento denso e leve',
-    publishedLabel: '03 nov · @aureabyln',
+    publishedLabel: '03 nov · @aurabyln',
     serviceId: 'srv-volume-brasileiro',
     technicalNote:
       'Construção de linha superior uniforme com isolamento fio a fio preservando a saúde dos cílios naturais.',
     imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_volume_lash_1795028761250.jpg',
-    imageAlt: 'Trabalho real de Volume Brasileiro realizado por Lorrayne Nunes (@aureabyln)',
+    imageAlt: 'Trabalho real de Volume Brasileiro realizado por Lorrayne Nunes (@aurabyln)',
   },
   {
     id: 'work-natural-claro',
@@ -94,12 +94,12 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     category: 'Lash Design',
     technique: 'Fio a Fio Clássico Leve',
     mappingSpec: 'Curvatura C · Mapping aberto suave · Acabamento limpo',
-    publishedLabel: '04 nov · @aureabyln',
+    publishedLabel: '04 nov · @aurabyln',
     serviceId: 'srv-fio-a-fio',
     technicalNote:
       'Técnica clássica voltada para quem busca definição discreta, alinhamento leve e efeito natural.',
     imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fio_claro_1795028763860.jpg',
-    imageAlt: 'Trabalho real de extensão Fio a Fio em cliente de olhos claros no Áurea Studio Beauty',
+    imageAlt: 'Trabalho real de extensão Fio a Fio em cliente de olhos claros no ÁURA Studio Beauty',
   },
   {
     id: 'work-beleza-transforma',
@@ -107,12 +107,12 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     category: 'Fox Eyes',
     technique: 'Fox Eyes & Alongamento Lateral',
     mappingSpec: 'Curvatura especial gradual · Direcionamento alongado externo',
-    publishedLabel: 'Feed oficial · @aureabyln',
+    publishedLabel: 'Feed oficial · @aurabyln',
     serviceId: 'srv-fox-eyes',
     technicalNote:
       'Transição progressiva de comprimentos até o canto externo para criar efeito lifting imediato sem pesar.',
     imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fox_beleza_1795028758742.jpg',
-    imageAlt: 'Resultado real de Fox Eyes realizado no estúdio Áurea Studio Beauty (@aureabyln)',
+    imageAlt: 'Resultado real de Fox Eyes realizado no estúdio ÁURA Studio Beauty (@aurabyln)',
   },
   {
     id: 'work-espelho-brows',
@@ -120,7 +120,7 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     category: 'Sobrancelhas',
     technique: 'Design Personalizado & Visagismo',
     mappingSpec: 'Mapeamento facial · Pinça de precisão · Finalização natural',
-    publishedLabel: '21 ago · @aureabyln',
+    publishedLabel: '21 ago · @aurabyln',
     serviceId: 'srv-design-sobrancelhas',
     technicalNote:
       'Desenho sob medida respeitando a estrutura óssea e o caimento natural dos fios para equilibrar toda a expressão.',
@@ -206,7 +206,7 @@ export const INSTAGRAM_MOMENTS: FeedMoment[] = [
     dateLabel: '30 set',
     title: 'Terapia é importante. Mas você já marcou o seu cílios?',
     caption: 'Cuidar de você também é saúde, autoestima e bem-estar. Pequenos detalhes fazem grandes diferenças.',
-    category: 'Manifesto Áurea',
+    category: 'Manifesto ÁURA',
   },
   {
     id: 'ig-2',
