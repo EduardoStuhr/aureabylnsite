@@ -71,7 +71,7 @@ export function buildWhatsAppBookingUrl(
 ): string {
   const addOnNames = addOns.length > 0 ? addOns.map((a) => a.name).join(', ') : 'Nenhum adicional';
   const lines = [
-    `Olá, Lorrayne! Gostaria de consultar horários e valores no *Áurea Studio Beauty* (@aureabyln).`,
+    `Olá, Lorrayne! Gostaria de consultar horários e valores no *ÁURA Studio Beauty* (@aurabyln).`,
     ``,
     `*Nome:* ${input.clientName.trim()}`,
     `*WhatsApp:* ${input.whatsapp.trim()}`,

@@ -39,7 +39,7 @@ export function ClientsShowcase({ onBookService }: ClientsShowcaseProps) {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="text-xs font-medium tracking-wide text-[#5C564E]">
-              Portfólio Oficial · Fotos reais de @aureabyln
+              Portfólio Oficial · Fotos reais de @aurabyln
             </p>
             <h2
               id="trabalhos-heading"

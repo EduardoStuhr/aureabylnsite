@@ -172,7 +172,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
             {!academyImgFailed ? (
               <img
                 src={import.meta.env.BASE_URL + "src/assets/images/studio_lash_academy_1795019896448.jpg"}
-                alt="Mesa de trabalho do curso de Lash Design do Áurea Studio Beauty com pinças douradas e fios de seda"
+                alt="Mesa de trabalho do curso de Lash Design do ÁURA Studio Beauty com pinças douradas e fios de seda"
                 referrerPolicy="no-referrer"
                 onError={() => setAcademyImgFailed(true)}
                 className="h-full w-full object-cover"

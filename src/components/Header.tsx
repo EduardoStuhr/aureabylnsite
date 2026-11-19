@@ -57,7 +57,7 @@ export function Header({ onOpenBooking }: HeaderProps) {
               href={STUDIO_PROFILE.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram @aureabyln"
+              aria-label="Instagram @aurabyln"
               className="hidden min-h-[44px] items-center gap-2 text-xs font-medium text-[#141210] whitespace-nowrap shrink-0 transition-colors hover:text-[#9A742E] sm:inline-flex"
             >
               <Instagram className="h-4 w-4 stroke-[1.6]" aria-hidden="true" />

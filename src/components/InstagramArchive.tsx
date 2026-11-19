@@ -13,7 +13,7 @@ export function InstagramArchive() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-          {/* Left Column: Feed Moments from @aureabyln */}
+          {/* Left Column: Feed Moments from @aurabyln */}
           <div className="lg:col-span-6">
             <p className="text-xs font-medium tracking-wide text-[#5C564E]">
               Instagram {STUDIO_PROFILE.handle} · Diário do Estúdio
@@ -56,21 +56,21 @@ export function InstagramArchive() {
             </div>
           </div>
 
-          {/* Right Column: Single High-Resolution Studio Photograph from @aureabyln */}
+          {/* Right Column: Single High-Resolution Studio Photograph from @aurabyln */}
           <div className="lg:col-span-6">
             <div className="overflow-hidden rounded-2xl border border-[#141210]/12 bg-[#141210]">
               <div className="relative aspect-[4/3] w-full overflow-hidden">
                 {!spotImgFailed ? (
                   <img
                     src={STUDIO_PROFILE.instagramSpotlightImage}
-                    alt="Lorrayne Nunes no estúdio Áurea Studio Beauty em Afonso Cláudio/ES (@aureabyln)"
+                    alt="Lorrayne Nunes no estúdio ÁURA Studio Beauty em Afonso Cláudio/ES (@aurabyln)"
                     referrerPolicy="no-referrer"
                     onError={() => setSpotImgFailed(true)}
                     className="h-full w-full object-cover object-top"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center p-8 text-center text-[#E7D5B3]">
-                    <span className="font-display text-2xl">Áurea Studio Beauty · @aureabyln</span>
+                    <span className="font-display text-2xl">ÁURA Studio Beauty · @aurabyln</span>
                   </div>
                 )}
               </div>
