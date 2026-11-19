@@ -78,7 +78,7 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
               {!heroImgFailed ? (
                 <img
                   src={STUDIO_PROFILE.heroImage}
-                  alt="Lorrayne Nunes, Lash Designer e Educadora do Áurea Studio Beauty (@aureabyln)"
+                  alt="Lorrayne Nunes, Lash Designer e Educadora do ÁURA Studio Beauty (@aurabyln)"
                   referrerPolicy="no-referrer"
                   onError={() => setHeroImgFailed(true)}
                   className="h-full w-auto max-w-none object-contain object-right-bottom"
@@ -86,10 +86,10 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
               ) : (
                 <div className="flex h-full w-full flex-col items-center justify-center rounded-2xl bg-[#F1EDE6] p-8 text-center">
                   <span className="font-display text-3xl font-semibold text-[#141210]">
-                    ÁUREA STUDIO BEAUTY
+                    ÁURA STUDIO BEAUTY
                   </span>
                   <span className="mt-2 text-sm text-[#5C564E]">
-                    Lorrayne Nunes · @aureabyln
+                    Lorrayne Nunes · @aurabyln
                   </span>
                 </div>
               )}
@@ -215,9 +215,9 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
         <div className="animate-marquee flex w-max items-center gap-8 whitespace-nowrap text-xs font-medium tracking-[0.16em] text-[#E7D5B3]">
           {[0, 1].map((loopIndex) => (
             <div key={loopIndex} className="flex items-center gap-8">
-              <span>ÁUREA STUDIO BEAUTY</span>
+              <span>ÁURA STUDIO BEAUTY</span>
               <span aria-hidden="true">·</span>
-              <span>@AUREABYLN</span>
+              <span>@aurabyln</span>
               <span aria-hidden="true">·</span>
               <span>LASH DESIGN &amp; SOBRANCELHAS</span>
               <span aria-hidden="true">·</span>
