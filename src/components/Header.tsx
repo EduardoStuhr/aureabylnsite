@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { label: 'Trabalhos Realizados', href: '#clientes' },
   { label: 'Serviços', href: '#servicos' },
   { label: 'Curso de Lash Design', href: '#curso' },
-  { label: 'Diário @aureabyln', href: '#instagram' },
+  { label: `Instagram ${STUDIO_PROFILE.handle}`, href: STUDIO_PROFILE.instagramUrl, external: true },
 ];
 
 export function Header({ onOpenBooking }: HeaderProps) {
@@ -115,6 +115,8 @@ export function Header({ onOpenBooking }: HeaderProps) {
                   <a
                     key={item.href}
                     href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
                     onClick={() => setMenuOpen(false)}
                     className="flex min-h-[52px] items-center justify-between py-3 text-base font-medium text-[#141210] transition-colors hover:text-[#9A742E]"
                   >
