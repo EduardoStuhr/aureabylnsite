@@ -50,24 +50,26 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
               className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
               fill="none"
             >
-              <path
-                d="M78 440C42 290 128 118 286 64C415 20 532 95 572 222"
-                stroke="#EAE1D5"
-                strokeWidth="36"
-                strokeLinecap="round"
-              />
-              <path
-                d="M148 475C168 310 264 166 434 128C536 105 606 142 630 198"
-                stroke="#EFE7DC"
-                strokeWidth="26"
-                strokeLinecap="round"
-              />
-              <path
-                d="M44 218C96 134 198 116 286 154"
-                stroke="#F2ECE2"
-                strokeWidth="18"
-                strokeLinecap="round"
-              />
+              <g className="origin-center max-lg:motion-safe:animate-spin max-lg:motion-safe:[animation-duration:32s]">
+                <path
+                  d="M78 440C42 290 128 118 286 64C415 20 532 95 572 222"
+                  stroke="#EAE1D5"
+                  strokeWidth="36"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M148 475C168 310 264 166 434 128C536 105 606 142 630 198"
+                  stroke="#EFE7DC"
+                  strokeWidth="26"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M44 218C96 134 198 116 286 154"
+                  stroke="#F2ECE2"
+                  strokeWidth="18"
+                  strokeLinecap="round"
+                />
+              </g>
             </svg>
 
             {/* Full-scale Portrait with untouched natural grayscale tonality, table cutting flush at bottom/right */}
