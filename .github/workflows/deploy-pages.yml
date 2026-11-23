@@ -27,6 +27,15 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
+      - name: Test gallery scrolling on desktop and mobile
+        run: |
+          python3 -m venv "$RUNNER_TEMP/gallery-tests"
+          "$RUNNER_TEMP/gallery-tests/bin/pip" install playwright==1.55.0
+          GITHUB_PAGES=true npm run preview -- --port 4173 --strictPort &
+          trap 'kill $!' EXIT
+          export PREVIEW_URL=http://localhost:4173/aureabylnsite/
+          curl --retry 15 --retry-all-errors --retry-delay 1 -fsS "$PREVIEW_URL" -o /dev/null
+          "$RUNNER_TEMP/gallery-tests/bin/python" tests/gallery_scroll.py
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:
