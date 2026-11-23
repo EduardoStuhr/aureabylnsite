@@ -1,12 +1,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Expand, X } from 'lucide-react';
+import { Expand, X } from 'lucide-react';
 import { STUDIO_WORKS, type StudioWorkItem, type WorkCategory } from '../data/studioData';
 import { filterWorksByCategory } from '../utils/studioLogic';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './portfolio.css';
 
-const categories: WorkCategory[] = ['Todos', 'Sobrancelhas', 'Cílios'];
-const desktopQuery = '(min-width: 64rem) and (min-height: 40rem) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+gsap.registerPlugin(ScrollTrigger);
 
+const categories: WorkCategory[] = ['Todos', 'Sobrancelhas', 'Cílios'];
 export function ClientsShowcase() {
   const [category, setCategory] = useState<WorkCategory>('Todos');
   const [query, setQuery] = useState('');
@@ -17,70 +19,54 @@ export function ClientsShowcase() {
   const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const rail = useRef<HTMLDivElement>(null);
-  const pin = useRef(false);
+  const trigger = useRef<ScrollTrigger | null>(null);
 
   useEffect(() => {
     if (detail) dialog.current?.showModal();
   }, [detail]);
 
   useLayoutEffect(() => {
-    const root = section.current!;
-    const panel = stage.current!;
     const strip = rail.current;
-    if (!strip) {
-      root.style.removeProperty('height');
-      return;
-    }
-    const media = matchMedia(desktopQuery);
-    const offsets = () => Array.from(strip.children, card => (card as HTMLElement).offsetLeft);
-    let stops: number[] = [];
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      if (pin.current) {
-        strip.scrollLeft = Math.max(0, parseFloat(getComputedStyle(panel).top) - root.getBoundingClientRect().top);
-      }
-      const x = strip.scrollLeft;
-      setCurrent(stops.reduce((best, value, idx) => Math.abs(value - x) < Math.abs(stops[best] - x) ? idx : best, 0));
-    };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    const measure = () => {
-      stops = offsets();
-      pin.current = media.matches && stops.length > 1 && panel.offsetHeight <= window.innerHeight - 72;
-      root.toggleAttribute('data-pinned', pin.current);
-      root.style.height = pin.current ? panel.offsetHeight + strip.scrollWidth - strip.clientWidth + 'px' : '';
-      update();
-    };
-    strip.scrollLeft = 0;
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(panel);
-    observer.observe(strip);
-    media.addEventListener('change', measure);
-    window.addEventListener('scroll', schedule, { passive: true });
-    strip.addEventListener('scroll', schedule, { passive: true });
-    return () => {
-      observer.disconnect();
-      media.removeEventListener('change', measure);
-      window.removeEventListener('scroll', schedule);
-      strip.removeEventListener('scroll', schedule);
-      cancelAnimationFrame(frame);
-      root.removeAttribute('data-pinned');
-      root.style.removeProperty('height');
-      pin.current = false;
-    };
+    const panel = stage.current;
+    const root = section.current;
+    setCurrent(0);
+    if (!strip || !panel || !root || works.length < 2) return;
+
+    const media = gsap.matchMedia();
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      const distance = () => Math.max(0, strip.scrollWidth - strip.clientWidth);
+      const headerHeight = () => document.querySelector('header')?.offsetHeight ?? 0;
+      const tween = gsap.to(strip, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: root,
+          pin: panel,
+          start: () => 'top ' + Math.min(headerHeight(), window.innerHeight - panel.offsetHeight) + 'px',
+          end: () => '+=' + distance(),
+          scrub: true,
+          invalidateOnRefresh: true,
+          onUpdate: self => setCurrent(Math.round(self.progress * (works.length - 1))),
+        },
+      });
+      trigger.current = tween.scrollTrigger!;
+      const observer = new ResizeObserver(() => ScrollTrigger.refresh());
+      observer.observe(strip);
+      return () => {
+        observer.disconnect();
+        trigger.current = null;
+      };
+    });
+    return () => media.revert();
   }, [works]);
 
-  function go(index: number, instant = false) {
-    const strip = rail.current!;
-    const card = strip.children[index] as HTMLElement | undefined;
-    if (!card) return;
-    const behavior = instant || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
-    if (pin.current) {
-      window.scrollTo({ top: window.scrollY + section.current!.getBoundingClientRect().top - 72 + card.offsetLeft, behavior });
-    } else {
-      strip.scrollTo({ left: card.offsetLeft, behavior });
-    }
+  function revealFocusedCard(card: HTMLElement) {
+    const animation = trigger.current;
+    const strip = rail.current;
+    if (!animation || !strip) return;
+    const travel = strip.scrollWidth - strip.clientWidth;
+    const offset = Math.max(0, Math.min(travel, card.offsetLeft - (strip.clientWidth - card.offsetWidth) / 2));
+    if (travel) window.scrollTo({ top: animation.start + offset, behavior: 'instant' });
   }
 
   return (
@@ -96,19 +82,12 @@ export function ClientsShowcase() {
           </div>
         </div>
         {works.length ? <>
-          <div ref={rail} className="portfolio-rail" aria-label="Galeria de trabalhos" role="region"
-            onKeyDown={event => {
-              if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-              event.preventDefault();
-              const next = Math.min(works.length - 1, Math.max(0, current + (event.key === 'ArrowRight' ? 1 : -1)));
-              const button = rail.current?.children[next]?.querySelector('button');
-              button?.focus({ preventScroll: true });
-              go(next);
-            }}>
+          <div className="portfolio-window" role="region" aria-label="Galeria de trabalhos">
+            <div ref={rail} className="portfolio-rail">
             {works.map((work, index) => (
               <article key={work.id} data-current={current === index}>
                 <button className="portfolio-photo" aria-label={'Ver detalhes de ' + work.title}
-                  onFocus={e => { if (e.currentTarget.matches(':focus-visible')) go(index, true); }}
+                  onFocus={e => { if (e.currentTarget.matches(':focus-visible')) revealFocusedCard(e.currentTarget.parentElement!); }}
                   onClick={() => setDetail(work)}>
                   <img src={work.imageSrc} alt={work.imageAlt} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" />
                   <span><Expand size={17} /></span>
@@ -119,11 +98,10 @@ export function ClientsShowcase() {
               </article>
             ))}
           </div>
-          <div className="portfolio-controls">
-            <span aria-label="Posição na galeria">{current + 1} / {works.length}</span>
-            <button aria-label="Trabalho anterior" disabled={!current} onClick={() => go(current - 1)}><ArrowLeft /></button>
-            <button aria-label="Próximo trabalho" disabled={current >= works.length - 1} onClick={() => go(current + 1)}><ArrowRight /></button>
           </div>
+          <p className="portfolio-progress" aria-label="Posição na galeria">
+            {String(current + 1).padStart(2, '0')} / {String(works.length).padStart(2, '0')}
+          </p>
         </> : <p>Nenhum trabalho encontrado. <button className="underline" onClick={() => { setCategory('Todos'); setQuery(''); }}>Limpar filtros</button></p>}
       </div>
       <dialog ref={dialog} className="portfolio-dialog" aria-labelledby="work-title" onClose={() => setDetail(null)}
