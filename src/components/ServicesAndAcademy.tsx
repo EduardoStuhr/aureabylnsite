@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
-import { STUDIO_SERVICES, type ServiceItem } from '../data/studioData';
+import { STUDIO_COURSE, STUDIO_SERVICES, type ServiceItem } from '../data/studioData';
 
 interface ServicesAndAcademyProps {
   onSelectService: (serviceId: string) => void;
 }
 
-type ServiceTab = 'Todos' | 'Cílios' | 'Sobrancelhas' | 'Formação';
+type ServiceTab = 'Todos' | 'Cílios' | 'Sobrancelhas';
 
 export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps) {
   const [activeTab, setActiveTab] = useState<ServiceTab>('Todos');
@@ -14,7 +14,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
 
   const visibleServices: ServiceItem[] =
     activeTab === 'Todos'
-      ? STUDIO_SERVICES.filter((s) => s.category !== 'Formação')
+      ? STUDIO_SERVICES
       : STUDIO_SERVICES.filter((s) => s.category === activeTab);
 
   return (
@@ -88,14 +88,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
 
               <div className="lg:col-span-5">
                 <p className="text-sm leading-relaxed text-[#46413B]">{service.description}</p>
-                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5C564E]">
-                  {service.highlights.map((item) => (
-                    <span key={item} className="inline-flex items-center gap-1">
-                      <Check className="h-3.5 w-3.5 text-[#9A742E]" aria-hidden="true" />
-                      <span>{item}</span>
-                    </span>
-                  ))}
-                </div>
+
               </div>
 
               <div className="flex items-center justify-between gap-4 lg:col-span-3 lg:justify-end">
@@ -159,7 +152,7 @@ export function ServicesAndAcademy({ onSelectService }: ServicesAndAcademyProps)
               </div>
               <button
                 type="button"
-                onClick={() => onSelectService('srv-curso-lash')}
+                onClick={() => onSelectService(STUDIO_COURSE.id)}
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-full bg-[#E7D5B3] px-6 py-3 text-xs font-semibold text-[#141210] whitespace-nowrap transition-colors hover:bg-[#FAF8F5]"
               >
                 <span>Entrar em contato</span>

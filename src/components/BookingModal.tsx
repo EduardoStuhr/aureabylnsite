@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { CheckCircle2, ExternalLink, X } from 'lucide-react';
 import {
   BOOKING_ADDONS,
+  STUDIO_COURSE,
   STUDIO_PROFILE,
   STUDIO_SERVICES,
 } from '../data/studioData';
@@ -43,7 +44,7 @@ export function BookingModal({
     if (initialServiceId) {
       setServiceId(initialServiceId);
     }
-  }, [initialServiceId]);
+  }, [initialServiceId, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,9 +53,10 @@ export function BookingModal({
     }
   }, [isOpen]);
 
+  const courseInquiry = initialServiceId === STUDIO_COURSE.id;
   const selectedService = useMemo(
-    () => STUDIO_SERVICES.find((s) => s.id === serviceId) ?? STUDIO_SERVICES[0],
-    [serviceId],
+    () => courseInquiry ? STUDIO_COURSE : STUDIO_SERVICES.find((s) => s.id === serviceId) ?? STUDIO_SERVICES[0],
+    [courseInquiry, serviceId],
   );
 
   const selectedAddOns = useMemo(
@@ -220,7 +222,7 @@ export function BookingModal({
                 htmlFor="booking-service"
                 className="block text-xs font-semibold text-[#141210]"
               >
-                Procedimento ou Curso
+                {courseInquiry ? 'Curso' : 'Procedimento'}
               </label>
               <select
                 id="booking-service"
@@ -228,7 +230,7 @@ export function BookingModal({
                 onChange={(e) => setServiceId(e.target.value)}
                 className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
               >
-                {STUDIO_SERVICES.map((srv) => (
+                {(courseInquiry ? [STUDIO_COURSE] : STUDIO_SERVICES).map((srv) => (
                   <option key={srv.id} value={srv.id}>
                     {srv.name} — {srv.category}
                   </option>

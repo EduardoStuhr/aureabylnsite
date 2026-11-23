@@ -35,7 +35,7 @@ test('validateBookingInput rejects empty/invalid fields and accepts valid input'
   const valid = validateBookingInput({
     clientName: 'Ana Paula Silva',
     whatsapp: '(27) 99812-3456',
-    serviceId: 'srv-volume-brasileiro',
+    serviceId: 'srv-hibrido',
     preferredPeriod: 'Tarde (13h30–18h)',
     preferredDate: '2026-11-25',
     notes: 'Prefiro curvatura C',
@@ -63,6 +63,13 @@ test('buildWhatsAppBookingUrl encodes consultation message cleanly without ficti
   const decoded = decodeURIComponent(url.split('?text=')[1]);
   assert.ok(decoded.includes('Beatriz Souza'));
   assert.ok(decoded.includes(service.name));
-  assert.ok(decoded.includes('Incluir Design de Sobrancelhas no mesmo atendimento'));
+  assert.ok(decoded.includes('Incluir Design personalizado no mesmo atendimento'));
   assert.ok(!decoded.includes('R$'));
+});
+
+test('catalog includes the eight gallery procedures in official order', () => {
+  assert.deepEqual(STUDIO_SERVICES.map(service => service.name), [
+    'Design personalizado', 'Design personalizado com henna', 'Volume híbrido', 'Volume egípcio',
+    'Efeito sereia', 'Efeito fox', 'Efeito anime', 'Volume brown',
+  ]);
 });
