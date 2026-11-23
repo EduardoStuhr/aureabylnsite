@@ -15,9 +15,9 @@
 .portfolio-window { overflow: clip; }
 .portfolio-rail { position: relative; display: flex; gap: var(--gap); }
 .portfolio-progress { margin-top: .75rem; border-top: 1px solid #ddd4c8; padding-top: .5rem; font-size: .8rem; font-variant-numeric: tabular-nums; color: var(--color-muted); }
-.portfolio-rail article { flex: 0 0 var(--card); min-width: 0; }
-.portfolio-photo { position: relative; display: block; width: 100%; height: clamp(17rem, 48svh, 34rem); overflow: hidden; background: var(--color-surface); border-radius: .4rem; cursor: zoom-in; }
-.portfolio-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.portfolio-rail article { flex: 0 0 auto; min-width: 0; }
+.portfolio-photo { position: relative; display: block; width: 100%; height: auto; overflow: hidden; background: var(--color-surface); border-radius: .4rem; cursor: zoom-in; }
+.portfolio-photo img { display: block; width: 100%; height: auto; }
 .portfolio-photo span, .portfolio-close { display: grid; place-items: center; border-radius: 50%; background: var(--color-canvas); color: var(--color-ink); }
 .portfolio-photo span { position: absolute; bottom: .8rem; right: .8rem; width: 2.3rem; height: 2.3rem; }
 .portfolio-category { margin-top: .7rem; font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--color-muted); }
@@ -35,10 +35,6 @@
 .portfolio-dialog img { margin: 1rem auto 0; max-height: 65svh; max-width: 100%; object-fit: contain; }
 @media (min-width: 64rem) {
   .portfolio { --inset: max(2.5rem, calc((100vw - 78rem) / 2)); --card: clamp(21rem, 32vw, 34rem); }
-  .portfolio-photo { height: clamp(13rem, 43svh, 33rem); }
-}
-@media (max-width: 63.99rem) {
-  .portfolio-photo { height: clamp(10rem, 40svh, 27rem); }
 }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
@@ -49,8 +45,8 @@
 .portfolio-stage { padding: calc(4rem + 1svh) 0 1rem; }
 .portfolio-head, .portfolio-progress { margin-inline: var(--inset); }
 .portfolio-rail { width: max-content; padding-inline: var(--inset); align-items: flex-start; }
-.portfolio-rail article, .portfolio-booking { width: var(--card); }
-.portfolio-photo img { position: absolute; left: -7.5%; min-width: 115%; width: 115%; transform: scale(1.15); }
+.portfolio-booking { width: var(--card); }
+.portfolio-rail article { width: min(var(--card), calc(56svh * var(--photo-ratio))); }
 .portfolio-number {
   position: absolute; bottom: .15em; left: .14em; color: transparent;
   -webkit-text-stroke: 1px #e7d5b3; font-weight: 500;
@@ -59,8 +55,7 @@
 .portfolio-booking { align-self: stretch; display: grid; align-content: center; justify-items: start; gap: 1.5rem; padding: 2rem; border-inline-start: 1px solid var(--color-gold); }
 .portfolio-booking button { border-bottom: 1px solid currentColor; min-height: 44px; }
 .portfolio[data-layout=grid] .portfolio-rail { display: grid; width: 100%; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
-.portfolio[data-layout=grid] .portfolio-rail > * { width: auto; transform: none; }
-.portfolio[data-layout=grid] .portfolio-photo img, .portfolio[data-layout=snap] .portfolio-photo img { left: 0; min-width: 100%; width: 100%; transform: none; }
+.portfolio[data-layout=grid] .portfolio-rail > * { max-width: 100%; transform: none; }
 .portfolio[data-layout=grid] .portfolio-progress, .portfolio[data-layout=snap] .portfolio-progress { display: none; }
 .portfolio[data-layout=snap] .portfolio-window { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--inset); }
 .portfolio[data-layout=snap] .portfolio-rail > * { scroll-snap-align: start; }
@@ -68,5 +63,4 @@
   .portfolio-stage { padding-top: calc(72px + 1svh); }
   .portfolio-head h2 { font-size: clamp(2rem, 4.7svh, 3rem); }
   .portfolio-rail article:nth-child(even) { margin-top: 4svh; }
-  .portfolio-photo { height: clamp(14rem, calc(65svh - 6rem), 44rem); }
 }

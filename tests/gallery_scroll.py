@@ -32,6 +32,16 @@ class GalleryScrollTest(unittest.TestCase):
                     advance(travel / 2)
                     expect(count).to_contain_text(" / 08")
                     page.wait_for_function("x => document.querySelector('.portfolio-rail').getBoundingClientRect().left < x", arg=initial_left - travel / 3)
+                    # During the tween, each original portrait must fill its frame edge to edge.
+                    for photo in rail.locator(".portfolio-photo img").all():
+                        geometry = photo.evaluate("""img => {
+                          const frame = img.parentElement.getBoundingClientRect();
+                          const rect = img.getBoundingClientRect();
+                          return [rect.x-frame.x, rect.y-frame.y, rect.width-frame.width,
+                                  rect.height-frame.height, rect.height-rect.width*img.getAttribute('height')/img.getAttribute('width')];
+                        }""")
+                        for difference in geometry:
+                            self.assertLess(abs(difference), 1)
                     self.assertAlmostEqual(stage.bounding_box()["y"], initial_top, delta=2)
                     advance(travel)
                     expect(count).to_have_text("08 / 08")
