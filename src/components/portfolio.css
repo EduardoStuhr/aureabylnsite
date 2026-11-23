@@ -44,3 +44,29 @@
   .portfolio-rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
   .portfolio-progress { display: none; }
 }
+
+.portfolio { --gap: 1.25rem; --inset: clamp(1rem, 4vw, 4.5rem); }
+.portfolio-stage { padding: calc(4rem + 1svh) 0 1rem; }
+.portfolio-head, .portfolio-progress { margin-inline: var(--inset); }
+.portfolio-rail { width: max-content; padding-inline: var(--inset); align-items: flex-start; }
+.portfolio-rail article, .portfolio-booking { width: var(--card); }
+.portfolio-photo img { position: absolute; left: -7.5%; min-width: 115%; width: 115%; transform: scale(1.15); }
+.portfolio-number {
+  position: absolute; bottom: .15em; left: .14em; color: transparent;
+  -webkit-text-stroke: 1px #e7d5b3; font-weight: 500;
+  font-size: clamp(4.5rem, 9vw, 9rem); line-height: .82; letter-spacing: -.07em;
+}
+.portfolio-booking { align-self: stretch; display: grid; align-content: center; justify-items: start; gap: 1.5rem; padding: 2rem; border-inline-start: 1px solid var(--color-gold); }
+.portfolio-booking button { border-bottom: 1px solid currentColor; min-height: 44px; }
+.portfolio[data-layout=grid] .portfolio-rail { display: grid; width: 100%; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.portfolio[data-layout=grid] .portfolio-rail > * { width: auto; transform: none; }
+.portfolio[data-layout=grid] .portfolio-photo img, .portfolio[data-layout=snap] .portfolio-photo img { left: 0; min-width: 100%; width: 100%; transform: none; }
+.portfolio[data-layout=grid] .portfolio-progress, .portfolio[data-layout=snap] .portfolio-progress { display: none; }
+.portfolio[data-layout=snap] .portfolio-window { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--inset); }
+.portfolio[data-layout=snap] .portfolio-rail > * { scroll-snap-align: start; }
+@media (min-width: 64rem) {
+  .portfolio-stage { padding-top: calc(72px + 1svh); }
+  .portfolio-head h2 { font-size: clamp(2rem, 4.7svh, 3rem); }
+  .portfolio-rail article:nth-child(even) { margin-top: 4svh; }
+  .portfolio-photo { height: clamp(14rem, calc(65svh - 6rem), 44rem); }
+}

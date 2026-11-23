@@ -27,7 +27,7 @@ export default function App() {
 
       <main>
         <HeroSection onOpenBooking={() => openBookingWithService()} />
-        <ClientsShowcase />
+        <ClientsShowcase onBook={() => openBookingWithService()} />
         <ServicesAndAcademy onSelectService={(id) => openBookingWithService(id)} />
         <InstagramArchive />
       </main>
