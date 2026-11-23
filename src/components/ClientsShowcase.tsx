@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Expand, X } from 'lucide-react';
 import { STUDIO_WORKS, type StudioWorkItem, type WorkCategory } from '../data/studioData';
 import { filterWorksByCategory } from '../utils/studioLogic';
@@ -66,10 +66,6 @@ export function ClientsShowcase({ onBook }: { onBook: () => void }) {
           trigger.current = horizontalTween.scrollTrigger!;
           for (const card of cards) {
             const childTrigger = { trigger: card, containerAnimation: horizontalTween };
-            gsap.fromTo(card.querySelector('img'), { xPercent: -8 }, {
-              xPercent: 8, ease: 'none',
-              scrollTrigger: { ...childTrigger, start: 'left right', end: 'right left', scrub: true },
-            });
             gsap.fromTo(card.querySelectorAll('.portfolio-category, h3'), { yPercent: 60, opacity: 0 }, {
               yPercent: 0, opacity: 1, duration: 0.45, stagger: 0.05,
               scrollTrigger: { ...childTrigger, start: 'left 85%', toggleActions: 'play none none reverse' },
@@ -133,12 +129,14 @@ export function ClientsShowcase({ onBook }: { onBook: () => void }) {
         {works.length ? <>
           <div className="portfolio-window" role="region" aria-label="Galeria de trabalhos">
             <div ref={rail} className="portfolio-rail">
-            {works.map((work, index) => (
-              <article key={work.id} data-current={current === index}>
+            {works.map((work, index) => {
+              const width = work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080;
+              return (
+              <article key={work.id} data-current={current === index} style={{ '--photo-ratio': width / 1440 } as CSSProperties}>
                 <button className="portfolio-photo" aria-label={'Ver detalhes de ' + work.title}
                   onFocus={e => { if (e.currentTarget.matches(':focus-visible')) revealFocusedCard(e.currentTarget.parentElement!); }}
                   onClick={() => setDetail(work)}>
-                  <img src={work.imageSrc} alt={work.imageAlt} loading="lazy" width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} decoding="async" />
+                  <img src={work.imageSrc} alt={work.imageAlt} loading="lazy" width={width} height={1440} decoding="async" />
                   <b className="portfolio-number font-display" aria-hidden="true">{String(index + 1).padStart(2, '0')}</b>
                   <span><Expand size={17} /></span>
                 </button>
@@ -146,7 +144,8 @@ export function ClientsShowcase({ onBook }: { onBook: () => void }) {
                 <h3 className="font-display">{work.title}</h3>
                 <p className="portfolio-note">{work.technicalNote}</p>
               </article>
-            ))}
+              );
+            })}
             {showBooking && <aside className="portfolio-booking">
               <h3 className="font-display">Quer o seu resultado aqui?</h3>
               <button onClick={onBook} onFocus={e => { if (e.currentTarget.matches(':focus-visible')) revealFocusedCard(e.currentTarget.parentElement!); }}>Consultar agendamento</button>
