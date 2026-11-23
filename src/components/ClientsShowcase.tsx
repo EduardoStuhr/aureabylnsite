@@ -9,7 +9,7 @@ import './portfolio.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const categories: WorkCategory[] = ['Todos', 'Sobrancelhas', 'Cílios'];
-export function ClientsShowcase() {
+export function ClientsShowcase({ onBook }: { onBook: () => void }) {
   const [category, setCategory] = useState<WorkCategory>('Todos');
   const [query, setQuery] = useState('');
   const works = useMemo(() => filterWorksByCategory(STUDIO_WORKS, category, query), [category, query]);
@@ -17,7 +17,7 @@ export function ClientsShowcase() {
   const [detail, setDetail] = useState<StudioWorkItem | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const section = useRef<HTMLElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
+  const showBooking = category === 'Todos' && !query.trim();
   const rail = useRef<HTMLDivElement>(null);
   const trigger = useRef<ScrollTrigger | null>(null);
 
@@ -26,58 +26,107 @@ export function ClientsShowcase() {
   }, [detail]);
 
   useLayoutEffect(() => {
-    const strip = rail.current;
-    const panel = stage.current;
+    const track = rail.current;
     const root = section.current;
     setCurrent(0);
-    if (!strip || !panel || !root || works.length < 2) return;
+    if (!track || !root) return;
 
-    const media = gsap.matchMedia();
-    media.add('(prefers-reduced-motion: no-preference)', () => {
-      const distance = () => Math.max(0, strip.scrollWidth - strip.clientWidth);
-      const headerHeight = () => document.querySelector('header')?.offsetHeight ?? 0;
-      const tween = gsap.to(strip, {
-        x: () => -distance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root,
-          pin: panel,
-          start: () => 'top ' + Math.min(headerHeight(), window.innerHeight - panel.offsetHeight) + 'px',
-          end: () => '+=' + distance(),
-          scrub: true,
-          invalidateOnRefresh: true,
-          onUpdate: self => setCurrent(Math.round(self.progress * (works.length - 1))),
-        },
-      });
-      trigger.current = tween.scrollTrigger!;
-      const observer = new ResizeObserver(() => ScrollTrigger.refresh());
-      observer.observe(strip);
-      return () => {
-        observer.disconnect();
-        trigger.current = null;
-      };
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const compact = matchMedia('(max-width: 767px) and (max-height: 35rem)');
+    let ctx: gsap.Context;
+    let frame = 0;
+    const distance = () => Math.max(0, track.scrollWidth - root.clientWidth);
+    function configure() {
+      if (!track || !root) return;
+      ctx?.revert();
+      trigger.current = null;
+      delete root.dataset.layout;
+      setCurrent(0);
+      if (motion.matches || !distance()) {
+        root.dataset.layout = 'grid';
+      } else if (compact.matches) {
+        root.dataset.layout = 'snap';
+      } else {
+        ctx = gsap.context(() => {
+          const cards = Array.from(track.querySelectorAll('article'));
+          const horizontalTween = gsap.to(track, {
+            x: () => -distance(), ease: 'none',
+            onUpdate: () => {
+              const center = -Number(gsap.getProperty(track, 'x')) + root.clientWidth / 2;
+              const nearest = cards.reduce((best, card, i) =>
+                Math.abs(card.offsetLeft + card.offsetWidth / 2 - center) <
+                Math.abs(cards[best].offsetLeft + cards[best].offsetWidth / 2 - center) ? i : best, 0);
+              setCurrent(Math.abs(Number(gsap.getProperty(track, 'x'))) < 1 ? 0 : nearest);
+            },
+            scrollTrigger: {
+              trigger: root, pin: true, start: 'top top', end: () => '+=' + distance(),
+              scrub: 0.8, invalidateOnRefresh: true,
+            },
+          });
+          trigger.current = horizontalTween.scrollTrigger!;
+          for (const card of cards) {
+            const childTrigger = { trigger: card, containerAnimation: horizontalTween };
+            gsap.fromTo(card.querySelector('img'), { xPercent: -8 }, {
+              xPercent: 8, ease: 'none',
+              scrollTrigger: { ...childTrigger, start: 'left right', end: 'right left', scrub: true },
+            });
+            gsap.fromTo(card.querySelectorAll('.portfolio-category, h3'), { yPercent: 60, opacity: 0 }, {
+              yPercent: 0, opacity: 1, duration: 0.45, stagger: 0.05,
+              scrollTrigger: { ...childTrigger, start: 'left 85%', toggleActions: 'play none none reverse' },
+            });
+          }
+        }, root);
+      }
+      ScrollTrigger.refresh();
+    }
+    function schedule() {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(configure);
+    }
+    configure();
+    let width = root.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (width !== root.clientWidth) {
+        width = root.clientWidth;
+        schedule();
+      }
     });
-    return () => media.revert();
-  }, [works]);
+    observer.observe(root);
+    motion.addEventListener('change', schedule);
+    compact.addEventListener('change', schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      motion.removeEventListener('change', schedule);
+      compact.removeEventListener('change', schedule);
+      ctx?.revert();
+      delete root.dataset.layout;
+      trigger.current = null;
+    };
+  }, [works, showBooking]);
+
+  function resetFilterPosition() {
+    const animation = trigger.current;
+    if (animation?.isActive) window.scrollTo({ top: animation.start, behavior: 'instant' });
+  }
 
   function revealFocusedCard(card: HTMLElement) {
     const animation = trigger.current;
-    const strip = rail.current;
-    if (!animation || !strip) return;
-    const travel = strip.scrollWidth - strip.clientWidth;
-    const offset = Math.max(0, Math.min(travel, card.offsetLeft - (strip.clientWidth - card.offsetWidth) / 2));
-    if (travel) window.scrollTo({ top: animation.start + offset, behavior: 'instant' });
+    if (!animation) return;
+    const travel = animation.end - animation.start;
+    const offset = gsap.utils.clamp(0, travel, card.offsetLeft - (window.innerWidth - card.offsetWidth) / 2);
+    window.scrollTo({ top: animation.start + offset, behavior: 'instant' });
   }
 
   return (
     <section id="clientes" className="portfolio" ref={section} aria-labelledby="trabalhos-heading">
-      <div ref={stage} className="portfolio-stage">
+      <div className="portfolio-stage">
         <div className="portfolio-head">
           <h2 id="trabalhos-heading" className="font-display">Trabalhos realizados<br />&amp; resultados do estúdio.</h2>
           <div className="portfolio-tools">
-            <input type="search" aria-label="Buscar trabalho ou técnica" placeholder="Buscar técnica" value={query} onChange={e => setQuery(e.target.value)} />
+            <input type="search" aria-label="Buscar trabalho ou técnica" placeholder="Buscar técnica" value={query} onChange={e => { resetFilterPosition(); setQuery(e.target.value); }} />
             <div role="group" aria-label="Categorias">{categories.map(cat =>
-              <button key={cat} aria-pressed={cat === category} onClick={() => setCategory(cat)}>{cat}</button>
+              <button key={cat} aria-pressed={cat === category} onClick={() => { resetFilterPosition(); setCategory(cat); }}>{cat}</button>
             )}</div>
           </div>
         </div>
@@ -89,7 +138,8 @@ export function ClientsShowcase() {
                 <button className="portfolio-photo" aria-label={'Ver detalhes de ' + work.title}
                   onFocus={e => { if (e.currentTarget.matches(':focus-visible')) revealFocusedCard(e.currentTarget.parentElement!); }}
                   onClick={() => setDetail(work)}>
-                  <img src={work.imageSrc} alt={work.imageAlt} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" />
+                  <img src={work.imageSrc} alt={work.imageAlt} loading="lazy" width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} decoding="async" />
+                  <b className="portfolio-number font-display" aria-hidden="true">{String(index + 1).padStart(2, '0')}</b>
                   <span><Expand size={17} /></span>
                 </button>
                 <p className="portfolio-category">{work.category}</p>
@@ -97,6 +147,10 @@ export function ClientsShowcase() {
                 <p className="portfolio-note">{work.technicalNote}</p>
               </article>
             ))}
+            {showBooking && <aside className="portfolio-booking">
+              <h3 className="font-display">Quer o seu resultado aqui?</h3>
+              <button onClick={onBook} onFocus={e => { if (e.currentTarget.matches(':focus-visible')) revealFocusedCard(e.currentTarget.parentElement!); }}>Consultar agendamento</button>
+            </aside>}
           </div>
           </div>
           <p className="portfolio-progress" aria-label="Posição na galeria">

@@ -19,10 +19,10 @@ class GalleryScrollTest(unittest.TestCase):
                     stage = section.locator(".portfolio-stage")
                     count = section.locator(".portfolio-progress")
                     expect(rail.locator("article")).to_have_count(8)
-                    expect(section.locator(".pin-spacer")).to_have_count(1)
+                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(1)
                     page.evaluate("() => document.fonts.ready")
                     section.evaluate("el => window.scrollTo({top: scrollY + el.getBoundingClientRect().top, behavior:'instant'})")
-                    travel = rail.evaluate("el => el.scrollWidth - el.clientWidth")
+                    travel = rail.evaluate("el => el.scrollWidth - document.documentElement.clientWidth")
                     def advance(pixels):
                         page.evaluate("(top) => scrollBy({top, behavior:'instant'})", pixels)
                     def left():
@@ -35,16 +35,25 @@ class GalleryScrollTest(unittest.TestCase):
                     self.assertAlmostEqual(stage.bounding_box()["y"], initial_top, delta=2)
                     advance(travel)
                     expect(count).to_have_text("08 / 08")
-                    last = rail.locator("article").last.bounding_box()
-                    self.assertLessEqual(last["x"] + last["width"], width + 1)
-                    self.assertGreaterEqual(last["x"], 0)
+                    page.wait_for_function('''() => {
+                      const c = document.querySelector('.portfolio-booking').getBoundingClientRect();
+                      return c.right <= innerWidth && c.left >= 0;
+                    }''')
                     self.assertLess(stage.bounding_box()["y"], initial_top - 20)
                     advance(-travel)
                     expect(count).not_to_have_text("08 / 08")
                     self.assertAlmostEqual(stage.bounding_box()["y"], initial_top, delta=2)
                     page.emulate_media(reduced_motion="reduce")
-                    expect(section.locator(".pin-spacer")).to_have_count(0)
+                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(0)
                     expect(rail).to_have_css("display", "grid")
+                    search = section.get_by_role("searchbox")
+                    search.fill("henna")
+                    expect(rail.locator("article")).to_have_count(1)
+                    page.emulate_media(reduced_motion="no-preference")
+                    expect(rail).to_have_css("display", "grid")
+                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(0)
+                    search.fill("")
+                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(1)
                     page.close()
             browser.close()
 
