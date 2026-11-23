@@ -1,13 +1,10 @@
-export type WorkCategory = 'Todos' | 'Lash Design' | 'Fox Eyes' | 'Sobrancelhas' | 'Estúdio';
+export type WorkCategory = 'Todos' | 'Cílios' | 'Sobrancelhas';
 
 export interface StudioWorkItem {
   id: string;
   title: string;
   category: Exclude<WorkCategory, 'Todos'>;
-  technique: string;
-  mappingSpec: string;
-  publishedLabel: string;
-  serviceId: string;
+  secondImage?: string;
   technicalNote: string;
   imageSrc: string;
   imageAlt: string;
@@ -74,60 +71,74 @@ export const STUDIO_METRICS = [
   },
 ];
 
+const portfolio = import.meta.env.BASE_URL + 'assets/portfolio/';
+
 export const STUDIO_WORKS: StudioWorkItem[] = [
   {
-    id: 'work-volume-brasileiro',
-    title: 'Volume & Definição do Olhar',
-    category: 'Lash Design',
-    technique: 'Volume Brasileiro Personalizado',
-    mappingSpec: 'Fios tecnológicos em Y · Curvatura C · Acabamento denso e leve',
-    publishedLabel: '03 nov · @aurabyln',
-    serviceId: 'srv-volume-brasileiro',
-    technicalNote:
-      'Construção de linha superior uniforme com isolamento fio a fio preservando a saúde dos cílios naturais.',
-    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_volume_lash_1795028761250.jpg',
-    imageAlt: 'Trabalho real de Volume Brasileiro realizado por Lorrayne Nunes (@aurabyln)',
-  },
-  {
-    id: 'work-natural-claro',
-    title: 'Realce Natural para Olhos Claros',
-    category: 'Lash Design',
-    technique: 'Fio a Fio Clássico Leve',
-    mappingSpec: 'Curvatura C · Mapping aberto suave · Acabamento limpo',
-    publishedLabel: '04 nov · @aurabyln',
-    serviceId: 'srv-fio-a-fio',
-    technicalNote:
-      'Técnica clássica voltada para quem busca definição discreta, alinhamento leve e efeito natural.',
-    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fio_claro_1795028763860.jpg',
-    imageAlt: 'Trabalho real de extensão Fio a Fio em cliente de olhos claros no ÁURA Studio Beauty',
-  },
-  {
-    id: 'work-beleza-transforma',
-    title: 'Beleza que Transforma — Fox Soft',
-    category: 'Fox Eyes',
-    technique: 'Fox Eyes & Alongamento Lateral',
-    mappingSpec: 'Curvatura especial gradual · Direcionamento alongado externo',
-    publishedLabel: 'Feed oficial · @aurabyln',
-    serviceId: 'srv-fox-eyes',
-    technicalNote:
-      'Transição progressiva de comprimentos até o canto externo para criar efeito lifting imediato sem pesar.',
-    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_fox_beleza_1795028758742.jpg',
-    imageAlt: 'Resultado real de Fox Eyes realizado no estúdio ÁURA Studio Beauty (@aurabyln)',
-  },
-  {
-    id: 'work-espelho-brows',
-    title: 'Design Estratégico de Sobrancelhas',
+    id: 'design',
+    title: 'Design personalizado',
     category: 'Sobrancelhas',
-    technique: 'Design Personalizado & Visagismo',
-    mappingSpec: 'Mapeamento facial · Pinça de precisão · Finalização natural',
-    publishedLabel: '21 ago · @aurabyln',
-    serviceId: 'srv-design-sobrancelhas',
-    technicalNote:
-      'Desenho sob medida respeitando a estrutura óssea e o caimento natural dos fios para equilibrar toda a expressão.',
-    imageSrc: import.meta.env.BASE_URL + 'src/assets/images/work_espelho_brows_1795028763579.jpg',
-    imageAlt: 'Cliente conferindo resultado real do design de sobrancelhas no espelho iluminado',
+    technicalNote: 'Desenho que acompanha o arco e a direção natural dos fios.',
+    imageSrc: portfolio + 'design.webp',
+    imageAlt: 'Resultado de design personalizado no estúdio ÁURA',
   },
-
+  {
+    id: 'henna',
+    title: 'Design personalizado com henna',
+    category: 'Sobrancelhas',
+    technicalNote: 'Preenchimento com henna para dar definição ao contorno.',
+    imageSrc: portfolio + 'henna.webp',
+    imageAlt: 'Resultado de design personalizado com henna no estúdio ÁURA',
+  },
+  {
+    id: 'hibrido',
+    title: 'Volume híbrido',
+    category: 'Cílios',
+    technicalNote: 'Fios individuais e leques criam uma textura de densidades variadas.',
+    imageSrc: portfolio + 'hibrido.webp',
+    imageAlt: 'Resultado de volume híbrido no estúdio ÁURA',
+  },
+  {
+    id: 'egipcio',
+    title: 'Volume egípcio',
+    category: 'Cílios',
+    technicalNote: 'Volume distribuído ao longo da linha dos cílios.',
+    imageSrc: portfolio + 'egipcio.webp',
+    imageAlt: 'Resultado de volume egípcio no estúdio ÁURA',
+    secondImage: portfolio + 'egipcio-perfil.webp',
+  },
+  {
+    id: 'sereia',
+    title: 'Efeito sereia',
+    category: 'Cílios',
+    technicalNote: 'Comprimentos que se alongam em direção à lateral do olhar.',
+    imageSrc: portfolio + 'sereia.webp',
+    imageAlt: 'Resultado de efeito sereia no estúdio ÁURA',
+  },
+  {
+    id: 'fox',
+    title: 'Efeito fox',
+    category: 'Cílios',
+    technicalNote: 'Ênfase no canto externo para um desenho alongado.',
+    imageSrc: portfolio + 'fox.webp',
+    imageAlt: 'Resultado de efeito fox no estúdio ÁURA',
+  },
+  {
+    id: 'anime',
+    title: 'Efeito anime',
+    category: 'Cílios',
+    technicalNote: 'Mechas mais longas se destacam entre fios curtos.',
+    imageSrc: portfolio + 'anime.webp',
+    imageAlt: 'Resultado de efeito anime no estúdio ÁURA',
+  },
+  {
+    id: 'brown',
+    title: 'Volume brown',
+    category: 'Cílios',
+    technicalNote: 'Fios em tons de marrom dão suavidade ao contorno dos olhos.',
+    imageSrc: portfolio + 'brown.webp',
+    imageAlt: 'Resultado de volume brown no estúdio ÁURA',
+  },
 ];
 
 export const STUDIO_SERVICES: ServiceItem[] = [

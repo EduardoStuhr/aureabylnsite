@@ -11,13 +11,9 @@ test('filterWorksByCategory filters by category and search query accurately', ()
   const all = filterWorksByCategory(STUDIO_WORKS, 'Todos');
   assert.equal(all.length, STUDIO_WORKS.length);
 
-  const foxOnly = filterWorksByCategory(STUDIO_WORKS, 'Fox Eyes');
-  assert.ok(foxOnly.length > 0);
-  assert.ok(foxOnly.every((w) => w.category === 'Fox Eyes'));
-
-  const natural = filterWorksByCategory(STUDIO_WORKS, 'Todos', 'olhos claros');
-  assert.equal(natural.length, 1);
-  assert.equal(natural[0].id, 'work-natural-claro');
+  const brows = filterWorksByCategory(STUDIO_WORKS, 'Sobrancelhas');
+  assert.deepEqual(brows.map(work => work.id), ['design', 'henna']);
+  assert.deepEqual(filterWorksByCategory(STUDIO_WORKS, 'Cílios', 'fox').map(work => work.id), ['fox']);
 });
 
 test('validateBookingInput rejects empty/invalid fields and accepts valid input', () => {
