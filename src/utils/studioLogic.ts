@@ -26,8 +26,8 @@ export function filterWorksByCategory(
     if (!normalizedQuery) return true;
     return (
       work.title.toLowerCase().includes(normalizedQuery) ||
-      work.technique.toLowerCase().includes(normalizedQuery) ||
-      work.mappingSpec.toLowerCase().includes(normalizedQuery)
+      work.category.toLowerCase().includes(normalizedQuery) ||
+      work.technicalNote.toLowerCase().includes(normalizedQuery)
     );
   });
 }
