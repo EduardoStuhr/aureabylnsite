@@ -16,7 +16,6 @@ export interface ServiceItem {
   category: 'Cílios' | 'Sobrancelhas' | 'Formação';
   availabilityNote: string;
   description: string;
-  highlights: string[];
 }
 
 export interface AddOnItem {
@@ -51,7 +50,7 @@ export const STUDIO_PROFILE = {
 export const STUDIO_METRICS = [
   {
     value: 'Lash Design',
-    label: 'Volume & Fio a Fio',
+    label: 'Volumes & efeitos',
     detail: 'Curvatura desenhada para o seu olhar',
   },
   {
@@ -141,67 +140,27 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
   },
 ];
 
-export const STUDIO_SERVICES: ServiceItem[] = [
-  {
-    id: 'srv-volume-brasileiro',
-    name: 'Volume Brasileiro',
-    category: 'Cílios',
-    availabilityNote: 'Consultar horários e valores',
-    description:
-      'Fios tecnológicos em formato Y que entregam preenchimento marcante, leveza e excelente acoplagem sem pesar no fio natural.',
-    highlights: ['Mapping visagista', 'Fios em seda fosca', 'Higienização prévia inclusa'],
-  },
-  {
-    id: 'srv-fox-eyes',
-    name: 'Fox Eyes / Efeito Delineado',
-    category: 'Cílios',
-    availabilityNote: 'Consultar horários e valores',
-    description:
-      'Direcionamento estratégico no canto externo para alongar e levantar o olhar com sofisticação e acabamento leve.',
-    highlights: ['Curvatura especial', 'Efeito lifting imediato', 'Acabamento sem excessos'],
-  },
-  {
-    id: 'srv-fio-a-fio',
-    name: 'Fio a Fio Clássico',
-    category: 'Cílios',
-    availabilityNote: 'Consultar horários e valores',
-    description:
-      'Um fio acoplado a cada cílio natural saudável. Ideal para quem busca naturalidade refinada com efeito de máscara de cílios.',
-    highlights: ['Máxima naturalidade', 'Isolamento preservado', 'Conforto absoluto'],
-  },
-  {
-    id: 'srv-brow-lamination',
-    name: 'Brow Lamination',
-    category: 'Sobrancelhas',
-    availabilityNote: 'Consultar horários e valores',
-    description:
-      'Alinhamento e cuidado dos fios naturais das sobrancelhas, criando volume elegante, controle de direcionamento e simetria.',
-    highlights: ['Design na pinça', 'Alinhamento direcionado', 'Aspecto encorpado natural'],
-  },
-  {
-    id: 'srv-design-sobrancelhas',
-    name: 'Design de Sobrancelhas',
-    category: 'Sobrancelhas',
-    availabilityNote: 'Consultar horários e valores',
-    description:
-      'Mapeamento personalizado respeitando a estrutura do rosto e o desenho natural dos fios para valorizar toda a expressão.',
-    highlights: ['Mapeamento facial', 'Acabamento preciso', 'Cuidado individualizado'],
-  },
-  {
-    id: 'srv-curso-lash',
-    name: 'Curso VIP de Lash Design',
-    category: 'Formação',
-    availabilityNote: 'Consultar datas e investimento',
-    description:
-      'Formação prática presencial com Lorrayne Nunes (Embaixadora Florescer Beauty). Do isolamento seguro ao posicionamento profissional.',
-    highlights: ['Material de apoio', 'Prática orientada', 'Mentoria presencial'],
-  },
-];
+export const STUDIO_SERVICES: ServiceItem[] = STUDIO_WORKS.map(work => ({
+  id: 'srv-' + work.id,
+  name: work.title,
+  category: work.category,
+  availabilityNote: 'Consultar horários e valores',
+  description: work.technicalNote,
+}));
+
+export const STUDIO_COURSE: ServiceItem = {
+  id: 'srv-curso-lash',
+  name: 'Curso VIP de Lash Design',
+  category: 'Formação',
+  availabilityNote: 'Consultar datas e investimento',
+  description:
+    'Formação prática presencial com Lorrayne Nunes (Embaixadora Florescer Beauty). Do isolamento seguro ao posicionamento profissional.',
+};
 
 export const BOOKING_ADDONS: AddOnItem[] = [
   {
     id: 'addon-sobrancelha',
-    name: 'Incluir Design de Sobrancelhas no mesmo atendimento',
+    name: 'Incluir Design personalizado no mesmo atendimento',
     detail: 'Combo cílios + sobrancelhas',
   },
   {

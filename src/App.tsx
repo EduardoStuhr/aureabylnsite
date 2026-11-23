@@ -17,9 +17,7 @@ export default function App() {
   );
 
   const openBookingWithService = (serviceId?: string) => {
-    if (serviceId) {
-      setBookingServiceId(serviceId);
-    }
+    setBookingServiceId(serviceId ?? STUDIO_SERVICES[0].id);
     setBookingOpen(true);
   };
 
