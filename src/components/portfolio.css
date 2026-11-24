@@ -7,7 +7,7 @@
 .portfolio-tools button[aria-pressed=true] { border-bottom: 2px solid #8B6745; color: #684637; }
 .editorial-gallery { display: grid; grid-template-columns: minmax(0,1fr); grid-auto-rows: 8px; gap: 1.5rem; max-width: 68rem; margin-inline: auto; align-items: start; }
 .editorial-work { min-width: 0; width: 100%; }
-.portfolio-card { background: #eee5dc; border-bottom: 2px solid #bca386; }
+.portfolio-card { background: transparent; border-bottom: 1px solid var(--page-line); }
 .portfolio-photo { display: block; position: relative; width: 100%; cursor: pointer; }
 .portfolio-photo img { display: block; width: 100%; height: auto; }
 .photo-action { position: absolute; bottom: .8rem; left: .8rem; display: flex; align-items: center; gap: .6rem; min-height: 44px; padding: .65rem .85rem; background: #FAF8F5; color: #141210; font-size: .8rem; }
@@ -25,7 +25,7 @@
   .editorial-gallery { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1.5rem 2rem; max-width: 58rem; }
 }
 @media(hover:hover) and (pointer:fine) {
-  .portfolio-card:hover, .portfolio-card:focus-within { transform: translateY(-5px); background: #e4d4c2; border-bottom-color: #684637; }
+  .portfolio-card:hover, .portfolio-card:focus-within { transform: translateY(-5px); background: transparent; border-bottom-color: #684637; }
   .portfolio-photo:hover .photo-action, .portfolio-photo:focus-visible .photo-action { background: #684637; color: #fff8ef; transform: translateX(5px); }
 }
 @media(prefers-reduced-motion:no-preference) {

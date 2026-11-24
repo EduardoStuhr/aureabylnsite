@@ -21,11 +21,6 @@ export function HomePage({ onBook }: BookingProps) {
   return <>
     <HeroSection onOpenBooking={() => onBook()} />
     <ClientsShowcase preview />
-    <section className="editorial-shell home-specialties">
-      <p className="eyebrow">Especialidades</p><h2 className="font-display">O detalhe muda o olhar.</h2>
-      <div><Link to="/servicos" className="font-display">Cílios</Link><Link to="/servicos" className="font-display">Sobrancelhas</Link></div>
-      <Link className="editorial-link" to="/servicos">Explorar os oito procedimentos →</Link>
-    </section>
     <section className="editorial-shell editorial-split">
       <figure className="professional-portrait"><img src={STUDIO_PROFILE.instagramSpotlightImage} alt="Lorrayne Nunes no estúdio" width="800" height="1000" loading="lazy" /><figcaption>Lorrayne Nunes · ÁURA Beauty Studio</figcaption></figure>
       <div><p className="eyebrow">{STUDIO_PROFILE.city}</p><h2 className="font-display">Lorrayne Nunes</h2>
