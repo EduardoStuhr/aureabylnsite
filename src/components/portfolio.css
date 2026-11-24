@@ -5,9 +5,9 @@
 .portfolio-tools input { min-height: 44px; width: min(100%, 18rem); border-bottom: 1px solid #8B6745; padding: .5rem; }
 .portfolio-tools button { min-height: 44px; padding: .5rem .85rem; }
 .portfolio-tools button[aria-pressed=true] { border-bottom: 1px solid currentColor; color: #735621; }
-.editorial-gallery { display: grid; gap: 3rem 9%; grid-template-columns: minmax(0, 1fr); align-items: start; }
-.editorial-work { min-width: 0; width: 100%; max-width: 27rem; justify-self: center; }
-.portfolio-photo { display: block; position: relative; width: 100%; background: var(--color-surface); cursor: zoom-in; overflow: hidden; }
+.editorial-gallery { display: grid; gap: 1.8rem 2rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+.editorial-work { min-width: 0; width: 100%; max-width: 25rem; background: #eee5dc; padding: .7rem; border: 1px solid #d7c8b6; justify-self: center; }
+.portfolio-photo { display: block; position: relative; width: 100%; background: var(--color-surface); cursor: pointer; overflow: hidden; }
 .portfolio-photo img { display: block; width: 100%; height: auto; }
 .portfolio-photo span { position: absolute; bottom: 1rem; right: 1rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--color-canvas); }
 .editorial-work .eyebrow { margin-top: 1rem; }
@@ -21,20 +21,27 @@
 .portfolio-dialog img { margin: 1rem auto; max-height: 65svh; max-width: 100%; object-fit: contain; }
 @media(min-width: 768px) {
   .editorial-gallery { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); max-width: 62rem; margin-inline: auto; }
-  .editorial-work:nth-child(even) { margin-top: 4rem; }
-  .editorial-work:nth-child(4n+3) { width: 83%; justify-self: end; }
+  .editorial-work:nth-child(even) { margin-top: 1.5rem; }
+  
 }
 @media(prefers-reduced-motion: no-preference) {
   @supports(animation-timeline: view()) {
     .editorial-work { animation: portfolio-reveal both linear; animation-timeline: view(); animation-range: entry 0% entry 80%; }
-    @keyframes portfolio-reveal { from { clip-path: inset(0 0 8% 0); transform: translateY(18px); opacity: .85; } to { clip-path: inset(0); transform: none; opacity: 1; } }
+    @keyframes portfolio-reveal { from { transform: translateY(10px); opacity: .92; } to { transform: none; opacity: 1; } }
   }
   .portfolio-photo span { transition: transform .2s ease; }
   .portfolio-photo:hover span { transform: scale(1.08); }
 }
 
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
-  .portfolio-photo { background: var(--color-ink); }
-  .portfolio-photo img { transition: transform .4s ease, opacity .4s ease; }
-  .portfolio-photo:hover img, .portfolio-photo:focus-visible img { transform: scale(.975); opacity: .93; }
+  .portfolio-photo span { transition: background-color .2s ease, color .2s ease; }
+  .portfolio-photo:hover span, .portfolio-photo:focus-visible span { background: #6c4937; color: #fffaf4; }
+}
+
+.editorial-work > :is(p,h3,a) { margin-inline: .6rem; }
+.editorial-work > .editorial-link { margin-bottom: .7rem; }
+.portfolio-heading { margin-bottom: 2.25rem; padding: clamp(1.2rem, 3vw, 2rem); border-left: 3px solid #8B6745; background: #eee4dc; }
+.portfolio { padding-block: clamp(2rem, 4vw, 4rem); }
+@media(min-width: 1150px) {
+  .editorial-gallery { grid-template-columns: repeat(3,minmax(0,1fr)); max-width: 70rem; }
 }

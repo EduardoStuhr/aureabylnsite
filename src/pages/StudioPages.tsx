@@ -32,9 +32,12 @@ export function HomePage({ onBook }: BookingProps) {
       <p>{STUDIO_PROFILE.roleTitle}</p><blockquote className="font-display">“{STUDIO_PROFILE.manifestoQuote}”</blockquote>
       <Link className="editorial-link" to="/sobre">Conheça a profissional →</Link></div>
     </section>
-    <section className="course-teaser editorial-shell"><p className="eyebrow">Educação &amp; mentoria</p>
+    <section className="course-teaser editorial-shell">
+      <div><p className="eyebrow">Educação &amp; mentoria</p>
       <h2 className="font-display">Curso de Lash Design</h2><p>{STUDIO_COURSE.description}</p>
-      <Link className="editorial-link" to="/curso">Conhecer a formação →</Link>
+      <Link className="editorial-link" to="/curso">Conhecer a formação →</Link></div>
+      <img src={import.meta.env.BASE_URL + 'src/assets/images/studio_lash_academy_1795019896448.jpg'}
+        alt="Materiais da formação de Lash Design" width="800" height="1000" loading="lazy" />
     </section>
     <ContactCallout onBook={onBook} />
   </>;
