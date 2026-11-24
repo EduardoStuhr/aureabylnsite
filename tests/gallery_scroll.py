@@ -23,6 +23,10 @@ class StudioTest(unittest.TestCase):
                         expect(page.locator("main")).to_be_focused()
                         self.assertNotIn("undefined", page.title())
                         if width in [390, 1440] and path != "/inexistente":
+                            for photo in page.locator("main img").all():
+                                photo.scroll_into_view_if_needed()
+                                photo.evaluate("img => img.decode()")
+                            page.evaluate("scrollTo({top:0, behavior:'instant'})")
                             Path("test-results").mkdir(exist_ok=True)
                             page.screenshot(path="test-results/" + str(width) + "-" + (path.strip("/").replace("/", "-") or "inicio") + ".png", full_page=True)
                     page.goto(base + "/portfolio")
