@@ -50,7 +50,7 @@ blockquote { font-size: clamp(1.2rem, 1.6vw, 1.55rem); line-height: 1.55; margin
 .skip-link:focus { top: 0; }
 [aria-current=page] { text-decoration: underline; text-underline-offset: .35em; }
 .hero-specialties { background: var(--page-paper) !important; border-top: 1px solid var(--page-line); }
-.studio-marquee { overflow: hidden; background: #29251F; color: #F2EDE5; padding-block: .7rem; }
+.studio-marquee { overflow: hidden; background: #000; color: #fff; padding-block: .7rem; }
 @media (prefers-reduced-motion: reduce) {
   .studio-marquee-track { width: 100%; white-space: normal; }
   .studio-marquee-track > div { flex-wrap: wrap; justify-content: center; gap: .5rem 1rem; padding-inline: 1rem; }
