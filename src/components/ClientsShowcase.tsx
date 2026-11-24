@@ -1,10 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Expand, X } from 'lucide-react';
 import { STUDIO_WORKS, type StudioWorkItem, type WorkCategory } from '../data/studioData';
 import './portfolio.css';
 
 export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedTechnique = preview ? null : searchParams.get('tecnica');
+  const selectedWork = STUDIO_WORKS.find(work => work.id === selectedTechnique);
   const Heading = preview ? 'h2' : 'h1';
   const [category, setCategory] = useState<WorkCategory>('Todos');
   const [query, setQuery] = useState('');
@@ -13,6 +16,7 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
   const works = STUDIO_WORKS.filter(work =>
+    (!selectedWork || selectedWork.id === work.id) &&
     (category === 'Todos' || category === work.category) &&
     (work.title + ' ' + work.technicalNote).toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR').trim())
   ).slice(0, preview ? 4 : undefined);
@@ -34,14 +38,15 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
     for (const card of cards) observer.observe(card);
     measure();
     return () => observer.disconnect();
-  }, [category, query, preview]);
+  }, [category, query, preview, selectedTechnique]);
 
   return (
-    <section className="portfolio editorial-shell" aria-labelledby="trabalhos-heading">
+    <section className={'portfolio editorial-shell' + (preview ? '' : ' portfolio-exhibition')} aria-labelledby="trabalhos-heading">
       <div className="portfolio-heading">
         <p className="eyebrow">Olhares da ÁURA · Resultados reais</p>
         <Heading id="trabalhos-heading" className="font-display">Trabalhos realizados<br />&amp; resultados do estúdio.</Heading>
-        {!preview && <p>Uma seleção de cílios e sobrancelhas realizados por Lorrayne Nunes.</p>}
+        {!preview && <p>Olhares, detalhes e resultados reais do estúdio.</p>}
+        {selectedWork && <p className="selected-technique">{selectedWork.title} <button onClick={() => { setSearchParams({}); setCategory('Todos'); setQuery(''); }}>Ver todos os trabalhos</button></p>}
         {preview ? <Link className="editorial-link" to="/portfolio">Conhecer o portfólio completo →</Link> :
           <div className="portfolio-tools">
             <input type="search" aria-label="Buscar trabalho ou técnica" placeholder="Buscar técnica" value={query} onChange={e => setQuery(e.target.value)} />
@@ -62,8 +67,8 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
           </button>
           <div className="portfolio-caption"><p className="eyebrow">{String(index + 1).padStart(2, '0')} · {work.category}</p>
           <h3 className="font-display">{work.title}</h3>
-          <p>{work.technicalNote}</p>
-          <Link className="editorial-link" to={'/servicos/' + work.id}>Conhecer o procedimento →</Link>
+          {preview && <p>{work.technicalNote}</p>}
+          <Link className="editorial-link" to={preview ? '/servicos/' + work.id : '/servicos?procedimento=' + work.id}>Conhecer o procedimento →</Link>
           </div></div>
         </article>)}
       </div>
@@ -74,10 +79,10 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
         {detail && <div>
           <button className="portfolio-close" aria-label="Fechar detalhes" onClick={() => dialog.current?.close()}><X /></button>
           <h3 id="work-title" className="font-display">{detail.title}</h3>
-          <p>{detail.technicalNote}</p>
+          <p className="eyebrow">{detail.category}</p>
           <img src={detail.imageSrc} alt={detail.imageAlt} />
           {detail.secondImage && <img src={detail.secondImage} alt="Outro resultado de volume egípcio no estúdio" />}
-          <Link className="editorial-link" to={'/servicos/' + detail.id}>Conhecer o procedimento →</Link>
+          <Link className="editorial-link" to={'/servicos?procedimento=' + detail.id}>Conhecer o procedimento →</Link>
         </div>}
       </dialog>
     </section>
