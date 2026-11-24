@@ -201,9 +201,9 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
 
       {/* Subtle Editorial Marquee Divider */}
       <div className="studio-marquee">
-        <div className="animate-marquee flex w-max items-center gap-8 whitespace-nowrap text-xs font-medium tracking-[0.16em] text-[#E7D5B3]">
-          {[0, 1].map((loopIndex) => (
-            <div key={loopIndex} className="flex items-center gap-8">
+        <div className="studio-marquee-track animate-marquee flex w-max items-center whitespace-nowrap text-xs font-medium tracking-[0.16em]">
+          {[0, 1, 2].map((loopIndex) => (
+            <div key={loopIndex} aria-hidden={loopIndex > 0 || undefined} className="flex items-center gap-8 pr-8">
               <span>ÁURA STUDIO BEAUTY</span>
               <span aria-hidden="true">·</span>
               <span>@aurabyln</span>

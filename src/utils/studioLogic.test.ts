@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   buildWhatsAppBookingUrl,
   filterWorksByCategory,
+  studioWhatsAppUrl,
   validateBookingInput,
 } from './studioLogic';
 import { BOOKING_ADDONS, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
@@ -47,20 +48,23 @@ test('validateBookingInput rejects empty/invalid fields and accepts valid input'
 test('buildWhatsAppBookingUrl encodes consultation message cleanly without fictional prices', () => {
   const service = STUDIO_SERVICES[0];
   const url = buildWhatsAppBookingUrl(
-    '5527999990000',
     {
       clientName: 'Beatriz Souza',
       whatsapp: '27999887766',
       serviceId: service.id,
       preferredPeriod: 'Manhã (08h30–12h)',
       preferredDate: '2026-11-28',
-      notes: '',
+      notes: 'Preço & horário? + à tarde',
     },
     service,
     [BOOKING_ADDONS[0]],
   );
-  assert.ok(url.startsWith('https://wa.me/5527999990000?text='));
-  const decoded = decodeURIComponent(url.split('?text=')[1]);
+  assert.equal(studioWhatsAppUrl, 'https://wa.me/5527999202100');
+  const destination = new URL(url);
+  assert.equal(destination.origin + destination.pathname, studioWhatsAppUrl);
+  const decoded = destination.searchParams.get('text') ?? '';
+  assert.deepEqual([...destination.searchParams.keys()], ['text']);
+  assert.ok(decoded.includes('Preço & horário? + à tarde'));
   assert.ok(decoded.includes('Beatriz Souza'));
   assert.ok(decoded.includes(service.name));
   assert.ok(decoded.includes('Incluir Design personalizado no mesmo atendimento'));

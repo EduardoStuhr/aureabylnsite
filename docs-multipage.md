@@ -2,7 +2,7 @@
 
 A navegação usa React Router com basename derivado de BASE_URL. O Cloudflare Pages recebe public/_redirects para servir index.html nas URLs internas. O build para GitHub Pages conserva o prefixo do repositório, mas o GitHub Pages não oferece esse mesmo fallback de SPA.
 
-As páginas reutilizam os oito trabalhos e os serviços em studioData.ts. A consulta comercial continua bloqueada enquanto o WhatsApp estiver vazio. O Instagram oficial permanece disponível. A seção do curso utiliza a descrição cadastrada e solicita confirmação de datas e condições.
+As páginas reutilizam os oito trabalhos e os serviços em studioData.ts. Os formulários de consulta usam o WhatsApp comercial definido em `STUDIO_PROFILE.whatsappPhone`. O Instagram oficial permanece disponível. A seção do curso utiliza a descrição cadastrada e solicita confirmação de datas e condições.
 
 O portfólio usa grid editorial e proporções naturais das fotografias. A revelação é um aprimoramento CSS com view timeline nos navegadores compatíveis. O conteúdo aparece normalmente nos demais navegadores e com movimento reduzido. Nenhum pin é criado.
 
