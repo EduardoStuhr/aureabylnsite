@@ -62,6 +62,7 @@ export function InstagramArchive() {
               <div className="relative aspect-[4/3] w-full overflow-hidden">
                 {!spotImgFailed ? (
                   <img
+                    loading="lazy" width={800} height={1000}
                     src={STUDIO_PROFILE.instagramSpotlightImage}
                     alt="Lorrayne Nunes no estúdio ÁURA Studio Beauty em Afonso Cláudio/ES (@aurabyln)"
                     referrerPolicy="no-referrer"

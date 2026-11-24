@@ -1,16 +1,7 @@
+import { NavLink } from 'react-router-dom';
 import { CalendarCheck, Home, Sparkles, Users } from 'lucide-react';
 
-interface MobileBottomNavProps {
-  activeSection: 'inicio' | 'clientes' | 'servicos';
-  onNavigate: (section: 'inicio' | 'clientes' | 'servicos') => void;
-  onOpenBooking: () => void;
-}
-
-export function MobileBottomNav({
-  activeSection,
-  onNavigate,
-  onOpenBooking,
-}: MobileBottomNavProps) {
+export function MobileBottomNav({ onOpenBooking }: { onOpenBooking: () => void }) {
   const navItemClass = (isActive: boolean) =>
     `flex min-h-[44px] flex-col items-center justify-center gap-0.5 text-[11px] font-medium whitespace-nowrap transition-colors duration-150 ${
       isActive ? 'text-[#9A742E]' : 'text-[#5C564E] hover:text-[#141210]'
@@ -22,32 +13,29 @@ export function MobileBottomNav({
       className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#141210]/10 bg-[#FAF8F5]/96 md:hidden"
     >
       <div className="mx-auto grid h-14 max-w-md grid-cols-4 items-center px-2">
-        <a
-          href="#inicio"
-          onClick={() => onNavigate('inicio')}
-          className={navItemClass(activeSection === 'inicio')}
+        <NavLink
+          to="/" end
+          className={({ isActive }) => navItemClass(isActive)}
         >
           <Home className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
           <span>Início</span>
-        </a>
+        </NavLink>
 
-        <a
-          href="#clientes"
-          onClick={() => onNavigate('clientes')}
-          className={navItemClass(activeSection === 'clientes')}
+        <NavLink
+          to="/portfolio" end
+          className={({ isActive }) => navItemClass(isActive)}
         >
           <Users className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
           <span>Trabalhos</span>
-        </a>
+        </NavLink>
 
-        <a
-          href="#servicos"
-          onClick={() => onNavigate('servicos')}
-          className={navItemClass(activeSection === 'servicos')}
+        <NavLink
+          to="/servicos" end
+          className={({ isActive }) => navItemClass(isActive)}
         >
           <Sparkles className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
           <span>Serviços</span>
-        </a>
+        </NavLink>
 
         <button
           type="button"

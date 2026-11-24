@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -140,12 +141,12 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
                 <ArrowRight className="h-4 w-4 text-[#C6A464]" aria-hidden="true" />
               </button>
 
-              <a
-                href="#clientes"
+              <Link
+                to="/portfolio"
                 className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-[#141210] bg-transparent px-7 py-3 text-sm font-semibold text-[#141210] whitespace-nowrap transition-colors duration-200 hover:bg-[#F1EDE6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9A742E] sm:flex-none"
               >
                 Ver trabalhos
-              </a>
+              </Link>
             </div>
 
             {/* Interactive 3-step highlight switcher */}
