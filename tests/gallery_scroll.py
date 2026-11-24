@@ -111,8 +111,8 @@ class StudioTest(unittest.TestCase):
     def check_marquee(self, page, width):
         marquee = page.locator(".studio-marquee")
         track = marquee.locator(".studio-marquee-track")
-        expect(marquee).to_have_css("background-color", "rgb(41, 37, 31)")
-        expect(track).to_have_css("color", "rgb(242, 237, 229)")
+        expect(marquee).to_have_css("background-color", "rgb(0, 0, 0)")
+        expect(track).to_have_css("color", "rgb(255, 255, 255)")
         expect(track).to_have_css("animation-iteration-count", "infinite")
         page.evaluate("document.fonts.ready")
         self.assertTrue(track.evaluate("""track => {
