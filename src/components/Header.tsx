@@ -40,13 +40,12 @@ export function Header({ onOpenBooking }: HeaderProps) {
           <div className="flex flex-col items-center justify-center text-center">
             <a
               href="#inicio"
-              className="flex flex-col items-center whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A742E]"
+              className="brand-signature flex items-center whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A742E]"
             >
-              <span className="font-display text-2xl leading-none font-medium tracking-[0.12em] text-[#141210] sm:text-[28px]">
-                {STUDIO_PROFILE.brandName}
-              </span>
-              <span className="mt-1 text-[9px] font-medium tracking-[0.3em] text-[#5C564E] uppercase">
-                BEAUTY STUDIO
+              <img src={import.meta.env.BASE_URL + 'assets/brand/ln-gold.svg'} width="62" height="39" alt="" />
+              <span className="brand-name">
+                <span className="font-display">{STUDIO_PROFILE.brandName}</span>
+                <span className="brand-subtitle">BEAUTY STUDIO</span>
               </span>
             </a>
           </div>

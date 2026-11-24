@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'motion/react';
+import { gsap } from 'gsap';
 import { STUDIO_METRICS, STUDIO_PROFILE } from '../data/studioData';
-import { AuraWebGLCanvas } from './AuraWebGLCanvas';
+const AuraWebGLCanvas = lazy(() => import('./AuraWebGLCanvas').then(m => ({ default: m.AuraWebGLCanvas })));
 
 interface HeroSectionProps {
   onOpenBooking: () => void;
@@ -30,13 +30,28 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
   const [heroImgFailed, setHeroImgFailed] = useState(false);
   const [activeHighlight, setActiveHighlight] = useState(0);
 
+  const [atmosphere, setAtmosphere] = useState(false);
+  const idle = useRef<number | null>(null);
+  const mark = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const media = gsap.matchMedia();
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(mark.current, { opacity: 0.05, y: 8 }, { opacity: 1, y: 0, duration: 0.7 });
+    });
+    return () => {
+      media.revert();
+      if (idle.current !== null) window.cancelIdleCallback?.(idle.current);
+    };
+  }, []);
+
   return (
     <section
       id="inicio"
       className="relative overflow-hidden border-b border-[#141210]/10 bg-[#FAF8F5]"
     >
       {/* Interactive Three.js WebGL Silk & Champagne Dust Layer */}
-      <AuraWebGLCanvas className="absolute inset-0 z-0 h-full w-full" />
+      {atmosphere && <Suspense fallback={null}><AuraWebGLCanvas className="absolute inset-0 z-0 h-full w-full" /></Suspense>}
 
       <div className="relative mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-10 lg:pt-2">
         {/* Split-Screen Editorial Hero matching reference proportions & seamless table edge */}
@@ -44,34 +59,8 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
           {/* Portrait & Organic Brushstrokes Column (Top on Mobile, Right on Desktop — flush bottom/right) */}
           <div className="relative order-first flex min-h-[400px] items-end justify-end sm:min-h-[540px] lg:order-last lg:col-span-7 lg:-mr-10 lg:min-h-[670px]">
             {/* Subtle Organic Curved Brushstroke Ribbons behind portrait */}
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 640 520"
-              className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
-              fill="none"
-            >
-              <path
-                className="origin-center max-lg:motion-safe:animate-spin max-lg:motion-safe:[animation-duration:44s]"
-                d="M78 440C42 290 128 118 286 64C415 20 532 95 572 222"
-                stroke="#EAE1D5"
-                strokeWidth="36"
-                strokeLinecap="round"
-              />
-              <path
-                className="origin-center max-lg:motion-safe:animate-spin max-lg:motion-safe:[animation-duration:32s] max-lg:motion-safe:[animation-direction:reverse]"
-                d="M148 475C168 310 264 166 434 128C536 105 606 142 630 198"
-                stroke="#EFE7DC"
-                strokeWidth="26"
-                strokeLinecap="round"
-              />
-              <path
-                className="origin-center max-lg:motion-safe:animate-spin max-lg:motion-safe:[animation-duration:56s]"
-                d="M44 218C96 134 198 116 286 154"
-                stroke="#F2ECE2"
-                strokeWidth="18"
-                strokeLinecap="round"
-              />
-            </svg>
+            <img ref={mark} src={import.meta.env.BASE_URL + 'assets/brand/ln-watermark.svg'} alt="" aria-hidden="true" width="620" height="390" className="pointer-events-none absolute inset-0 m-auto w-full" />
+
 
             {/* Full-scale Portrait with untouched natural grayscale tonality, table cutting flush at bottom/right */}
             <div className="relative flex h-[410px] w-full items-end justify-center sm:h-[550px] lg:h-[680px] lg:justify-end">
@@ -81,6 +70,8 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
                   alt="Lorrayne Nunes, Lash Designer e Educadora do ÁURA Studio Beauty (@aurabyln)"
                   referrerPolicy="no-referrer"
                   onError={() => setHeroImgFailed(true)}
+                  width={1057} height={1482} fetchPriority="high" decoding="async"
+                  onLoad={() => { if (matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)').matches) { if ('requestIdleCallback' in window) idle.current = window.requestIdleCallback(() => setAtmosphere(true)); else setAtmosphere(true); } }}
                   className="h-full w-auto max-w-none object-contain object-right-bottom"
                 />
               ) : (
@@ -110,10 +101,7 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
           </div>
 
           {/* Left Typographic Column (2nd on Mobile, Left on Desktop) */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          <div
             className="order-last flex flex-col justify-center pb-8 lg:order-first lg:col-span-5 lg:py-12"
           >
             {/* Line + Kicker */}
@@ -193,7 +181,7 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
                 {HERO_HIGHLIGHTS[activeHighlight].text}
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Full-Width 4-Column Authority Strip directly beneath the cut bench edge */}
