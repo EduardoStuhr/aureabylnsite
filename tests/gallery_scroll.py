@@ -112,8 +112,29 @@ class StudioTest(unittest.TestCase):
         marquee = page.locator(".studio-marquee")
         track = marquee.locator(".studio-marquee-track")
         expect(marquee).to_have_css("background-color", "rgb(0, 0, 0)")
+        expect(marquee).to_have_css("background-image", "none")
+        expect(marquee).to_have_css("opacity", "1")
         expect(track).to_have_css("color", "rgb(255, 255, 255)")
+        self.assertTrue(track.locator("span").evaluate_all(
+            "spans => spans.every(span => getComputedStyle(span).color === 'rgb(255, 255, 255)')"
+        ))
         expect(track).to_have_css("animation-iteration-count", "infinite")
+        if width >= 768:
+            canvas_layer = page.get_by_test_id("webgl-canvas")
+            expect(canvas_layer).to_be_attached()
+            marquee.evaluate("bar => bar.scrollIntoView({block: 'center', behavior: 'instant'})")
+            self.assertTrue(canvas_layer.evaluate("""layer => {
+                const bar = layer.parentElement.querySelector('.studio-marquee');
+                const {left, top, width, height} = bar.getBoundingClientRect();
+                layer.style.pointerEvents = 'auto';
+                try {
+                    const elements = document.elementsFromPoint(left + width / 2, top + height / 2);
+                    return elements.includes(layer) && elements.indexOf(bar) < elements.indexOf(layer)
+                        && elements.includes(bar);
+                } finally {
+                    layer.style.removeProperty('pointer-events');
+                }
+            }"""))
         page.evaluate("document.fonts.ready")
         self.assertTrue(track.evaluate("""track => {
             const [first, second, last] = track.children;
