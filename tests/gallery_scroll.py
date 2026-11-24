@@ -31,6 +31,15 @@ class StudioTest(unittest.TestCase):
                             page.screenshot(path="test-results/" + str(width) + "-" + (path.strip("/").replace("/", "-") or "inicio") + ".png", full_page=True)
                     page.goto(base + "/portfolio")
                     expect(page.locator(".editorial-gallery article")).to_have_count(8)
+                    if width == 1440:
+                        cards = page.locator(".portfolio-card")
+                        first = cards.nth(0)
+                        first.scroll_into_view_if_needed()
+                        original_y = first.bounding_box()["y"]
+                        first.hover()
+                        page.wait_for_function("""initial => document.querySelector('.portfolio-card').getBoundingClientRect().top < initial - 3""", arg=original_y)
+                        expect(first.locator(".photo-action")).to_have_css("background-color", "rgb(104, 70, 55)")
+                        page.mouse.move(0, 0)
                     page.get_by_role("searchbox").fill("henna")
                     expect(page.locator(".editorial-gallery article")).to_have_count(1)
                     photo = page.get_by_role("button", name="Ver detalhes de Design personalizado com henna")
