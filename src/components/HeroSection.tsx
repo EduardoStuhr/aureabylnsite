@@ -186,7 +186,7 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
         </div>
 
         {/* Full-Width 4-Column Authority Strip directly beneath the cut bench edge */}
-        <div className="relative z-10 grid grid-cols-2 gap-4 border-t border-[#141210]/12 bg-[#FAF8F5] py-7 sm:gap-6 lg:grid-cols-4 lg:py-8">
+        <div className="hero-specialties relative z-10 grid grid-cols-2 gap-4 border-t border-[#141210]/12 bg-[#FAF8F5] py-7 sm:gap-6 lg:grid-cols-4 lg:py-8">
           {STUDIO_METRICS.map((metric) => (
             <div key={metric.label} className="space-y-1">
               <p className="font-display text-2xl font-semibold text-[#141210] sm:text-3xl">
@@ -200,7 +200,7 @@ export function HeroSection({ onOpenBooking }: HeroSectionProps) {
       </div>
 
       {/* Subtle Editorial Marquee Divider */}
-      <div className="overflow-hidden border-t border-[#141210]/10 bg-[#141210] py-2.5 text-[#FAF8F5]">
+      <div className="studio-marquee">
         <div className="animate-marquee flex w-max items-center gap-8 whitespace-nowrap text-xs font-medium tracking-[0.16em] text-[#E7D5B3]">
           {[0, 1].map((loopIndex) => (
             <div key={loopIndex} className="flex items-center gap-8">
