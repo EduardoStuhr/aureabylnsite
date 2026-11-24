@@ -4,16 +4,16 @@
 .editorial-button { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; padding: .8rem 1.6rem; background: #141210; color: #FAF8F5; margin-block: 1.5rem; border-radius: 3rem; }
 :where(button,a,input,select,textarea):focus-visible { outline: 2px solid #8B6745; outline-offset: 4px; }
 .route-content { min-height: 60vh; outline: none; }
-.route-content h1 { font-size: clamp(2.8rem, 7vw, 7rem); line-height: .98; letter-spacing: -.035em; margin-block: 1rem 2rem; }
+.route-content h1 { font-size: clamp(2rem, 4.2vw, 4.2rem); line-height: .98; letter-spacing: -.035em; margin-block: 1rem 2rem; }
 .route-content h2 { text-wrap: balance; }
 .page-intro,.services-page,.course-page,.about-page,.contact-page,.detail-page { padding-block: clamp(3rem, 7vw, 7rem); }
 .editorial-split { display: grid; align-items: center; gap: 2rem 8%; margin-block: 3rem; }
-.editorial-split > img { width: 100%; height: auto; max-height: 75svh; object-fit: contain; }
-.editorial-split h2,.home-specialties h2,.course-teaser h2,.contact-callout h2 { font-size: clamp(2.3rem, 4.5vw, 4.5rem); line-height: 1.05; margin-block: .8rem 1.5rem; }
+.editorial-split > img { width: 100%; height: auto; max-height: 60svh; object-fit: contain; }
+.editorial-split h2,.home-specialties h2,.course-teaser h2,.contact-callout h2 { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; margin-block: .8rem 1.5rem; }
 .editorial-split p { margin-block: 1rem; line-height: 1.8; }
-blockquote { font-size: clamp(1.7rem, 3vw, 3rem); line-height: 1.25; margin-block: 2rem; }
+blockquote { font-size: clamp(1.2rem, 1.7vw, 1.65rem); line-height: 1.25; margin-block: 2rem; }
 .home-specialties { border-block: 1px solid #d4c8b8; padding-block: 3rem; }
-.home-specialties > div { display: flex; flex-wrap: wrap; gap: 2rem; margin-block: 2rem; font-size: clamp(2rem, 5vw, 4rem); }
+.home-specialties > div { display: flex; flex-wrap: wrap; gap: 2rem; margin-block: 2rem; font-size: clamp(1.6rem, 3vw, 2.6rem); }
 .course-teaser { padding: clamp(2rem, 5vw, 5rem); background: #E8DCCB; }
 .contact-callout { padding-block: 5rem; }
 .contact-callout .editorial-link { margin-left: 1rem; }
@@ -22,11 +22,11 @@ blockquote { font-size: clamp(1.7rem, 3vw, 3rem); line-height: 1.25; margin-bloc
 .service-filters [aria-pressed=true] { border-bottom: 1px solid #8B6745; }
 .service-row { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1.5rem; align-items: center; padding-block: 2rem; border-top: 1px solid #c5b6a2; }
 .service-row img { width: 100%; height: auto; }
-.service-row h2 { font-size: clamp(1.6rem, 3vw, 3rem); line-height: 1.1; margin-block: .4rem; }
+.service-row h2 { font-size: clamp(1.4rem, 2.2vw, 2.1rem); line-height: 1.1; margin-block: .4rem; }
 .service-row > .editorial-link { grid-column: 2; justify-self: start; }
 .service-row:hover h2 { color: #8B6745; }
 .contact-procedures { margin-block: 3rem; }
-.contact-procedures h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+.contact-procedures h2 { font-size: 1.9rem; margin-bottom: 1rem; }
 .contact-procedures button { width: 100%; display: flex; justify-content: space-between; gap: 1rem; text-align: left; min-height: 60px; border-bottom: 1px solid #d4c8b8; padding-block: 1rem; }
 .contact-procedures button span { color: #735621; font-size: .8rem; }
 .detail-extra { width: min(100%, 34rem); margin-inline: auto; }
@@ -42,4 +42,14 @@ blockquote { font-size: clamp(1.7rem, 3vw, 3rem); line-height: 1.25; margin-bloc
 @media(prefers-reduced-motion: no-preference) {
   .route-content { animation: route-entry .2s ease-out; }
   @keyframes route-entry { from { transform: translateY(5px); } to { transform: none; } }
+}
+
+.professional-portrait { margin: 0; padding: clamp(.65rem, 1.4vw, 1.2rem); background: var(--color-ink); width: min(100%, 30rem); justify-self: center; }
+.professional-portrait img { display: block; width: 100%; height: auto; }
+.professional-portrait figcaption { color: var(--color-canvas); font-size: .75rem; padding-top: .85rem; letter-spacing: .08em; }
+.editorial-split blockquote { border-left: 2px solid var(--color-ink); padding-left: 1.2rem; max-width: 30rem; }
+.route-content p { line-height: 1.7; }
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .professional-portrait img, .editorial-split > img, .service-row img { transition: transform .35s ease; }
+  .professional-portrait:hover img, .editorial-split > img:hover, .service-row:hover img { transform: scale(.98); }
 }
