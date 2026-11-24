@@ -79,3 +79,8 @@
   .brand-name > .font-display { font-size: 22px; }
   .brand-subtitle { font-size: 7px; letter-spacing: .12em; }
 }
+
+@layer base { html { font-size: 15px; } }
+.font-display { font-weight: 500; }
+#inicio h1 { font-size: clamp(2rem, 3.7vw, 3.5rem); line-height: 1.08; letter-spacing: -.025em; }
+#instagram h2 { font-size: clamp(1.8rem, 3vw, 2.8rem); }

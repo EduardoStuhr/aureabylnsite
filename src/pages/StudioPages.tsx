@@ -27,7 +27,7 @@ export function HomePage({ onBook }: BookingProps) {
       <Link className="editorial-link" to="/servicos">Explorar os oito procedimentos →</Link>
     </section>
     <section className="editorial-shell editorial-split">
-      <img src={STUDIO_PROFILE.instagramSpotlightImage} alt="Lorrayne Nunes no estúdio" width="800" height="1000" loading="lazy" />
+      <figure className="professional-portrait"><img src={STUDIO_PROFILE.instagramSpotlightImage} alt="Lorrayne Nunes no estúdio" width="800" height="1000" loading="lazy" /><figcaption>Lorrayne Nunes · ÁURA Beauty Studio</figcaption></figure>
       <div><p className="eyebrow">{STUDIO_PROFILE.city}</p><h2 className="font-display">Lorrayne Nunes</h2>
       <p>{STUDIO_PROFILE.roleTitle}</p><blockquote className="font-display">“{STUDIO_PROFILE.manifestoQuote}”</blockquote>
       <Link className="editorial-link" to="/sobre">Conheça a profissional →</Link></div>
@@ -95,7 +95,7 @@ export function CoursePage({ onBook }: BookingProps) {
 export function AboutPage() {
   return <section className="editorial-shell about-page">
     <p className="eyebrow">A profissional · O estúdio</p><h1 className="font-display">Lorrayne Nunes.</h1>
-    <div className="editorial-split"><img src={STUDIO_PROFILE.instagramSpotlightImage} alt="Lorrayne Nunes no estúdio ÁURA" width="800" height="1000" />
+    <div className="editorial-split"><figure className="professional-portrait"><img src={STUDIO_PROFILE.instagramSpotlightImage} alt="Lorrayne Nunes no estúdio ÁURA" width="800" height="1000" /><figcaption>Lorrayne Nunes · ÁURA Beauty Studio</figcaption></figure>
       <div><h2 className="font-display">Técnica, cuidado<br />e um olhar individual.</h2>
       <p>{STUDIO_PROFILE.roleTitle}.</p><p>À frente da ÁURA em {STUDIO_PROFILE.city}, Lorrayne reúne atendimento em cílios e sobrancelhas e formação profissional em Lash Design.</p>
       <blockquote className="font-display">“{STUDIO_PROFILE.manifestoQuote}”</blockquote>
