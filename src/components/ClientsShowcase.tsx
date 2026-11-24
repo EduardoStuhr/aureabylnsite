@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Expand, X } from 'lucide-react';
 import { STUDIO_WORKS, type StudioWorkItem, type WorkCategory } from '../data/studioData';
@@ -9,6 +9,7 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
   const [category, setCategory] = useState<WorkCategory>('Todos');
   const [query, setQuery] = useState('');
   const [detail, setDetail] = useState<StudioWorkItem | null>(null);
+  const gallery = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
   const works = STUDIO_WORKS.filter(work =>
@@ -17,6 +18,23 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
   ).slice(0, preview ? 4 : undefined);
 
   useEffect(() => { if (detail) dialog.current?.showModal(); }, [detail]);
+
+  useLayoutEffect(() => {
+    const grid = gallery.current;
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.portfolio-card'));
+    const measure = () => {
+      const gap = parseFloat(getComputedStyle(grid).rowGap);
+      for (const card of cards) {
+        const article = card.parentElement!;
+        article.style.gridRowEnd = 'span ' + Math.ceil((card.getBoundingClientRect().height + gap) / (8 + gap));
+      }
+    };
+    const observer = new ResizeObserver(measure);
+    for (const card of cards) observer.observe(card);
+    measure();
+    return () => observer.disconnect();
+  }, [category, query, preview]);
 
   return (
     <section className="portfolio editorial-shell" aria-labelledby="trabalhos-heading">
@@ -34,18 +52,19 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
             </div>
           </div>}
       </div>
-      <div className="editorial-gallery">
-        {works.map((work, index) => <article key={work.id} className="editorial-work">
+      <div className="editorial-gallery" ref={gallery}>
+        {works.map((work, index) => <article key={work.id} className="editorial-work"><div className="portfolio-card">
           <button className="portfolio-photo" aria-label={'Ver detalhes de ' + work.title}
             onClick={e => { opener.current = e.currentTarget; setDetail(work); }}>
             <img src={work.imageSrc} alt={work.imageAlt} loading="lazy" decoding="async"
               width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} />
-            <span><Expand size={18} aria-hidden="true" /></span>
+            <span className="photo-action"><Expand size={18} aria-hidden="true" /><span>Ver o resultado</span></span>
           </button>
-          <p className="eyebrow">{String(index + 1).padStart(2, '0')} · {work.category}</p>
+          <div className="portfolio-caption"><p className="eyebrow">{String(index + 1).padStart(2, '0')} · {work.category}</p>
           <h3 className="font-display">{work.title}</h3>
           <p>{work.technicalNote}</p>
           <Link className="editorial-link" to={'/servicos/' + work.id}>Conhecer o procedimento →</Link>
+          </div></div>
         </article>)}
       </div>
       {!works.length && <p role="status">Nenhum trabalho encontrado. <button className="editorial-link" onClick={() => { setQuery(''); setCategory('Todos'); }}>Limpar filtros</button></p>}
