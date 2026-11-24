@@ -15,7 +15,7 @@ class StudioTest(unittest.TestCase):
                     errors = []
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     base = os.environ["PREVIEW_URL"].rstrip("/")
-                    for path in ["", "/portfolio", "/servicos", "/servicos/fox", "/curso", "/sobre", "/diario", "/contato", "/inexistente"]:
+                    for path in ["/", "/portfolio", "/servicos", "/servicos/fox", "/curso", "/sobre", "/diario", "/contato", "/inexistente"]:
                         page.goto(base + path, wait_until="domcontentloaded")
                         expect(page.locator("h1")).to_have_count(1)
                         self.assertTrue(page.evaluate("document.documentElement.scrollWidth <= innerWidth"))

@@ -73,5 +73,5 @@ function StudioLayout() {
 }
 
 export default function App() {
-  return <BrowserRouter basename={import.meta.env.BASE_URL}><StudioLayout /></BrowserRouter>;
+  return <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}><StudioLayout /></BrowserRouter>;
 }
