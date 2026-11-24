@@ -56,7 +56,7 @@ function StudioLayout() {
         <Routes>
           <Route path="/" element={<HomePage onBook={onBook} />} />
           <Route path="/portfolio" element={<Portfolio onBook={onBook} />} />
-          <Route path="/servicos" element={<Services />} />
+          <Route path="/servicos" element={<Services onBook={onBook} />} />
           <Route path="/servicos/:slug" element={<Service onBook={onBook} />} />
           <Route path="/curso" element={<Course onBook={onBook} />} />
           <Route path="/sobre" element={<About />} />

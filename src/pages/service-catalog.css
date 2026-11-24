@@ -1,0 +1,26 @@
+.catalog-intro { max-width: 44rem; border-bottom: 1px solid var(--page-line); padding-bottom: 1.5rem; }
+.catalog-intro > p:last-child { max-width: 34rem; color: var(--page-muted); }
+.catalog-group { margin-top: 2.5rem; }
+.catalog-category { display: flex; align-items: baseline; gap: 1rem; border-bottom: 2px solid var(--page-accent); padding-bottom: .75rem; }
+.catalog-category h2 { margin: 0; }
+.catalog-category span { color: var(--page-muted); font-size: .8rem; }
+.catalog-list { list-style: none; padding: 0; }
+.catalog-item { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 1rem; padding-block: 1.6rem; border-bottom: 1px solid var(--page-line); scroll-margin-top: 6rem; }
+.catalog-number { color: var(--page-accent); font-size: .8rem; padding-top: .35rem; font-variant-numeric: tabular-nums; }
+.catalog-copy { min-width: 0; }
+.catalog-copy h3 { margin-bottom: .65rem; }
+.catalog-copy > p { max-width: 42rem; color: var(--page-muted); }
+.catalog-book { grid-column: 2; display: inline-flex; gap: 1rem; align-items: center; justify-self: start; min-height: 44px; border-bottom: 1px solid var(--page-accent); font-size: .9rem; }
+.catalog-book:hover { color: var(--page-accent); }
+.catalog-details { margin-top: 1rem; }
+.catalog-details summary { cursor: pointer; min-height: 44px; padding-block: .7rem; color: var(--page-accent); font-size: .85rem; }
+.catalog-support { display: grid; grid-template-columns: minmax(0, 6rem) minmax(0, 1fr); gap: 1.2rem; padding-block: .75rem; }
+.catalog-support img { width: 100%; height: auto; align-self: start; }
+.catalog-support p { font-size: .9rem; }
+.catalog-more { display: block; width: fit-content; min-height: 44px; padding-top: .8rem; color: var(--page-muted); font-size: .8rem; text-decoration: underline; }
+.catalog-note { margin-top: 2rem; color: var(--page-muted); font-size: .85rem; }
+.selected-technique button { display: block; min-height: 44px; text-decoration: underline; color: var(--page-accent); }
+@media(min-width: 900px) {
+  .catalog-item { grid-template-columns: 3rem minmax(0,1fr) auto; gap: 1.5rem; }
+  .catalog-book { grid-column: 3; align-self: start; }
+}

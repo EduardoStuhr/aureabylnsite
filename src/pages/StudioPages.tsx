@@ -1,9 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ClientsShowcase } from '../components/ClientsShowcase';
 import { HeroSection } from '../components/HeroSection';
 import { InstagramArchive } from '../components/InstagramArchive';
 import { STUDIO_COURSE, STUDIO_PROFILE, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import './service-catalog.css';
 
 type BookingProps = { onBook: (id?: string) => void };
 
@@ -42,20 +43,60 @@ export function PortfolioPage({ onBook }: BookingProps) {
   return <><ClientsShowcase /><ContactCallout onBook={onBook} /></>;
 }
 
-export function ServicesPage() {
+export function ServicesPage({ onBook }: BookingProps) {
   const [filter, setFilter] = useState('Todos');
-  return <section className="editorial-shell services-page">
-    <p className="eyebrow">Procedimentos · ÁURA</p><h1 className="font-display">Um desenho<br />para o seu olhar.</h1>
-    <div className="service-filters" role="group" aria-label="Filtrar serviços">{['Todos', 'Sobrancelhas', 'Cílios'].map(cat =>
-      <button key={cat} aria-pressed={filter === cat} onClick={() => setFilter(cat)}>{cat}</button>)}</div>
-    {STUDIO_SERVICES.filter(s => filter === 'Todos' || s.category === filter).map(service => {
-      const work = STUDIO_WORKS.find(w => 'srv-' + w.id === service.id)!;
-      return <Link key={service.id} to={'/servicos/' + work.id} className="service-row">
-        <img src={work.imageSrc} alt={work.imageAlt} width="1080" height="1440" loading="lazy" />
-        <div><p className="eyebrow">{service.category}</p><h2 className="font-display">{service.name}</h2><p>{service.description}</p></div>
-        <span className="editorial-link">Conhecer →</span>
-      </Link>;
-    })}
+  const [searchParams] = useSearchParams();
+  const selected = searchParams.get('procedimento');
+  useEffect(() => {
+    if (!selected) return;
+    const frame = requestAnimationFrame(() => {
+      const item = document.getElementById('procedimento-' + selected);
+      item?.scrollIntoView({ block: 'start', behavior: 'instant' });
+      item?.querySelector('summary')?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selected]);
+  return <section className="editorial-shell services-page service-catalog">
+    <header className="catalog-intro">
+      <p className="eyebrow">Atendimento · ÁURA Beauty Studio</p>
+      <h1 className="font-display">Encontre o cuidado<br />para o seu olhar.</h1>
+      <p>Conheça as técnicas de cílios e sobrancelhas e consulte o atendimento com Lorrayne Nunes.</p>
+    </header>
+    <div className="service-filters" role="group" aria-label="Filtrar serviços">
+      {['Todos', 'Sobrancelhas', 'Cílios'].map(category =>
+        <button key={category} aria-pressed={filter === category} onClick={() => setFilter(category)}>{category}</button>)}
+    </div>
+    {(['Sobrancelhas', 'Cílios'] as const).filter(category => filter === 'Todos' || filter === category).map(category =>
+      <section key={category} className="catalog-group" aria-labelledby={'categoria-' + category}>
+        <div className="catalog-category">
+          <h2 className="font-display" id={'categoria-' + category}>{category}</h2>
+          <span>{STUDIO_SERVICES.filter(service => service.category === category).length} procedimentos</span>
+        </div>
+        <ol className="catalog-list">
+          {STUDIO_SERVICES.filter(service => service.category === category).map(service => {
+            const work = STUDIO_WORKS.find(work => 'srv-' + work.id === service.id)!;
+            const number = STUDIO_SERVICES.indexOf(service) + 1;
+            return <li key={service.id} id={'procedimento-' + work.id} className="catalog-item">
+              <span className="catalog-number" aria-hidden="true">{String(number).padStart(2, '0')}</span>
+              <div className="catalog-copy">
+                <h3 className="font-display">{service.name}</h3>
+                <p>{service.description}</p>
+                <details className="catalog-details" open={selected === work.id || undefined}>
+                  <summary>Ver detalhes e resultados</summary>
+                  <div className="catalog-support">
+                    <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />
+                    <div><p>{service.availabilityNote}. A consulta permite verificar as possibilidades de atendimento diretamente com o estúdio.</p>
+                    <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultado de {service.name} →</Link>
+                    <Link className="catalog-more" to={'/servicos/' + work.id}>Abrir página do procedimento</Link></div>
+                  </div>
+                </details>
+              </div>
+              <button className="catalog-book" onClick={() => onBook(service.id)} aria-label={'Agendar & consultar ' + service.name}>Agendar &amp; consultar <span aria-hidden="true">↗</span></button>
+            </li>;
+          })}
+        </ol>
+      </section>)}
+    <p className="catalog-note">Horários e valores são consultados diretamente com o estúdio.</p>
   </section>;
 }
 
