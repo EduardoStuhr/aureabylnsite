@@ -87,7 +87,7 @@ class StudioTest(unittest.TestCase):
                     page.get_by_label("Observações (opcional)").fill("Preço & horário? + à tarde")
                     page.get_by_role("button", name="Continuar para WhatsApp").click()
                     link = page.get_by_role("link", name="Conversar no WhatsApp")
-                    expect(link).to_be_visible()
+                    expect(link).to_be_focused()
                     destination = urlsplit(link.get_attribute("href"))
                     self.assertEqual((destination.scheme, destination.netloc, destination.path),
                                      ("https", "wa.me", "/5527999202100"))
@@ -96,6 +96,7 @@ class StudioTest(unittest.TestCase):
                     self.assertIn("*Interesse:* Efeito fox", query["text"][0])
                     self.assertIn("Preço & horário? + à tarde", query["text"][0])
                     page.keyboard.press("Escape")
+                    expect(page.get_by_role("dialog")).to_have_count(0)
                     page.goto(base + "/")
                     page.get_by_role("link", name="Ver trabalhos", exact=True).click()
                     expect(page).to_have_url(base + "/portfolio")
