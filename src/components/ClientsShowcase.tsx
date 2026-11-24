@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Expand, X } from 'lucide-react';
 import { STUDIO_WORKS, type StudioWorkItem, type WorkCategory } from '../data/studioData';
@@ -21,7 +21,12 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
     (work.title + ' ' + work.technicalNote).toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR').trim())
   ).slice(0, preview ? 4 : undefined);
 
-  useEffect(() => { if (detail) dialog.current?.showModal(); }, [detail]);
+  useLayoutEffect(() => {
+    if (!detail) return;
+    // Establish the native dialog's return focus even when clicking does not focus the opener.
+    opener.current?.focus({ preventScroll: true });
+    dialog.current?.showModal();
+  }, [detail]);
 
   useLayoutEffect(() => {
     const grid = gallery.current;
@@ -74,7 +79,7 @@ export function ClientsShowcase({ preview = false }: { preview?: boolean }) {
       </div>
       {!works.length && <p role="status">Nenhum trabalho encontrado. <button className="editorial-link" onClick={() => { setQuery(''); setCategory('Todos'); }}>Limpar filtros</button></p>}
       <dialog ref={dialog} className="portfolio-dialog" aria-labelledby="work-title"
-        onClose={() => { setDetail(null); opener.current?.focus({ preventScroll: true }); }}
+        onClose={() => setDetail(null)}
         onClick={e => { if (e.target === dialog.current) dialog.current.close(); }}>
         {detail && <div>
           <button className="portfolio-close" aria-label="Fechar detalhes" onClick={() => dialog.current?.close()}><X /></button>
