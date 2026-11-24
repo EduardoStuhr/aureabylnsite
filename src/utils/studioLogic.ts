@@ -1,4 +1,6 @@
-import type { AddOnItem, ServiceItem, StudioWorkItem, WorkCategory } from '../data/studioData';
+import { STUDIO_PROFILE, type AddOnItem, type ServiceItem, type StudioWorkItem, type WorkCategory } from '../data/studioData';
+
+export const studioWhatsAppUrl = `https://wa.me/${STUDIO_PROFILE.whatsappPhone.replace(/\D/g, '')}`;
 
 export interface BookingInput {
   clientName: string;
@@ -42,7 +44,7 @@ export function validateBookingInput(input: BookingInput): BookingValidationResu
   }
 
   if (digitsOnly.length < 10 || digitsOnly.length > 13) {
-    errors.whatsapp = 'Digite um WhatsApp válido com DDD (ex: 27 99999-0000).';
+    errors.whatsapp = 'Digite um WhatsApp válido com DDD.';
   }
 
   if (!input.serviceId) {
@@ -64,7 +66,6 @@ export function validateBookingInput(input: BookingInput): BookingValidationResu
 }
 
 export function buildWhatsAppBookingUrl(
-  studioPhone: string,
   input: BookingInput,
   service: ServiceItem,
   addOns: AddOnItem[],
@@ -83,6 +84,5 @@ export function buildWhatsAppBookingUrl(
     lines.push(`*Mensagem:* ${input.notes.trim()}`);
   }
   const encoded = encodeURIComponent(lines.join('\n'));
-  const sanitizedPhone = studioPhone.replace(/\D/g, '');
-  return `https://wa.me/${sanitizedPhone}?text=${encoded}`;
+  return `${studioWhatsAppUrl}?text=${encoded}`;
 }

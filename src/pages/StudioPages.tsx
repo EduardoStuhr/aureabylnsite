@@ -4,6 +4,7 @@ import { HeroSection } from '../components/HeroSection';
 import { InstagramArchive } from '../components/InstagramArchive';
 import { STUDIO_COURSE, STUDIO_PROFILE, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
 import { useEffect, useState } from 'react';
+import { studioWhatsAppUrl } from '../utils/studioLogic';
 import './service-catalog.css';
 
 type BookingProps = { onBook: (id?: string) => void };
@@ -154,7 +155,7 @@ export function ContactPage({ onBook }: BookingProps) {
     <div className="contact-procedures"><h2 className="font-display">Qual cuidado você procura?</h2>
       {STUDIO_SERVICES.map(service => <button key={service.id} onClick={() => onBook(service.id)}>{service.name}<span>Consultar →</span></button>)}
     </div>
-    {!STUDIO_PROFILE.whatsappPhone && <p>O WhatsApp comercial está em confirmação. Para informações, entre em contato pelo Instagram oficial.</p>}
+    <a className="editorial-link" href={studioWhatsAppUrl} target="_blank" rel="noopener noreferrer">WhatsApp {STUDIO_PROFILE.whatsappPhone} ↗</a>
   </section>;
 }
 

@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 import unittest
+from urllib.parse import parse_qs, urlsplit
 from playwright.sync_api import expect, sync_playwright
 
 
@@ -22,6 +23,12 @@ class StudioTest(unittest.TestCase):
                         expect(page.locator(".pin-spacer")).to_have_count(0)
                         expect(page.locator("main")).to_be_focused()
                         self.assertNotIn("undefined", page.title())
+                        if path == "/":
+                            self.check_marquee(page, width)
+                        if path == "/contato":
+                            expect(page.get_by_role("link", name="WhatsApp +55 27 99920-2100")).to_have_attribute(
+                                "href", "https://wa.me/5527999202100"
+                            )
                         if width in [390, 1440] and path != "/inexistente":
                             for photo in page.locator("main img:visible").all():
                                 photo.scroll_into_view_if_needed()
@@ -75,8 +82,21 @@ class StudioTest(unittest.TestCase):
                     page.goto(base + "/servicos/fox")
                     page.get_by_role("button", name="Consultar este procedimento").click()
                     expect(page.locator("#booking-service")).to_have_value("srv-fox")
-                    expect(page.get_by_role("button", name="Continuar para WhatsApp")).to_be_disabled()
+                    page.get_by_label("Seu nome completo").fill("Beatriz Souza")
+                    page.get_by_label("WhatsApp com DDD").fill("27999887766")
+                    page.get_by_label("Observações (opcional)").fill("Preço & horário? + à tarde")
+                    page.get_by_role("button", name="Continuar para WhatsApp").click()
+                    link = page.get_by_role("link", name="Conversar no WhatsApp")
+                    expect(link).to_be_focused()
+                    destination = urlsplit(link.get_attribute("href"))
+                    self.assertEqual((destination.scheme, destination.netloc, destination.path),
+                                     ("https", "wa.me", "/5527999202100"))
+                    query = parse_qs(destination.query)
+                    self.assertEqual(set(query), {"text"})
+                    self.assertIn("*Interesse:* Efeito fox", query["text"][0])
+                    self.assertIn("Preço & horário? + à tarde", query["text"][0])
                     page.keyboard.press("Escape")
+                    expect(page.get_by_role("dialog")).to_have_count(0)
                     page.goto(base + "/")
                     page.get_by_role("link", name="Ver trabalhos", exact=True).click()
                     expect(page).to_have_url(base + "/portfolio")
@@ -87,6 +107,30 @@ class StudioTest(unittest.TestCase):
                     self.assertEqual(errors, [])
                     page.close()
             browser.close()
+
+    def check_marquee(self, page, width):
+        marquee = page.locator(".studio-marquee")
+        track = marquee.locator(".studio-marquee-track")
+        expect(marquee).to_have_css("background-color", "rgb(41, 37, 31)")
+        expect(track).to_have_css("color", "rgb(242, 237, 229)")
+        expect(track).to_have_css("animation-iteration-count", "infinite")
+        page.evaluate("document.fonts.ready")
+        self.assertTrue(track.evaluate("""track => {
+            const [first, second, last] = track.children;
+            const cycle = second.offsetLeft - first.offsetLeft;
+            return last.offsetLeft - second.offsetLeft === cycle &&
+                track.scrollWidth - cycle >= track.parentElement.clientWidth;
+        }"""))
+        if width in [390, 1440]:
+            Path("test-results").mkdir(exist_ok=True)
+            marquee.evaluate("element => element.scrollIntoView({block: 'center', behavior: 'instant'})")
+            track.evaluate("track => { const animation = track.getAnimations()[0]; animation.pause(); animation.currentTime = 0; }")
+            page.screenshot(path=f"test-results/aura-pr18-tarja-{width}.png")
+        page.emulate_media(reduced_motion="reduce")
+        expect(track).to_have_css("animation-name", "none")
+        expect(track.get_by_text("CURSO VIP TURMAS ABERTAS").first).to_be_visible()
+        self.assertTrue(track.evaluate("track => track.scrollWidth <= track.clientWidth"))
+        page.emulate_media(reduced_motion="no-preference")
 
 
 if __name__ == "__main__":

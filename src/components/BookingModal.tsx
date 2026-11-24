@@ -30,6 +30,8 @@ export function BookingModal({
   onClose,
 }: BookingModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const confirmationLinkRef = useRef<HTMLAnchorElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [clientName, setClientName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [serviceId, setServiceId] = useState(initialServiceId || STUDIO_SERVICES[0].id);
@@ -53,6 +55,10 @@ export function BookingModal({
       setErrors({});
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (submittedUrl) confirmationLinkRef.current?.focus();
+  }, [submittedUrl]);
 
   const courseInquiry = initialServiceId === STUDIO_COURSE.id;
   const selectedService = useMemo(
@@ -107,7 +113,6 @@ export function BookingModal({
       preferredDate,
       notes,
     };
-    if (!STUDIO_PROFILE.whatsappPhone) return;
     const result = validateBookingInput(input);
     if (!result.valid) {
       setErrors(result.errors);
@@ -116,7 +121,6 @@ export function BookingModal({
 
     setErrors({});
     const url = buildWhatsAppBookingUrl(
-      STUDIO_PROFILE.whatsappPhone,
       input,
       selectedService,
       selectedAddOns,
@@ -154,6 +158,7 @@ export function BookingModal({
 
           <button
             type="button"
+            ref={closeButtonRef}
             onClick={onClose}
             aria-label="Fechar janela de agendamento"
             className="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[#141210]/15 text-[#141210] transition-colors hover:bg-[#F1EDE6]"
@@ -178,6 +183,7 @@ export function BookingModal({
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a
+                ref={confirmationLinkRef}
                 href={submittedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -188,7 +194,10 @@ export function BookingModal({
               </a>
               <button
                 type="button"
-                onClick={() => setSubmittedUrl(null)}
+                onClick={() => {
+                  setSubmittedUrl(null);
+                  closeButtonRef.current?.focus();
+                }}
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center rounded-full border border-[#141210]/20 px-5 py-3 text-xs font-medium text-[#141210] hover:bg-[#F1EDE6]"
               >
                 Editar dados
@@ -232,7 +241,7 @@ export function BookingModal({
                   type="tel"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
-                  placeholder="(27) 99999-0000"
+                  autoComplete="tel"
                   className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
                 />
                 {errors.whatsapp && (
@@ -380,12 +389,8 @@ export function BookingModal({
                 </p>
               </div>
 
-              {!STUDIO_PROFILE.whatsappPhone && (
-                <p role="status" className="text-sm">Prévia de demonstração. Agendamento indisponível até confirmação do WhatsApp comercial.</p>
-              )}
               <button
                 type="submit"
-                disabled={!STUDIO_PROFILE.whatsappPhone}
                 className="inline-flex min-h-[48px] cursor-pointer items-center justify-center rounded-full bg-[#141210] px-7 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
               >
                 Continuar para WhatsApp

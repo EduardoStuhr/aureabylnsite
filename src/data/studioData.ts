@@ -40,7 +40,7 @@ export const STUDIO_PROFILE = {
   roleTitle: 'Lash Designer & Educadora · Embaixadora Florescer Beauty',
   city: 'Afonso Cláudio / ES',
   instagramUrl: 'https://www.instagram.com/aurabyln/',
-  whatsappPhone: '',
+  whatsappPhone: '+55 27 99920-2100',
   heroImage: import.meta.env.BASE_URL + 'assets/hero-lorrayne-cutout.webp',
   instagramSpotlightImage: import.meta.env.BASE_URL + 'src/assets/images/studio_instagram_portrait_1795028764302.jpg',
   manifestoQuote:
