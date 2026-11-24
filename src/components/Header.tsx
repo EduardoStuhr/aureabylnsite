@@ -1,3 +1,4 @@
+import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Calendar, Instagram, Menu, X } from 'lucide-react';
 import { STUDIO_PROFILE } from '../data/studioData';
@@ -7,11 +8,13 @@ interface HeaderProps {
 }
 
 const NAV_ITEMS = [
-  { label: 'Início', href: '#inicio' },
-  { label: 'Trabalhos Realizados', href: '#clientes' },
-  { label: 'Serviços', href: '#servicos' },
-  { label: 'Curso de Lash Design', href: '#curso' },
-  { label: `Instagram ${STUDIO_PROFILE.handle}`, href: STUDIO_PROFILE.instagramUrl, external: true },
+  { label: 'Início', href: '/' },
+  { label: 'Trabalhos Realizados', href: '/portfolio' },
+  { label: 'Serviços', href: '/servicos' },
+  { label: 'Curso de Lash Design', href: '/curso' },
+  { label: 'Sobre Lorrayne', href: '/sobre' },
+  { label: 'Diário', href: '/diario' },
+  { label: 'Contato', href: '/contato' },
 ];
 
 export function Header({ onOpenBooking }: HeaderProps) {
@@ -38,8 +41,8 @@ export function Header({ onOpenBooking }: HeaderProps) {
 
           {/* Zone 2 (Center): Centered Editorial Brand Lockup */}
           <div className="flex flex-col items-center justify-center text-center">
-            <a
-              href="#inicio"
+            <Link
+              to="/"
               className="brand-signature flex items-center whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9A742E]"
             >
               <img src={import.meta.env.BASE_URL + 'assets/brand/ln-gold.svg'} width="62" height="39" alt="" />
@@ -47,7 +50,7 @@ export function Header({ onOpenBooking }: HeaderProps) {
                 <span className="font-display">{STUDIO_PROFILE.brandName}</span>
                 <span className="brand-subtitle">BEAUTY STUDIO</span>
               </span>
-            </a>
+            </Link>
           </div>
 
           {/* Zone 3 (Right): Instagram handle & Booking icon trigger */}
@@ -111,17 +114,15 @@ export function Header({ onOpenBooking }: HeaderProps) {
 
               <nav aria-label="Links do menu" className="mt-8 flex flex-col divide-y divide-[#141210]/10">
                 {NAV_ITEMS.map((item, idx) => (
-                  <a
+                  <NavLink
                     key={item.href}
-                    href={item.href}
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    to={item.href}
                     onClick={() => setMenuOpen(false)}
                     className="flex min-h-[52px] items-center justify-between py-3 text-base font-medium text-[#141210] transition-colors hover:text-[#9A742E]"
                   >
                     <span className="font-display text-2xl">{item.label}</span>
                     <span className="text-xs tabular-nums text-[#5C564E]">0{idx + 1}</span>
-                  </a>
+                  </NavLink>
                 ))}
               </nav>
             </div>

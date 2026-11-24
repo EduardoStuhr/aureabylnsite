@@ -1,69 +1,64 @@
-"""Run against a Vite preview with Playwright Chromium installed."""
+"""Browser regression checks for the multipage editorial experience."""
+from pathlib import Path
 import os
 import unittest
-
 from playwright.sync_api import expect, sync_playwright
 
 
-class GalleryScrollTest(unittest.TestCase):
-    def test_scroll(self):
-        with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(channel="chrome")
-            for width, height, mobile in [(1440, 900, False), (390, 844, True)]:
+class StudioTest(unittest.TestCase):
+    def test_pages(self):
+        with sync_playwright() as p:
+            browser = p.chromium.launch(channel="chrome")
+            for width in [320, 375, 390, 768, 1024, 1440, 1920]:
                 with self.subTest(width=width):
-                    page = browser.new_page(viewport={"width": width, "height": height},
-                                            is_mobile=mobile, has_touch=mobile)
-                    page.goto(os.environ["PREVIEW_URL"], wait_until="domcontentloaded")
-                    section = page.locator("#clientes")
-                    rail = section.locator(".portfolio-rail")
-                    stage = section.locator(".portfolio-stage")
-                    count = section.locator(".portfolio-progress")
-                    expect(rail.locator("article")).to_have_count(8)
-                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(1)
-                    page.evaluate("() => document.fonts.ready")
-                    section.evaluate("el => window.scrollTo({top: scrollY + el.getBoundingClientRect().top, behavior:'instant'})")
-                    travel = rail.evaluate("el => el.scrollWidth - document.documentElement.clientWidth")
-                    def advance(pixels):
-                        page.evaluate("(top) => scrollBy({top, behavior:'instant'})", pixels)
-                    def left():
-                        return rail.evaluate("el => el.getBoundingClientRect().left")
-                    initial_left = left()
-                    initial_top = stage.bounding_box()["y"]
-                    advance(travel / 2)
-                    expect(count).to_contain_text(" / 08")
-                    page.wait_for_function("x => document.querySelector('.portfolio-rail').getBoundingClientRect().left < x", arg=initial_left - travel / 3)
-                    # During the tween, each original portrait must fill its frame edge to edge.
-                    for photo in rail.locator(".portfolio-photo img").all():
-                        geometry = photo.evaluate("""img => {
-                          const frame = img.parentElement.getBoundingClientRect();
-                          const rect = img.getBoundingClientRect();
-                          return [rect.x-frame.x, rect.y-frame.y, rect.width-frame.width,
-                                  rect.height-frame.height, rect.height-rect.width*img.getAttribute('height')/img.getAttribute('width')];
-                        }""")
-                        for difference in geometry:
-                            self.assertLess(abs(difference), 1)
-                    self.assertAlmostEqual(stage.bounding_box()["y"], initial_top, delta=2)
-                    advance(travel)
-                    expect(count).to_have_text("08 / 08")
-                    page.wait_for_function('''() => {
-                      const c = document.querySelector('.portfolio-booking').getBoundingClientRect();
-                      return c.right <= innerWidth && c.left >= 0;
-                    }''')
-                    self.assertLess(stage.bounding_box()["y"], initial_top - 20)
-                    advance(-travel)
-                    expect(count).not_to_have_text("08 / 08")
-                    self.assertAlmostEqual(stage.bounding_box()["y"], initial_top, delta=2)
-                    page.emulate_media(reduced_motion="reduce")
-                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(0)
-                    expect(rail).to_have_css("display", "grid")
-                    search = section.get_by_role("searchbox")
-                    search.fill("henna")
-                    expect(rail.locator("article")).to_have_count(1)
-                    page.emulate_media(reduced_motion="no-preference")
-                    expect(rail).to_have_css("display", "grid")
-                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(0)
-                    search.fill("")
-                    expect(page.locator(".pin-spacer > #clientes")).to_have_count(1)
+                    page = browser.new_page(viewport={"width": width, "height": 900})
+                    errors = []
+                    page.on("pageerror", lambda error: errors.append(str(error)))
+                    base = os.environ["PREVIEW_URL"].rstrip("/")
+                    for path in ["/", "/portfolio", "/servicos", "/servicos/fox", "/curso", "/sobre", "/diario", "/contato", "/inexistente"]:
+                        page.goto(base + path, wait_until="domcontentloaded")
+                        expect(page.locator("h1")).to_have_count(1)
+                        self.assertTrue(page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+                        expect(page.locator(".pin-spacer")).to_have_count(0)
+                        expect(page.locator("main")).to_be_focused()
+                        self.assertNotIn("undefined", page.title())
+                        if width in [390, 1440] and path != "/inexistente":
+                            for photo in page.locator("main img").all():
+                                photo.scroll_into_view_if_needed()
+                                photo.evaluate("img => img.decode()")
+                            page.evaluate("scrollTo({top:0, behavior:'instant'})")
+                            Path("test-results").mkdir(exist_ok=True)
+                            page.screenshot(path="test-results/" + str(width) + "-" + (path.strip("/").replace("/", "-") or "inicio") + ".png", full_page=True)
+                    page.goto(base + "/portfolio")
+                    expect(page.locator(".editorial-gallery article")).to_have_count(8)
+                    page.get_by_role("searchbox").fill("henna")
+                    expect(page.locator(".editorial-gallery article")).to_have_count(1)
+                    photo = page.get_by_role("button", name="Ver detalhes de Design personalizado com henna")
+                    photo.click()
+                    expect(page.get_by_role("dialog")).to_be_visible()
+                    page.keyboard.press("Escape")
+                    expect(page.get_by_role("dialog")).not_to_be_visible()
+                    expect(photo).to_be_focused()
+                    page.get_by_role("searchbox").fill("")
+                    expect(page.get_by_role("searchbox")).to_have_value("")
+                    expect(page.locator(".editorial-gallery article")).to_have_count(8)
+                    category = page.get_by_role("button", name="Sobrancelhas", exact=True)
+                    category.click()
+                    expect(category).to_have_attribute("aria-pressed", "true")
+                    expect(page.locator(".editorial-gallery article")).to_have_count(2)
+                    page.goto(base + "/servicos/fox")
+                    page.get_by_role("button", name="Consultar este procedimento").click()
+                    expect(page.locator("#booking-service")).to_have_value("srv-fox")
+                    expect(page.get_by_role("button", name="Continuar para WhatsApp")).to_be_disabled()
+                    page.keyboard.press("Escape")
+                    page.goto(base + "/")
+                    page.get_by_role("link", name="Ver trabalhos", exact=True).click()
+                    expect(page).to_have_url(base + "/portfolio")
+                    page.go_back()
+                    expect(page).to_have_url(base + "/")
+                    page.go_forward()
+                    expect(page).to_have_url(base + "/portfolio")
+                    self.assertEqual(errors, [])
                     page.close()
             browser.close()
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react';
 import { CheckCircle2, ExternalLink, X } from 'lucide-react';
 import {
   BOOKING_ADDONS,
@@ -29,6 +29,7 @@ export function BookingModal({
   initialServiceId,
   onClose,
 }: BookingModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
   const [clientName, setClientName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [serviceId, setServiceId] = useState(initialServiceId || STUDIO_SERVICES[0].id);
@@ -63,6 +64,30 @@ export function BookingModal({
     () => BOOKING_ADDONS.filter((a) => selectedAddOnIds.includes(a.id)),
     [selectedAddOnIds],
   );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const panel = modalRef.current;
+    const focusable = () => Array.from(panel?.querySelectorAll<HTMLElement>('button:not(:disabled), input, select, textarea, a[href]') ?? []);
+    focusable()[0]?.focus();
+    const keys = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Tab') return;
+      const elements = focusable();
+      const first = elements[0], last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    panel?.addEventListener('keydown', keys);
+    return () => {
+      panel?.removeEventListener('keydown', keys);
+      document.body.style.overflow = originalOverflow;
+      previous?.focus({ preventScroll: true });
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -101,6 +126,7 @@ export function BookingModal({
 
   return (
     <div
+      ref={modalRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"

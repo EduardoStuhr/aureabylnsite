@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Instagram, MapPin } from 'lucide-react';
 import { STUDIO_PROFILE } from '../data/studioData';
 
@@ -27,25 +28,28 @@ export function Footer({ onOpenBooking }: FooterProps) {
             </p>
             <ul className="mt-3 space-y-2 text-sm text-[#D7D0C6]">
               <li>
-                <a href="#inicio" className="hover:text-[#FAF8F5]">
+                <Link to="/" className="hover:text-[#FAF8F5]">
                   Início
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#clientes" className="hover:text-[#FAF8F5]">
+                <Link to="/portfolio" className="hover:text-[#FAF8F5]">
                   Trabalhos Realizados
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#servicos" className="hover:text-[#FAF8F5]">
+                <Link to="/servicos" className="hover:text-[#FAF8F5]">
                   Serviços
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#curso" className="hover:text-[#FAF8F5]">
+                <Link to="/curso" className="hover:text-[#FAF8F5]">
                   Curso de Lash Design
-                </a>
+                </Link>
               </li>
+              <li><Link to="/sobre" className="hover:text-[#FAF8F5]">Sobre Lorrayne</Link></li>
+              <li><Link to="/diario" className="hover:text-[#FAF8F5]">Diário</Link></li>
+              <li><Link to="/contato" className="hover:text-[#FAF8F5]">Contato</Link></li>
             </ul>
           </div>
 
