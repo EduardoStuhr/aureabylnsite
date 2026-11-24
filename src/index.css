@@ -3,8 +3,8 @@
 @theme {
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  --color-canvas: #FAF8F5;
-  --color-surface: #F1EDE6;
+  --color-canvas: #F2EDE5;
+  --color-surface: #E9E1D5;
   --color-ink: #141210;
   --color-muted: #5C564E;
   --color-gold: #A8843E;
@@ -15,7 +15,7 @@
   html {
     scroll-behavior: smooth;
     font-family: var(--font-sans);
-    background-color: #FAF8F5;
+    background-color: #F2EDE5;
     color: #141210;
   }
 

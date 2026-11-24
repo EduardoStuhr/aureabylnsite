@@ -22,7 +22,7 @@ export function Header({ onOpenBooking }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#141210]/10 bg-[#FAF8F5]/95">
+      <header className="sticky top-0 z-40 border-b border-[#141210]/10 bg-[#F2EDE5]">
         <div className="mx-auto grid h-16 max-w-7xl grid-cols-3 items-center px-4 sm:px-6 lg:h-[72px] lg:px-10">
           {/* Zone 1 (Left): Minimal MENU trigger */}
           <div className="flex items-center justify-start">
