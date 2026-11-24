@@ -47,6 +47,9 @@ export function Footer({ onOpenBooking }: FooterProps) {
                   Curso de Lash Design
                 </Link>
               </li>
+              <li><Link to="/sobre" className="hover:text-[#FAF8F5]">Sobre Lorrayne</Link></li>
+              <li><Link to="/diario" className="hover:text-[#FAF8F5]">Diário</Link></li>
+              <li><Link to="/contato" className="hover:text-[#FAF8F5]">Contato</Link></li>
             </ul>
           </div>
 

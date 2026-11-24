@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { BookingModal } from './components/BookingModal';
 import { Footer } from './components/Footer';
@@ -45,7 +45,8 @@ function StudioLayout() {
   const [booking, setBooking] = useState<string | null>(null);
   const { pathname } = useLocation();
   const main = useRef<HTMLElement>(null);
-  function onBook(id?: string) { setBooking(id ?? STUDIO_SERVICES[0].id); }
+  const onBook = useCallback((id?: string) => setBooking(id ?? STUDIO_SERVICES[0].id), []);
+  const closeBooking = useCallback(() => setBooking(null), []);
   return <div className="min-h-screen bg-[#FAF8F5] text-[#141210]">
     <a href="#conteudo-principal" className="skip-link">Ir para o conteúdo</a>
     <Header onOpenBooking={() => onBook()} />
@@ -67,7 +68,7 @@ function StudioLayout() {
     </main>
     <Footer onOpenBooking={() => onBook()} />
     <MobileBottomNav onOpenBooking={() => onBook()} />
-    <BookingModal isOpen={booking !== null} initialServiceId={booking ?? STUDIO_SERVICES[0].id} onClose={() => setBooking(null)} />
+    <BookingModal isOpen={booking !== null} initialServiceId={booking ?? STUDIO_SERVICES[0].id} onClose={closeBooking} />
   </div>;
 }
 

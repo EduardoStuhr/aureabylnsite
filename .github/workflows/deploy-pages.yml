@@ -36,6 +36,11 @@ jobs:
           export PREVIEW_URL=http://localhost:4173/aureabylnsite/
           curl --retry 15 --retry-all-errors --retry-delay 1 -fsS "$PREVIEW_URL" -o /dev/null
           "$RUNNER_TEMP/gallery-tests/bin/python" tests/gallery_scroll.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: editorial-desktop-mobile
+          path: test-results/
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:

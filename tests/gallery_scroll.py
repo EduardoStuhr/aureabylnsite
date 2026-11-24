@@ -1,4 +1,5 @@
 """Browser regression checks for the multipage editorial experience."""
+from pathlib import Path
 import os
 import unittest
 from playwright.sync_api import expect, sync_playwright
@@ -21,6 +22,9 @@ class StudioTest(unittest.TestCase):
                         expect(page.locator(".pin-spacer")).to_have_count(0)
                         expect(page.locator("main")).to_be_focused()
                         self.assertNotIn("undefined", page.title())
+                        if width in [390, 1440] and path != "/inexistente":
+                            Path("test-results").mkdir(exist_ok=True)
+                            page.screenshot(path="test-results/" + str(width) + "-" + (path.strip("/").replace("/", "-") or "inicio") + ".png", full_page=True)
                     page.goto(base + "/portfolio")
                     expect(page.locator(".editorial-gallery article")).to_have_count(8)
                     page.get_by_role("searchbox").fill("henna")

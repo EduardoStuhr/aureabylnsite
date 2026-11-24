@@ -82,6 +82,7 @@ export function CoursePage({ onBook }: BookingProps) {
     <p className="eyebrow">ÁURA · Formação presencial</p><h1 className="font-display">Aprender o olhar.</h1>
     <div className="editorial-split">
       <div><h2 className="font-display">{STUDIO_COURSE.name}</h2><p>{STUDIO_COURSE.description}</p>
+      <ul className="course-topics"><li>Anatomia dos fios, saúde ocular e isolamento seguro</li><li>Mapping estratégico, Volume Brasileiro e Fox Eyes</li><li>Prática orientada presencial e suporte pós-curso</li></ul>
       <p>Com Lorrayne Nunes, {STUDIO_PROFILE.roleTitle}.</p>
       <p>Consulte diretamente as datas, condições e informações da formação.</p>
       <button className="editorial-button" onClick={() => onBook(STUDIO_COURSE.id)}>Consultar informações do curso</button></div>
