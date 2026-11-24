@@ -31,12 +31,14 @@ export function AuraWebGLCanvas({ className = '' }: AuraWebGLCanvasProps) {
       }
     })();
 
+    if (prefersReducedMotion || isSoftwareGl) return;
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
         antialias: !isSoftwareGl,
         alpha: true,
-        powerPreference: 'high-performance',
+        powerPreference: 'low-power',
       });
     } catch {
       return;
@@ -45,7 +47,7 @@ export function AuraWebGLCanvas({ className = '' }: AuraWebGLCanvasProps) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.02;
-    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 1.5));
 
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
@@ -273,10 +275,25 @@ export function AuraWebGLCanvas({ className = '' }: AuraWebGLCanvasProps) {
       }
     }
 
-    tick();
+    let visible = false;
+    const resume = () => {
+      cancelAnimationFrame(frameId);
+      if (visible && !document.hidden && !isDisposed) {
+        prevTime = performance.now();
+        tick();
+      }
+    };
+    const observer = new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+      resume();
+    });
+    observer.observe(container);
+    document.addEventListener('visibilitychange', resume);
 
     return () => {
       isDisposed = true;
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', resume);
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
       window.removeEventListener('pointermove', handlePointerMove);

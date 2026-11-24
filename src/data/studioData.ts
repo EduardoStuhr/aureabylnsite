@@ -41,7 +41,7 @@ export const STUDIO_PROFILE = {
   city: 'Afonso Cláudio / ES',
   instagramUrl: 'https://www.instagram.com/aurabyln/',
   whatsappPhone: '',
-  heroImage: import.meta.env.BASE_URL + 'assets/hero-lorrayne-cutout.png',
+  heroImage: import.meta.env.BASE_URL + 'assets/hero-lorrayne-cutout.webp',
   instagramSpotlightImage: import.meta.env.BASE_URL + 'src/assets/images/studio_instagram_portrait_1795028764302.jpg',
   manifestoQuote:
     'Cuidar de você também é saúde, autoestima e bem-estar. Pequenos detalhes fazem grandes diferenças.',

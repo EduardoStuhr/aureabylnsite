@@ -60,7 +60,7 @@ export function ClientsShowcase({ onBook }: { onBook: () => void }) {
             },
             scrollTrigger: {
               trigger: root, pin: true, start: 'top top', end: () => '+=' + distance(),
-              scrub: 0.8, invalidateOnRefresh: true,
+              scrub: true, invalidateOnRefresh: true,
             },
           });
           trigger.current = horizontalTween.scrollTrigger!;
@@ -73,6 +73,7 @@ export function ClientsShowcase({ onBook }: { onBook: () => void }) {
           }
         }, root);
       }
+      ScrollTrigger.sort();
       ScrollTrigger.refresh();
     }
     function schedule() {
