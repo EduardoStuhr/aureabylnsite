@@ -87,7 +87,9 @@ export function ServicesPage({ onBook }: BookingProps) {
               <details className="catalog-details" open={selected === service.id.replace('srv-', '') || undefined}>
                 <summary>Detalhes</summary>
                 <div className="catalog-support">
-                  {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />}
+                  {work && <div className="service-photo">
+                    <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />
+                  </div>}
                   <div>
                     {service.description && <p>{service.description}</p>}
                     <p>{service.availabilityNote} com o estúdio.</p>
@@ -112,14 +114,18 @@ export function ServicePage({ onBook }: BookingProps) {
   return <section className="editorial-shell detail-page">
     <Link className="editorial-link" to="/servicos">← Todos os procedimentos</Link>
     <div className={work ? 'editorial-split' : 'service-text-detail'}>
-      {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} />}
+      {work && <div className="service-photo service-detail-photo">
+        <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} />
+      </div>}
       <div><p className="eyebrow">{service.category}</p><h1 className="font-display">{service.name}</h1>
       {service.description && <p>{service.description}</p>}
       <p className="catalog-price"><span>{formatServicePrice(service)}</span><span>{formatServiceDuration(service)}</span></p>
       <button className="editorial-button" onClick={() => onBook(service.id)}>Consultar este procedimento</button>
       {work && <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultados reais →</Link>}</div>
     </div>
-    {work?.secondImage && <img className="detail-extra" src={work.secondImage} alt="Outro resultado de volume egípcio" loading="lazy" />}
+    {work?.secondImage && <div className="detail-extra service-photo">
+      <img src={work.secondImage} alt="Outro resultado de volume egípcio" loading="lazy" />
+    </div>}
   </section>;
 }
 
