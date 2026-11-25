@@ -24,3 +24,14 @@
   .catalog-item { grid-template-columns: 3rem minmax(0,1fr) auto; gap: 1.5rem; }
   .catalog-book { grid-column: 3; align-self: start; }
 }
+
+/* Compact hierarchy scoped to the catalogue; the institutional typography is preserved. */
+.service-catalog .catalog-intro { max-width: none; display: grid; gap: .55rem; padding-bottom: 1.75rem; }
+.service-catalog .catalog-intro .eyebrow { margin: 0; font-size: .68rem; }
+.service-catalog .catalog-intro h1 { max-width: 20ch; font-size: clamp(1.9rem, 3vw, 2.65rem); line-height: 1.15; margin: .2rem 0 .35rem; }
+.service-catalog .catalog-intro > p:last-child { max-width: 48ch; margin: 0; font-size: clamp(.9rem, 1vw, 1rem); line-height: 1.65; text-wrap: pretty; }
+.service-catalog .catalog-category h2 { font-size: clamp(1.45rem, 2vw, 1.85rem); }
+.service-catalog .catalog-copy h3 { font-size: clamp(1.25rem, 1.7vw, 1.6rem); line-height: 1.25; }
+.service-catalog .catalog-copy > p:not(.catalog-price) { font-size: .9rem; max-width: 50ch; }
+.service-catalog .catalog-price > span:first-child { font-size: 1.05rem; }
+.service-catalog .catalog-price > span:last-child { font-size: .8rem; }

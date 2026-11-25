@@ -11,6 +11,7 @@ import {
   formatServicePrice,
   formatServiceDuration,
   validateBookingInput,
+  summarizeBookingServices,
   type BookingInput,
 } from '../utils/studioLogic';
 
@@ -37,6 +38,8 @@ export function BookingModal({
   const [clientName, setClientName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [serviceId, setServiceId] = useState(initialServiceId || STUDIO_SERVICES[0].id);
+  const [extraServiceIds, setExtraServiceIds] = useState<string[]>([]);
+  const [extraServiceId, setExtraServiceId] = useState('');
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const [preferredPeriod, setPreferredPeriod] =
     useState<BookingInput['preferredPeriod']>('Tarde (13h30–18h)');
@@ -55,6 +58,9 @@ export function BookingModal({
     if (isOpen) {
       setSubmittedUrl(null);
       setErrors({});
+      setExtraServiceIds([]);
+      setExtraServiceId('');
+      setSelectedAddOnIds([]);
     }
   }, [isOpen]);
 
@@ -67,6 +73,13 @@ export function BookingModal({
     () => courseInquiry ? STUDIO_COURSE : STUDIO_SERVICES.find((s) => s.id === serviceId) ?? STUDIO_SERVICES[0],
     [courseInquiry, serviceId],
   );
+
+  const bookingSummary = useMemo(() => summarizeBookingServices([
+    selectedService,
+    ...(courseInquiry ? [] : STUDIO_SERVICES.filter(service => extraServiceIds.includes(service.id))),
+  ]), [selectedService, courseInquiry, extraServiceIds]);
+  const availableServices = STUDIO_SERVICES.filter(service =>
+    !bookingSummary.services.some(selected => selected.id === service.id));
 
   const selectedAddOns = useMemo(
     () => BOOKING_ADDONS.filter((a) => selectedAddOnIds.includes(a.id)),
@@ -124,7 +137,7 @@ export function BookingModal({
     setErrors({});
     const url = buildWhatsAppBookingUrl(
       input,
-      selectedService,
+      bookingSummary.services,
       selectedAddOns,
     );
     setSubmittedUrl(url);
@@ -178,11 +191,17 @@ export function BookingModal({
               </h3>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-[#46413B]">
-              Seu resumo para <strong>{selectedService.name}</strong> — {formatServicePrice(selectedService)} · {formatServiceDuration(selectedService)} — está pronto.
+              Seu resumo com {bookingSummary.services.length} {bookingSummary.services.length === 1 ? 'procedimento' : 'procedimentos'} está pronto.
               Clique abaixo para confirmar horários disponíveis e valores diretamente
               com a Lorrayne Nunes no WhatsApp.
             </p>
 
+            <ul className="booking-selected-list" aria-label="Procedimentos da solicitação">
+              {bookingSummary.services.map(service => <li key={service.id}>
+                <span>{service.name}</span><small>{formatServicePrice(service)} · {formatServiceDuration(service)}</small>
+              </li>)}
+            </ul>
+            <p className="booking-estimate"><strong>{bookingSummary.priceLabel}</strong><span>{bookingSummary.durationLabel} estimados</span></p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a
                 ref={confirmationLinkRef}
@@ -259,12 +278,16 @@ export function BookingModal({
                 htmlFor="booking-service"
                 className="block text-xs font-semibold text-[#141210]"
               >
-                {courseInquiry ? 'Curso' : 'Procedimento'}
+                {courseInquiry ? 'Curso' : 'Procedimento principal'}
               </label>
               <select
                 id="booking-service"
                 value={serviceId}
-                onChange={(e) => setServiceId(e.target.value)}
+                onChange={(e) => {
+                  setServiceId(e.target.value);
+                  setExtraServiceIds(ids => ids.filter(id => id !== e.target.value));
+                  setExtraServiceId('');
+                }}
                 className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
               >
                 {(courseInquiry ? [STUDIO_COURSE] : STUDIO_SERVICES).map((srv) => (
@@ -273,11 +296,32 @@ export function BookingModal({
                   </option>
                 ))}
               </select>
+              {!courseInquiry && <div className="booking-multiple">
+                <label htmlFor="booking-extra-service">Adicionar outro procedimento</label>
+                <div className="booking-add-row">
+                  <select id="booking-extra-service" value={extraServiceId} onChange={event => setExtraServiceId(event.target.value)}>
+                    <option value="">Escolha outro serviço</option>
+                    {availableServices.map(service => <option key={service.id} value={service.id}>{service.name} — {formatServicePrice(service)}</option>)}
+                  </select>
+                  <button type="button" disabled={!extraServiceId || !availableServices.some(service => service.id === extraServiceId)} onClick={() => {
+                    if (availableServices.some(service => service.id === extraServiceId)) {
+                      setExtraServiceIds(ids => [...ids, extraServiceId]);
+                      setExtraServiceId('');
+                    }
+                  }}>Adicionar</button>
+                </div>
+                <ul className="booking-selected-list" aria-label="Procedimentos selecionados">
+                  {bookingSummary.services.map((service, index) => <li key={service.id}>
+                    <div><span>{service.name}</span><small>{formatServicePrice(service)} · {formatServiceDuration(service)}</small></div>
+                    {index > 0 && <button type="button" aria-label={'Remover ' + service.name} onClick={() => setExtraServiceIds(ids => ids.filter(id => id !== service.id))}><X size={16} aria-hidden="true" /></button>}
+                  </li>)}
+                </ul>
+              </div>}
               <dl className="booking-service-value" aria-live="polite" aria-atomic="true">
-                <div><dt>Valor do procedimento</dt><dd>{formatServicePrice(selectedService)}</dd></div>
-                <div><dt>Duração</dt><dd>{formatServiceDuration(selectedService)}</dd></div>
+                <div><dt>Valor estimado</dt><dd>{bookingSummary.priceLabel}</dd></div>
+                <div><dt>Duração estimada</dt><dd>{bookingSummary.durationLabel}</dd></div>
               </dl>
-              <p className="text-xs mt-2">O valor se refere ao procedimento selecionado. Outras solicitações são consultadas com o estúdio.</p>
+              <p className="text-xs mt-2">Valores somados para consulta. A combinação dos procedimentos, o tempo total e os horários serão confirmados pelo estúdio.</p>
               {errors.serviceId && (
                 <p className="mt-1 text-xs font-medium text-[#B91C1C]">
                   {errors.serviceId}
@@ -290,7 +334,7 @@ export function BookingModal({
                 Complementos (opcional)
               </legend>
               <div className="mt-2 space-y-2">
-                {BOOKING_ADDONS.map((addon) => {
+                {BOOKING_ADDONS.filter(addon => addon.id !== 'addon-sobrancelha').map((addon) => {
                   const checked = selectedAddOnIds.includes(addon.id);
                   return (
                     <label
