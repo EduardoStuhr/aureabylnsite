@@ -99,3 +99,25 @@ test('catalog preserves every confirmed price and duration without merging varia
   }
   assert.ok(!STUDIO_SERVICES.some(s => /lamination/i.test(s.name)));
 });
+
+test('multiple procedures keep distinct services and calculate only confirmed amounts', async () => {
+  const { summarizeBookingServices } = await import('./studioLogic');
+  const fox = STUDIO_SERVICES.find(service => service.id === 'srv-fox')!;
+  const simple = STUDIO_SERVICES.find(service => service.id === 'srv-design-simples')!;
+  const brown = STUDIO_SERVICES.find(service => service.id === 'srv-brown')!;
+  const summary = summarizeBookingServices([fox, simple, fox]);
+  assert.equal(summary.services.length, 2);
+  assert.match(summary.priceLabel, /190,00/);
+  assert.equal(summary.durationLabel, '150 minutos');
+  const partial = summarizeBookingServices([fox, brown]);
+  assert.match(partial.priceLabel, /160,00 \+ itens sob consulta/);
+  assert.match(partial.durationLabel, /120 minutos \+ itens sob consulta/);
+  assert.equal(summarizeBookingServices([brown]).priceLabel, 'Sob consulta');
+  const url = buildWhatsAppBookingUrl({ clientName: 'Ana Paula', whatsapp: '27999887766', serviceId: fox.id,
+    preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-12-01', notes: '' }, [fox, simple], []);
+  const message = new URL(url).searchParams.get('text')!;
+  assert.match(message, /Fox Eyes, Design simples/);
+  assert.match(message, /190,00/);
+  assert.match(message, /150 minutos/);
+  assert.match(message, /tempo total serão confirmados/);
+});

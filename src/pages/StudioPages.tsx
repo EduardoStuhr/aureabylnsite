@@ -62,8 +62,8 @@ export function ServicesPage({ onBook }: BookingProps) {
   return <section className="editorial-shell services-page service-catalog">
     <header className="catalog-intro">
       <p className="eyebrow">Atendimento · ÁURA Beauty Studio</p>
-      <h1 className="font-display">Encontre o cuidado<br />para o seu olhar.</h1>
-      <p>Conheça as técnicas de cílios e sobrancelhas e consulte o atendimento com Lorrayne Nunes.</p>
+      <h1 className="font-display">Seu olhar, seu cuidado.</h1>
+      <p>Explore os procedimentos, confira valores e escolha os cuidados para o seu atendimento.</p>
     </header>
     <div className="service-filters" role="group" aria-label="Filtrar serviços">
       {['Todos', 'Cílios', 'Sobrancelhas', 'Manutenção', 'Complementares'].map(category =>
