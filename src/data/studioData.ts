@@ -174,7 +174,7 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     availabilityNote: 'Consultar disponibilidade', description: '' },
   { id: 'srv-design', name: 'Design personalizado', category: 'Sobrancelhas', priceCents: null, durationMinutes: null, workId: 'design',
     availabilityNote: 'Consultar disponibilidade', description: STUDIO_WORKS.find(work => work.id === 'design')!.technicalNote },
-  { id: 'srv-brown', name: 'Volume brown', category: 'Cílios', priceCents: null, durationMinutes: null, workId: 'brown',
+  { id: 'srv-brown', name: 'Volume brown', category: 'Cílios', priceCents: 15000, durationMinutes: null, workId: 'brown',
     availabilityNote: 'Consultar disponibilidade', description: STUDIO_WORKS.find(work => work.id === 'brown')!.technicalNote },
 ];
 
