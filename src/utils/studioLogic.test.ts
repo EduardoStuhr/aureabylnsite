@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildWhatsAppBookingUrl,
+  formatServicePrice,
+  formatServiceDuration,
   filterWorksByCategory,
   studioWhatsAppUrl,
   validateBookingInput,
@@ -45,7 +47,7 @@ test('validateBookingInput rejects empty/invalid fields and accepts valid input'
   assert.deepEqual(valid.errors, {});
 });
 
-test('buildWhatsAppBookingUrl encodes consultation message cleanly without fictional prices', () => {
+test('booking message encodes the selected price and duration', () => {
   const service = STUDIO_SERVICES[0];
   const url = buildWhatsAppBookingUrl(
     {
@@ -68,12 +70,32 @@ test('buildWhatsAppBookingUrl encodes consultation message cleanly without ficti
   assert.ok(decoded.includes('Beatriz Souza'));
   assert.ok(decoded.includes(service.name));
   assert.ok(decoded.includes('Incluir Design personalizado no mesmo atendimento'));
-  assert.ok(!decoded.includes('R$'));
+  assert.ok(decoded.includes(formatServicePrice(service)));
+  assert.ok(decoded.includes(formatServiceDuration(service)));
+  assert.ok(decoded.includes('sujeita à disponibilidade'));
 });
 
-test('catalog includes the eight gallery procedures in official order', () => {
-  assert.deepEqual(STUDIO_SERVICES.map(service => service.name), [
-    'Design personalizado', 'Design personalizado com henna', 'Volume híbrido', 'Volume egípcio',
-    'Efeito sereia', 'Efeito fox', 'Efeito anime', 'Volume brown',
-  ]);
+test('catalog preserves every confirmed price and duration without merging variants', () => {
+  const expected = [
+    ['Egípcio',14500,120], ['Brasileiro',14500,120], ['Híbrido',14500,120],
+    ['Volume egípcio',15500,120], ['Volume brasileiro',15500,120], ['Volume híbrido',15500,120],
+    ['Fox Eyes',16000,120], ['Fio a fio',14000,120], ['Efeito rímel',14500,120],
+    ['Efeito wispy',17000,120], ['Volume com fans',18000,120], ['Efeito sereia',15000,120],
+    ['Efeito anime',17000,120], ['Manutenção',12000,90],
+    ['Manutenção de wispy e volume com fans',15000,90],
+    ['Design personalizado com henna',4000,60], ['Design simples',3000,30],
+    ['Epilação de buço',1000,15], ['Spa dos lábios',1500,20],
+  ];
+  assert.deepEqual(STUDIO_SERVICES.filter(s => s.priceCents !== null).map(s =>
+    [s.name, s.priceCents, s.durationMinutes]), expected);
+  assert.equal(new Set(STUDIO_SERVICES.map(s => s.id)).size, STUDIO_SERVICES.length);
+  assert.equal(STUDIO_WORKS.length, 8);
+  for (const name of ['Design personalizado', 'Volume brown']) {
+    const service = STUDIO_SERVICES.find(s => s.name === name)!;
+    assert.equal(service.priceCents, null);
+    assert.equal(service.durationMinutes, null);
+    assert.equal(formatServicePrice(service), 'Sob consulta');
+    assert.equal(formatServiceDuration(service), 'Duração sob consulta');
+  }
+  assert.ok(!STUDIO_SERVICES.some(s => /lamination/i.test(s.name)));
 });

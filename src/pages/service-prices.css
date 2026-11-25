@@ -1,0 +1,9 @@
+.catalog-price { display: flex; align-items: baseline; gap: .6rem 1.5rem; flex-wrap: wrap; margin-block: .9rem; }
+.catalog-price > span:first-child { color: var(--page-ink); font-size: 1.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.catalog-price > span:last-child { color: var(--page-muted); font-size: .85rem; }
+.booking-service-value { display: flex; flex-wrap: wrap; gap: 1rem 2rem; padding-block: 1rem; border-bottom: 1px solid #cfc1ae; }
+.booking-service-value dt { color: #625b51; font-size: .8rem; }
+.booking-service-value dd { font-size: 1rem; font-weight: 600; margin-top: .25rem; }
+.service-text-detail { max-width: 44rem; padding-block: 2rem; }
+.catalog-support:not(:has(img)) { grid-template-columns: minmax(0, 1fr); }
+.service-catalog .catalog-category { flex-wrap: wrap; }

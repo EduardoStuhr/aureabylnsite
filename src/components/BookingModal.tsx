@@ -8,6 +8,8 @@ import {
 } from '../data/studioData';
 import {
   buildWhatsAppBookingUrl,
+  formatServicePrice,
+  formatServiceDuration,
   validateBookingInput,
   type BookingInput,
 } from '../utils/studioLogic';
@@ -176,7 +178,7 @@ export function BookingModal({
               </h3>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-[#46413B]">
-              Seu resumo para <strong>{selectedService.name}</strong> está pronto.
+              Seu resumo para <strong>{selectedService.name}</strong> — {formatServicePrice(selectedService)} · {formatServiceDuration(selectedService)} — está pronto.
               Clique abaixo para confirmar horários disponíveis e valores diretamente
               com a Lorrayne Nunes no WhatsApp.
             </p>
@@ -267,10 +269,15 @@ export function BookingModal({
               >
                 {(courseInquiry ? [STUDIO_COURSE] : STUDIO_SERVICES).map((srv) => (
                   <option key={srv.id} value={srv.id}>
-                    {srv.name} — {srv.category}
+                    {srv.name} — {srv.category} — {formatServicePrice(srv)}
                   </option>
                 ))}
               </select>
+              <dl className="booking-service-value" aria-live="polite" aria-atomic="true">
+                <div><dt>Valor do procedimento</dt><dd>{formatServicePrice(selectedService)}</dd></div>
+                <div><dt>Duração</dt><dd>{formatServiceDuration(selectedService)}</dd></div>
+              </dl>
+              <p className="text-xs mt-2">O valor se refere ao procedimento selecionado. Outras solicitações são consultadas com o estúdio.</p>
               {errors.serviceId && (
                 <p className="mt-1 text-xs font-medium text-[#B91C1C]">
                   {errors.serviceId}

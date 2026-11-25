@@ -65,6 +65,16 @@ export function validateBookingInput(input: BookingInput): BookingValidationResu
   };
 }
 
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+export function formatServicePrice(service: ServiceItem): string {
+  return service.priceCents === null ? 'Sob consulta' : brl.format(service.priceCents / 100);
+}
+
+export function formatServiceDuration(service: ServiceItem): string {
+  return service.durationMinutes === null ? 'Duração sob consulta' : service.durationMinutes + ' minutos';
+}
+
 export function buildWhatsAppBookingUrl(
   input: BookingInput,
   service: ServiceItem,
@@ -77,6 +87,9 @@ export function buildWhatsAppBookingUrl(
     `*Nome:* ${input.clientName.trim()}`,
     `*WhatsApp:* ${input.whatsapp.trim()}`,
     `*Interesse:* ${service.name}`,
+    `*Valor do procedimento:* ${formatServicePrice(service)}`,
+    `*Duração:* ${formatServiceDuration(service)}`,
+    `*Solicitação sujeita à disponibilidade e confirmação do estúdio.*`,
     `*Observações adicionais:* ${addOnNames}`,
     `*Preferência de data:* ${input.preferredDate} · ${input.preferredPeriod}`,
   ];
