@@ -78,19 +78,19 @@ test('booking message encodes the selected price and duration', () => {
 test('catalog preserves every confirmed price and duration without merging variants', () => {
   const expected = [
     ['Egípcio',14500,120], ['Brasileiro',14500,120], ['Híbrido',14500,120],
-    ['Volume egípcio',14500,120], ['Volume brasileiro',14500,120], ['Volume híbrido',15000,120],
-    ['Fox Eyes',16000,120], ['Fio a fio',14500,120], ['Efeito rímel',14500,120],
-    ['Efeito wispy',16000,120], ['Volume com fans',14500,120],
-    ['Efeito anime',16000,120], ['Manutenção',12000,90],
+    ['Volume egípcio',15500,120], ['Volume brasileiro',15500,120], ['Volume híbrido',15500,120],
+    ['Fox Eyes',16000,120], ['Fio a fio',14000,120], ['Efeito rímel',14500,120],
+    ['Efeito wispy',17000,120], ['Volume com fans',18000,120],
+    ['Efeito anime',17000,120], ['Manutenção',12000,90],
     ['Manutenção de wispy e volume com fans',15000,90],
     ['Design personalizado com henna',4000,60], ['Design simples',3000,30],
-    ['Epilação de buço',1000,15], ['Spa dos lábios',1500,20], ['Volume brown',14500,null],
+    ['Epilação de buço',1000,15], ['Spa dos lábios',1500,20],
   ];
   assert.deepEqual(STUDIO_SERVICES.filter(s => s.priceCents !== null).map(s =>
     [s.name, s.priceCents, s.durationMinutes]), expected);
   assert.equal(new Set(STUDIO_SERVICES.map(s => s.id)).size, STUDIO_SERVICES.length);
   assert.equal(STUDIO_WORKS.length, 7);
-  for (const name of ['Design personalizado']) {
+  for (const name of ['Design personalizado', 'Volume brown']) {
     const service = STUDIO_SERVICES.find(s => s.name === name)!;
     assert.equal(service.priceCents, null);
     assert.equal(service.durationMinutes, null);
@@ -109,12 +109,10 @@ test('multiple procedures keep distinct services and calculate only confirmed am
   assert.equal(summary.services.length, 2);
   assert.match(summary.priceLabel, /190,00/);
   assert.equal(summary.durationLabel, '150 minutos');
-  const design = STUDIO_SERVICES.find(service => service.id === 'srv-design')!;
-  const partial = summarizeBookingServices([fox, design]);
+  const partial = summarizeBookingServices([fox, brown]);
   assert.match(partial.priceLabel, /160,00 \+ itens sob consulta/);
   assert.match(partial.durationLabel, /120 minutos \+ itens sob consulta/);
-  assert.match(summarizeBookingServices([brown]).priceLabel, /145,00/);
-  assert.equal(summarizeBookingServices([brown]).durationLabel, 'Duração sob consulta');
+  assert.equal(summarizeBookingServices([brown]).priceLabel, 'Sob consulta');
   const url = buildWhatsAppBookingUrl({ clientName: 'Ana Paula', whatsapp: '27999887766', serviceId: fox.id,
     preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-12-01', notes: '' }, [fox, simple], []);
   const message = new URL(url).searchParams.get('text')!;
