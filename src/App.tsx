@@ -21,7 +21,7 @@ function PageMetadata() {
   const work = STUDIO_SERVICES.find(service => pathname === '/servicos/' + service.id.replace('srv-', ''));
   useEffect(() => {
     const title = (work?.name ?? titles[pathname] ?? 'Página não encontrada') + ' | ÁURA';
-    const description = work?.description ?? ({
+    const description = (work ? (work.description || `Informações, valor e duração de ${work.name} na ÁURA Beauty Studio.`) : undefined) ?? ({
       '/': 'Cílios, sobrancelhas e formação profissional com Lorrayne Nunes em Afonso Cláudio.',
       '/portfolio': 'Os oito procedimentos da ÁURA em fotografias reais do estúdio.',
       '/servicos': 'Conheça os procedimentos de cílios e sobrancelhas da ÁURA.',
