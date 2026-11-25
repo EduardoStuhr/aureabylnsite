@@ -23,7 +23,7 @@ function PageMetadata() {
     const title = (work?.name ?? titles[pathname] ?? 'Página não encontrada') + ' | ÁURA';
     const description = (work ? (work.description || `Informações, valor e duração de ${work.name} na ÁURA Beauty Studio.`) : undefined) ?? ({
       '/': 'Cílios, sobrancelhas e formação profissional com Lorrayne Nunes em Afonso Cláudio.',
-      '/portfolio': 'Os oito procedimentos da ÁURA em fotografias reais do estúdio.',
+      '/portfolio': 'Resultados da ÁURA em fotografias reais do estúdio.',
       '/servicos': 'Conheça os procedimentos de cílios e sobrancelhas da ÁURA.',
       '/curso': 'Informações sobre a formação presencial de Lash Design com Lorrayne Nunes.',
       '/sobre': 'Conheça o posicionamento e a filosofia de cuidado de Lorrayne Nunes.',

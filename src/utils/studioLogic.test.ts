@@ -80,7 +80,7 @@ test('catalog preserves every confirmed price and duration without merging varia
     ['Egípcio',14500,120], ['Brasileiro',14500,120], ['Híbrido',14500,120],
     ['Volume egípcio',15500,120], ['Volume brasileiro',15500,120], ['Volume híbrido',15500,120],
     ['Fox Eyes',16000,120], ['Fio a fio',14000,120], ['Efeito rímel',14500,120],
-    ['Efeito wispy',17000,120], ['Volume com fans',18000,120], ['Efeito sereia',15000,120],
+    ['Efeito wispy',17000,120], ['Volume com fans',18000,120],
     ['Efeito anime',17000,120], ['Manutenção',12000,90],
     ['Manutenção de wispy e volume com fans',15000,90],
     ['Design personalizado com henna',4000,60], ['Design simples',3000,30],
@@ -89,7 +89,7 @@ test('catalog preserves every confirmed price and duration without merging varia
   assert.deepEqual(STUDIO_SERVICES.filter(s => s.priceCents !== null).map(s =>
     [s.name, s.priceCents, s.durationMinutes]), expected);
   assert.equal(new Set(STUDIO_SERVICES.map(s => s.id)).size, STUDIO_SERVICES.length);
-  assert.equal(STUDIO_WORKS.length, 8);
+  assert.equal(STUDIO_WORKS.length, 7);
   for (const name of ['Design personalizado', 'Volume brown']) {
     const service = STUDIO_SERVICES.find(s => s.name === name)!;
     assert.equal(service.priceCents, null);
