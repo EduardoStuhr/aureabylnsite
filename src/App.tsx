@@ -4,7 +4,7 @@ import { BookingModal } from './components/BookingModal';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
-import { STUDIO_SERVICES, STUDIO_WORKS } from './data/studioData';
+import { STUDIO_SERVICES } from './data/studioData';
 import { HomePage, PortfolioPage as Portfolio, ServicesPage as Services, ServicePage as Service,
   CoursePage as Course, AboutPage as About, DiaryPage as Diary, ContactPage as Contact,
   NotFoundPage as NotFound } from './pages/StudioPages';
@@ -18,10 +18,10 @@ const titles: Record<string, string> = {
 
 function PageMetadata() {
   const { pathname } = useLocation();
-  const work = STUDIO_WORKS.find(w => pathname === '/servicos/' + w.id);
+  const work = STUDIO_SERVICES.find(service => pathname === '/servicos/' + service.id.replace('srv-', ''));
   useEffect(() => {
-    const title = (work?.title ?? titles[pathname] ?? 'Página não encontrada') + ' | ÁURA';
-    const description = work?.technicalNote ?? ({
+    const title = (work?.name ?? titles[pathname] ?? 'Página não encontrada') + ' | ÁURA';
+    const description = work?.description ?? ({
       '/': 'Cílios, sobrancelhas e formação profissional com Lorrayne Nunes em Afonso Cláudio.',
       '/portfolio': 'Os oito procedimentos da ÁURA em fotografias reais do estúdio.',
       '/servicos': 'Conheça os procedimentos de cílios e sobrancelhas da ÁURA.',

@@ -6,6 +6,8 @@ import { STUDIO_COURSE, STUDIO_PROFILE, STUDIO_SERVICES, STUDIO_WORKS } from '..
 import { useEffect, useState } from 'react';
 import { studioWhatsAppUrl } from '../utils/studioLogic';
 import './service-catalog.css';
+import { formatServicePrice, formatServiceDuration } from '../utils/studioLogic';
+import './service-prices.css';
 
 type BookingProps = { onBook: (id?: string) => void };
 
@@ -64,10 +66,10 @@ export function ServicesPage({ onBook }: BookingProps) {
       <p>Conheça as técnicas de cílios e sobrancelhas e consulte o atendimento com Lorrayne Nunes.</p>
     </header>
     <div className="service-filters" role="group" aria-label="Filtrar serviços">
-      {['Todos', 'Sobrancelhas', 'Cílios'].map(category =>
+      {['Todos', 'Cílios', 'Sobrancelhas', 'Manutenção', 'Complementares'].map(category =>
         <button key={category} aria-pressed={filter === category} onClick={() => setFilter(category)}>{category}</button>)}
     </div>
-    {(['Sobrancelhas', 'Cílios'] as const).filter(category => filter === 'Todos' || filter === category).map(category =>
+    {(['Cílios', 'Sobrancelhas', 'Manutenção', 'Complementares'] as const).filter(category => filter === 'Todos' || filter === category).map(category =>
       <section key={category} className="catalog-group" aria-labelledby={'categoria-' + category}>
         <div className="catalog-category">
           <h2 className="font-display" id={'categoria-' + category}>{category}</h2>
@@ -75,20 +77,21 @@ export function ServicesPage({ onBook }: BookingProps) {
         </div>
         <ol className="catalog-list">
           {STUDIO_SERVICES.filter(service => service.category === category).map(service => {
-            const work = STUDIO_WORKS.find(work => 'srv-' + work.id === service.id)!;
+            const work = STUDIO_WORKS.find(work => work.id === service.workId);
             const number = STUDIO_SERVICES.indexOf(service) + 1;
-            return <li key={service.id} id={'procedimento-' + work.id} className="catalog-item">
+            return <li key={service.id} id={'procedimento-' + service.id.replace('srv-', '')} className="catalog-item">
               <span className="catalog-number" aria-hidden="true">{String(number).padStart(2, '0')}</span>
               <div className="catalog-copy">
                 <h3 className="font-display">{service.name}</h3>
-                <p>{service.description}</p>
-                <details className="catalog-details" open={selected === work.id || undefined}>
-                  <summary>Ver detalhes e resultados</summary>
+                {service.description && <p>{service.description}</p>}
+                <p className="catalog-price"><span>{formatServicePrice(service)}</span><span>{formatServiceDuration(service)}</span></p>
+                <details className="catalog-details" open={selected === service.id.replace('srv-', '') || undefined}>
+                  <summary>{work ? 'Ver detalhes e resultados' : 'Consultar informações'}</summary>
                   <div className="catalog-support">
-                    <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />
+                    {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />}
                     <div><p>{service.availabilityNote}. A consulta permite verificar as possibilidades de atendimento diretamente com o estúdio.</p>
-                    <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultado de {service.name} →</Link>
-                    <Link className="catalog-more" to={'/servicos/' + work.id}>Abrir página do procedimento</Link></div>
+                    {work && <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultado de {work.title} →</Link>}
+                    <Link className="catalog-more" to={'/servicos/' + service.id.replace('srv-', '')}>Abrir página do procedimento</Link></div>
                   </div>
                 </details>
               </div>
@@ -97,23 +100,26 @@ export function ServicesPage({ onBook }: BookingProps) {
           })}
         </ol>
       </section>)}
-    <p className="catalog-note">Horários e valores são consultados diretamente com o estúdio.</p>
+    <p className="catalog-note">Valores e durações informados pelo estúdio. Design personalizado e Volume brown aguardam confirmação de valor e duração.</p>
   </section>;
 }
 
 export function ServicePage({ onBook }: BookingProps) {
   const { slug } = useParams();
-  const work = STUDIO_WORKS.find(w => w.id === slug);
-  if (!work) return <NotFoundPage />;
+  const service = STUDIO_SERVICES.find(item => item.id === 'srv-' + slug);
+  if (!service) return <NotFoundPage />;
+  const work = STUDIO_WORKS.find(item => item.id === service.workId);
   return <section className="editorial-shell detail-page">
     <Link className="editorial-link" to="/servicos">← Todos os procedimentos</Link>
-    <div className="editorial-split"><img src={work.imageSrc} alt={work.imageAlt} width="1080" height="1440" />
-      <div><p className="eyebrow">{work.category}</p><h1 className="font-display">{work.title}</h1>
-      <p>{work.technicalNote}</p><p>Horários e valores sob consulta.</p>
-      <button className="editorial-button" onClick={() => onBook('srv-' + work.id)}>Consultar este procedimento</button>
-      <Link className="editorial-link" to="/portfolio">Ver os trabalhos do estúdio →</Link></div>
+    <div className={work ? 'editorial-split' : 'service-text-detail'}>
+      {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} />}
+      <div><p className="eyebrow">{service.category}</p><h1 className="font-display">{service.name}</h1>
+      {service.description && <p>{service.description}</p>}
+      <p className="catalog-price"><span>{formatServicePrice(service)}</span><span>{formatServiceDuration(service)}</span></p>
+      <button className="editorial-button" onClick={() => onBook(service.id)}>Consultar este procedimento</button>
+      {work && <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultados reais →</Link>}</div>
     </div>
-    {work.secondImage && <img className="detail-extra" src={work.secondImage} alt="Outro resultado de volume egípcio" loading="lazy" />}
+    {work?.secondImage && <img className="detail-extra" src={work.secondImage} alt="Outro resultado de volume egípcio" loading="lazy" />}
   </section>;
 }
 
