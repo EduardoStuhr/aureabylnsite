@@ -102,7 +102,7 @@ export function ServicesPage({ onBook }: BookingProps) {
           })}
         </ol>
       </section>)}
-    <p className="catalog-note">Valores e durações informados pelo estúdio. Design personalizado e Volume brown aguardam confirmação de valor e duração.</p>
+    <p className="catalog-note">Valores e durações informados pelo estúdio. Design personalizado aguarda confirmação de valor e duração. A duração de Volume brown permanece sob consulta.</p>
   </section>;
 }
 

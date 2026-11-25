@@ -84,13 +84,13 @@ test('catalog preserves every confirmed price and duration without merging varia
     ['Efeito anime',17000,120], ['Manutenção',12000,90],
     ['Manutenção de wispy e volume com fans',15000,90],
     ['Design personalizado com henna',4000,60], ['Design simples',3000,30],
-    ['Epilação de buço',1000,15], ['Spa dos lábios',1500,20],
+    ['Epilação de buço',1000,15], ['Spa dos lábios',1500,20], ['Volume brown',15000,null],
   ];
   assert.deepEqual(STUDIO_SERVICES.filter(s => s.priceCents !== null).map(s =>
     [s.name, s.priceCents, s.durationMinutes]), expected);
   assert.equal(new Set(STUDIO_SERVICES.map(s => s.id)).size, STUDIO_SERVICES.length);
   assert.equal(STUDIO_WORKS.length, 7);
-  for (const name of ['Design personalizado', 'Volume brown']) {
+  for (const name of ['Design personalizado']) {
     const service = STUDIO_SERVICES.find(s => s.name === name)!;
     assert.equal(service.priceCents, null);
     assert.equal(service.durationMinutes, null);
@@ -109,10 +109,13 @@ test('multiple procedures keep distinct services and calculate only confirmed am
   assert.equal(summary.services.length, 2);
   assert.match(summary.priceLabel, /190,00/);
   assert.equal(summary.durationLabel, '150 minutos');
-  const partial = summarizeBookingServices([fox, brown]);
+  const design = STUDIO_SERVICES.find(service => service.id === 'srv-design')!;
+  const partial = summarizeBookingServices([fox, design]);
   assert.match(partial.priceLabel, /160,00 \+ itens sob consulta/);
   assert.match(partial.durationLabel, /120 minutos \+ itens sob consulta/);
-  assert.equal(summarizeBookingServices([brown]).priceLabel, 'Sob consulta');
+  assert.match(summarizeBookingServices([brown]).priceLabel, /150,00/);
+  assert.equal(summarizeBookingServices([brown]).durationLabel, 'Duração sob consulta');
+  assert.match(summarizeBookingServices([fox, brown]).priceLabel, /310,00/);
   const url = buildWhatsAppBookingUrl({ clientName: 'Ana Paula', whatsapp: '27999887766', serviceId: fox.id,
     preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-12-01', notes: '' }, [fox, simple], []);
   const message = new URL(url).searchParams.get('text')!;
