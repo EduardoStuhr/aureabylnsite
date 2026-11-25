@@ -6,3 +6,4 @@
 .booking-service-value dd { font-size: 1rem; font-weight: 600; margin-top: .25rem; }
 .service-text-detail { max-width: 44rem; padding-block: 2rem; }
 .catalog-support:not(:has(img)) { grid-template-columns: minmax(0, 1fr); }
+.service-catalog .catalog-category { flex-wrap: wrap; }
