@@ -110,14 +110,6 @@ export const STUDIO_WORKS: StudioWorkItem[] = [
     secondImage: portfolio + 'egipcio-perfil.webp',
   },
   {
-    id: 'sereia',
-    title: 'Efeito sereia',
-    category: 'Cílios',
-    technicalNote: 'Comprimentos que se alongam em direção à lateral do olhar.',
-    imageSrc: portfolio + 'sereia.webp',
-    imageAlt: 'Resultado de efeito sereia no estúdio ÁURA',
-  },
-  {
     id: 'fox',
     title: 'Efeito fox',
     category: 'Cílios',
@@ -166,8 +158,6 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     availabilityNote: 'Consultar disponibilidade', description: '' },
   { id: 'srv-fans', name: 'Volume com fans', category: 'Cílios', priceCents: 18000, durationMinutes: 120,
     availabilityNote: 'Consultar disponibilidade', description: '' },
-  { id: 'srv-sereia', name: 'Efeito sereia', category: 'Cílios', priceCents: 15000, durationMinutes: 120, workId: 'sereia',
-    availabilityNote: 'Consultar disponibilidade', description: STUDIO_WORKS.find(work => work.id === 'sereia')!.technicalNote },
   { id: 'srv-anime', name: 'Efeito anime', category: 'Cílios', priceCents: 17000, durationMinutes: 120, workId: 'anime',
     availabilityNote: 'Consultar disponibilidade', description: STUDIO_WORKS.find(work => work.id === 'anime')!.technicalNote },
   { id: 'srv-manutencao', name: 'Manutenção', category: 'Manutenção', priceCents: 12000, durationMinutes: 90,
