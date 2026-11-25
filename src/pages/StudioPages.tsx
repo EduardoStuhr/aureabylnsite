@@ -75,27 +75,27 @@ export function ServicesPage({ onBook }: BookingProps) {
           <h2 className="font-display" id={'categoria-' + category}>{category}</h2>
           <span>{STUDIO_SERVICES.filter(service => service.category === category).length} procedimentos</span>
         </div>
-        <ol className="catalog-list">
+        <ol className="catalog-list" role="list">
           {STUDIO_SERVICES.filter(service => service.category === category).map(service => {
             const work = STUDIO_WORKS.find(work => work.id === service.workId);
-            const number = STUDIO_SERVICES.indexOf(service) + 1;
             return <li key={service.id} id={'procedimento-' + service.id.replace('srv-', '')} className="catalog-item">
-              <span className="catalog-number" aria-hidden="true">{String(number).padStart(2, '0')}</span>
               <div className="catalog-copy">
                 <h3 className="font-display">{service.name}</h3>
-                {service.description && <p>{service.description}</p>}
                 <p className="catalog-price"><span>{formatServicePrice(service)}</span><span>{formatServiceDuration(service)}</span></p>
-                <details className="catalog-details" open={selected === service.id.replace('srv-', '') || undefined}>
-                  <summary>{work ? 'Ver detalhes e resultados' : 'Consultar informações'}</summary>
-                  <div className="catalog-support">
-                    {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />}
-                    <div><p>{service.availabilityNote}. A consulta permite verificar as possibilidades de atendimento diretamente com o estúdio.</p>
-                    {work && <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultado de {work.title} →</Link>}
-                    <Link className="catalog-more" to={'/servicos/' + service.id.replace('srv-', '')}>Abrir página do procedimento</Link></div>
-                  </div>
-                </details>
               </div>
-              <button className="catalog-book" onClick={() => onBook(service.id)} aria-label={'Agendar & consultar ' + service.name}>Agendar &amp; consultar <span aria-hidden="true">↗</span></button>
+              <button className="catalog-book" onClick={() => onBook(service.id)} aria-label={'Agendar & consultar ' + service.name}>Agendar</button>
+              <details className="catalog-details" open={selected === service.id.replace('srv-', '') || undefined}>
+                <summary>Detalhes</summary>
+                <div className="catalog-support">
+                  {work && <img src={work.imageSrc} alt={work.imageAlt} width={work.id === 'henna' ? 810 : work.id === 'hibrido' ? 1031 : 1080} height={1440} loading="lazy" />}
+                  <div>
+                    {service.description && <p>{service.description}</p>}
+                    <p>{service.availabilityNote} com o estúdio.</p>
+                    {work && <Link className="editorial-link" to={'/portfolio?tecnica=' + work.id}>Ver resultado de {work.title} →</Link>}
+                    <Link className="catalog-more" to={'/servicos/' + service.id.replace('srv-', '')}>Abrir página do procedimento</Link>
+                  </div>
+                </div>
+              </details>
             </li>;
           })}
         </ol>
