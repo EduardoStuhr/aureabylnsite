@@ -30,7 +30,7 @@ function PageMetadata() {
       '/diario': 'Publicações e momentos do estúdio ÁURA.',
       '/contato': 'Entre em contato com a ÁURA e consulte procedimentos e agendamento.',
     } as Record<string, string>)[pathname] ?? 'Navegue pelo site da ÁURA Beauty Studio.';
-    document.title = title;
+    document.title = pathname === '/' ? 'Áura' : title;
     for (const selector of ['meta[name="description"]', 'meta[property="og:description"]']) {
       document.querySelector(selector)?.setAttribute('content', description);
     }
