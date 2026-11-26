@@ -180,11 +180,11 @@ export const STUDIO_SERVICES: ServiceItem[] = [
 
 export const STUDIO_COURSE: ServiceItem = {
   id: 'srv-curso-lash',
-  priceCents: null,
+  priceCents: 120000,
   durationMinutes: null,
   name: 'Curso VIP de Lash Design',
   category: 'Formação',
-  availabilityNote: 'Consultar datas e investimento',
+  availabilityNote: 'Consultar próximas turmas e condições de inscrição',
   description:
     'Formação prática presencial com Lorrayne Nunes (Embaixadora Florescer Beauty). Do isolamento seguro ao posicionamento profissional.',
 };

@@ -70,12 +70,14 @@ export function validateBookingInput(input: BookingInput, now = new Date()): Boo
     errors.serviceId = 'Escolha um procedimento ou curso.';
   }
 
-  if (!BOOKING_PERIODS.some(period => period === input.preferredPeriod)) {
-    errors.preferredPeriod = 'Selecione o período de preferência.';
-  }
+  if (input.serviceId !== STUDIO_COURSE.id) {
+    if (!BOOKING_PERIODS.some(period => period === input.preferredPeriod)) {
+      errors.preferredPeriod = 'Selecione o período de preferência.';
+    }
 
-  if (!isBookingDateAllowed(input.preferredDate, now)) {
-    errors.preferredDate = BOOKING_DATE_ERROR;
+    if (!isBookingDateAllowed(input.preferredDate, now)) {
+      errors.preferredDate = BOOKING_DATE_ERROR;
+    }
   }
 
   if (input.notes.length > BOOKING_LIMITS.notes) {
@@ -124,17 +126,31 @@ export function buildWhatsAppBookingUrl(
   const primary = findBookingService(input.serviceId);
   if (!primary) throw new RangeError('Procedimento inválido');
 
+  const url = new URL(studioWhatsAppUrl);
+  const name = cleanMessageField(input.clientName);
+  const notes = cleanMessageField(input.notes);
+  if (primary.id === STUDIO_COURSE.id) {
+    const investment = formatServicePrice(primary).replace('\u00a0', ' ');
+    const message = [
+      `Olá! Tenho interesse no curso de Lash Design da ÁURA, com investimento de ${investment}. Gostaria de saber mais sobre as próximas turmas e condições de inscrição.`,
+      '',
+      `*Nome:* ${name}`,
+    ];
+    if (notes) message.push(`*Mensagem:* ${notes}`);
+    url.searchParams.set('text', message.join('\n'));
+    return url.href;
+  }
+
   // Prices and descriptions come from the local catalog, never from caller-supplied objects.
   const extraIds = new Set((Array.isArray(service) ? service : [service]).map(item => item.id));
-  const extras = primary.id === STUDIO_COURSE.id ? [] : STUDIO_SERVICES.filter(item => extraIds.has(item.id));
+  const extras = STUDIO_SERVICES.filter(item => extraIds.has(item.id));
   const summary = summarizeBookingServices([primary, ...extras]);
   const addOnIds = new Set(addOns.map(item => item.id));
   const addOnNames = BOOKING_ADDONS.filter(item => addOnIds.has(item.id)).map(item => item.name).join(', ');
-  const notes = cleanMessageField(input.notes);
   const lines = [
     `Olá, Lorrayne! Gostaria de consultar horários e valores no *ÁURA Studio Beauty* (@aurabyln).`,
     ``,
-    `*Nome:* ${cleanMessageField(input.clientName)}`,
+    `*Nome:* ${name}`,
     `*Interesse:* ${summary.services.map(item => item.name).join(', ')}`,
     ...summary.services.map(item => `• ${item.name} — ${formatServicePrice(item)} · ${formatServiceDuration(item)}`),
     `*Valor estimado:* ${summary.priceLabel}`,
@@ -145,7 +161,6 @@ export function buildWhatsAppBookingUrl(
     `*Preferência de data:* ${input.preferredDate} · ${input.preferredPeriod}`,
   ];
   if (notes) lines.push(`*Mensagem:* ${notes}`);
-  const url = new URL(studioWhatsAppUrl);
   url.searchParams.set('text', lines.join('\n'));
   return url.href;
 }
