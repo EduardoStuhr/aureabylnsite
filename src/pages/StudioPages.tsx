@@ -138,7 +138,7 @@ export function CoursePage({ onBook }: BookingProps) {
       <p>Com Lorrayne Nunes, {STUDIO_PROFILE.roleTitle}.</p>
       <p>Consulte diretamente as datas, condições e informações da formação.</p>
       <dl className="border-t border-[#CFC1AE] pt-3">
-        <dt className="eyebrow">Investimento</dt>
+        <dt className="eyebrow">Valor</dt>
         <dd className="font-display text-3xl font-semibold tabular-nums">{formatServicePrice(STUDIO_COURSE)}</dd>
       </dl>
       <button className="editorial-button" onClick={() => onBook(STUDIO_COURSE.id)}>Consultar informações do curso</button></div>

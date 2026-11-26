@@ -199,7 +199,7 @@ export function BookingModal({
               <>
                 <p className="mt-3 text-sm leading-relaxed text-[#46413B]">{STUDIO_COURSE.name}. Consulte as próximas turmas e as condições de inscrição pelo WhatsApp.</p>
                 <dl className="booking-service-value">
-                  <div><dt>Investimento</dt><dd>{bookingSummary.priceLabel}</dd></div>
+                  <div><dt>Valor</dt><dd>{bookingSummary.priceLabel}</dd></div>
                 </dl>
               </>
             ) : (
@@ -319,7 +319,7 @@ export function BookingModal({
                 </ul>
               </div>}
               <dl className="booking-service-value" aria-live="polite" aria-atomic="true">
-                <div><dt>{courseInquiry ? 'Investimento' : 'Valor estimado'}</dt><dd>{bookingSummary.priceLabel}</dd></div>
+                <div><dt>{courseInquiry ? 'Valor' : 'Valor estimado'}</dt><dd>{bookingSummary.priceLabel}</dd></div>
                 {!courseInquiry && <div><dt>Duração estimada</dt><dd>{bookingSummary.durationLabel}</dd></div>}
               </dl>
               <p className="text-xs mt-2">{courseInquiry
