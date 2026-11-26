@@ -11,7 +11,7 @@ import {
   type BookingInput,
   validateBookingInput,
 } from './studioLogic';
-import { BOOKING_ADDONS, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
+import { BOOKING_ADDONS, STUDIO_COURSE, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
 
 test('filterWorksByCategory filters by category and search query accurately', () => {
   const all = filterWorksByCategory(STUDIO_WORKS, 'Todos');
@@ -159,4 +159,23 @@ test('booking uses catalog estimates and keeps free text on a single message lin
   assert.ok(message.includes(addOn.name));
   assert.ok(message.includes('*Nome:* Ana Teste'));
   assert.ok(message.includes('*Mensagem:* ÁURA & a+b linha dois'));
+});
+
+test('course inquiry uses the official investment and omits procedure scheduling data', () => {
+  const input: BookingInput = {
+    clientName: 'Ana Souza',
+    serviceId: STUDIO_COURSE.id,
+    preferredDate: '',
+    preferredPeriod: '',
+    notes: 'Quero conhecer a próxima turma.',
+  };
+  assert.equal(validateBookingInput(input).valid, true);
+  const url = new URL(buildWhatsAppBookingUrl(input, [STUDIO_SERVICES[0]], [BOOKING_ADDONS[0]]));
+  assert.equal(url.origin + url.pathname, studioWhatsAppUrl);
+  assert.equal(url.searchParams.get('text'), [
+    'Olá! Tenho interesse no curso de Lash Design da ÁURA, com investimento de R$ 1.200,00. Gostaria de saber mais sobre as próximas turmas e condições de inscrição.',
+    '',
+    '*Nome:* Ana Souza',
+    '*Mensagem:* Quero conhecer a próxima turma.',
+  ].join('\n'));
 });

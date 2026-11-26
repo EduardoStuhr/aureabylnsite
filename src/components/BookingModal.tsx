@@ -74,7 +74,7 @@ export function BookingModal({
     if (submittedUrl) confirmationLinkRef.current?.focus();
   }, [submittedUrl]);
 
-  const courseInquiry = initialServiceId === STUDIO_COURSE.id;
+  const courseInquiry = serviceId === STUDIO_COURSE.id;
   const selectedService = useMemo(
     () => courseInquiry ? STUDIO_COURSE : STUDIO_SERVICES.find((s) => s.id === serviceId) ?? STUDIO_SERVICES[0],
     [courseInquiry, serviceId],
@@ -128,7 +128,7 @@ export function BookingModal({
     event.preventDefault();
     const input: BookingInput = {
       clientName,
-      serviceId: courseInquiry ? STUDIO_COURSE.id : serviceId,
+      serviceId,
       preferredPeriod,
       preferredDate,
       notes,
@@ -172,7 +172,7 @@ export function BookingModal({
               id="booking-modal-title"
               className="font-display mt-1 text-3xl font-medium text-[#141210]"
             >
-              Agendar &amp; consultar valores
+              {courseInquiry ? 'Conversar sobre o curso' : 'Agendar & consultar valores'}
             </h2>
           </div>
 
@@ -180,7 +180,7 @@ export function BookingModal({
             type="button"
             ref={closeButtonRef}
             onClick={onClose}
-            aria-label="Fechar janela de agendamento"
+            aria-label={courseInquiry ? 'Fechar consulta do curso' : 'Fechar janela de agendamento'}
             className="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[#141210]/15 text-[#141210] transition-colors hover:bg-[#F1EDE6]"
           >
             <X className="h-4 w-4" aria-hidden="true" />
@@ -195,24 +195,35 @@ export function BookingModal({
                 Solicitação preparada para {clientName}
               </h3>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-[#46413B]">
-              Seu resumo com {bookingSummary.services.length} {bookingSummary.services.length === 1 ? 'procedimento' : 'procedimentos'} está pronto.
-              Clique abaixo para confirmar horários disponíveis e valores diretamente
-              com a Lorrayne Nunes no WhatsApp.
-            </p>
+            {courseInquiry ? (
+              <>
+                <p className="mt-3 text-sm leading-relaxed text-[#46413B]">{STUDIO_COURSE.name}. Consulte as próximas turmas e as condições de inscrição pelo WhatsApp.</p>
+                <dl className="booking-service-value">
+                  <div><dt>Investimento</dt><dd>{bookingSummary.priceLabel}</dd></div>
+                </dl>
+              </>
+            ) : (
+              <>
+                <p className="mt-3 text-sm leading-relaxed text-[#46413B]">
+                  Seu resumo com {bookingSummary.services.length} {bookingSummary.services.length === 1 ? 'procedimento' : 'procedimentos'} está pronto.
+                  Clique abaixo para confirmar horários disponíveis e valores diretamente
+                  com a Lorrayne Nunes no WhatsApp.
+                </p>
 
-            <ul className="booking-selected-list" aria-label="Procedimentos da solicitação">
-              {bookingSummary.services.map(service => <li key={service.id}>
-                <span>{service.name}</span><small>{formatServicePrice(service)} · {formatServiceDuration(service)}</small>
-              </li>)}
-            </ul>
-            <p className="booking-estimate"><strong>{bookingSummary.priceLabel}</strong><span>{bookingSummary.durationLabel} estimados</span></p>
+                <ul className="booking-selected-list" aria-label="Procedimentos da solicitação">
+                  {bookingSummary.services.map(service => <li key={service.id}>
+                    <span>{service.name}</span><small>{formatServicePrice(service)} · {formatServiceDuration(service)}</small>
+                  </li>)}
+                </ul>
+                <p className="booking-estimate"><strong>{bookingSummary.priceLabel}</strong><span>{bookingSummary.durationLabel} estimados</span></p>
+              </>
+            )}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a
                 ref={confirmationLinkRef}
                 href={submittedUrl}
                 onClick={event => {
-                  if (isBookingDateAllowed(preferredDate)) return;
+                  if (courseInquiry || isBookingDateAllowed(preferredDate)) return;
                   event.preventDefault();
                   setSubmittedUrl(null);
                   setErrors({ preferredDate: BOOKING_DATE_ERROR });
@@ -279,11 +290,12 @@ export function BookingModal({
                 }}
                 className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
               >
-                {(courseInquiry ? [STUDIO_COURSE] : STUDIO_SERVICES).map((srv) => (
+                {STUDIO_SERVICES.map((srv) => (
                   <option key={srv.id} value={srv.id}>
                     {srv.name} — {srv.category} — {formatServicePrice(srv)}
                   </option>
                 ))}
+                <option value={STUDIO_COURSE.id}>Conversar sobre o curso — {formatServicePrice(STUDIO_COURSE)}</option>
               </select>
               {!courseInquiry && <div className="booking-multiple">
                 <label htmlFor="booking-extra-service">Adicionar outro procedimento</label>
@@ -307,10 +319,12 @@ export function BookingModal({
                 </ul>
               </div>}
               <dl className="booking-service-value" aria-live="polite" aria-atomic="true">
-                <div><dt>Valor estimado</dt><dd>{bookingSummary.priceLabel}</dd></div>
-                <div><dt>Duração estimada</dt><dd>{bookingSummary.durationLabel}</dd></div>
+                <div><dt>{courseInquiry ? 'Investimento' : 'Valor estimado'}</dt><dd>{bookingSummary.priceLabel}</dd></div>
+                {!courseInquiry && <div><dt>Duração estimada</dt><dd>{bookingSummary.durationLabel}</dd></div>}
               </dl>
-              <p className="text-xs mt-2">Valores somados para consulta. A combinação dos procedimentos, o tempo total e os horários serão confirmados pelo estúdio.</p>
+              <p className="text-xs mt-2">{courseInquiry
+                ? 'Converse com o estúdio sobre as próximas turmas e a inscrição.'
+                : 'Valores somados para consulta. A combinação dos procedimentos, o tempo total e os horários serão confirmados pelo estúdio.'}</p>
               {errors.serviceId && (
                 <p className="mt-1 text-xs font-medium text-[#B91C1C]">
                   {errors.serviceId}
@@ -318,91 +332,95 @@ export function BookingModal({
               )}
             </div>
 
-            <fieldset>
-              <legend className="text-xs font-semibold text-[#141210]">
-                Complementos (opcional)
-              </legend>
-              <div className="mt-2 space-y-2">
-                {BOOKING_ADDONS.filter(addon => addon.id !== 'addon-sobrancelha').map((addon) => {
-                  const checked = selectedAddOnIds.includes(addon.id);
-                  return (
+            {!courseInquiry && (
+              <>
+                <fieldset>
+                  <legend className="text-xs font-semibold text-[#141210]">
+                    Complementos (opcional)
+                  </legend>
+                  <div className="mt-2 space-y-2">
+                    {BOOKING_ADDONS.filter(addon => addon.id !== 'addon-sobrancelha').map((addon) => {
+                      const checked = selectedAddOnIds.includes(addon.id);
+                      return (
+                        <label
+                          key={addon.id}
+                          className={`flex min-h-[44px] cursor-pointer items-center justify-between gap-3 rounded-xl border px-3.5 py-2 text-xs transition-colors ${
+                            checked
+                              ? 'border-[#141210] bg-[#F1EDE6]'
+                              : 'border-[#141210]/12 bg-[#FAF8F5]'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleAddOn(addon.id)}
+                              className="h-4 w-4 accent-[#141210]"
+                            />
+                            <span className="font-medium text-[#141210]">{addon.name}</span>
+                          </span>
+                          <span className="text-[11px] text-[#5C564E]">{addon.detail}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
                     <label
-                      key={addon.id}
-                      className={`flex min-h-[44px] cursor-pointer items-center justify-between gap-3 rounded-xl border px-3.5 py-2 text-xs transition-colors ${
-                        checked
-                          ? 'border-[#141210] bg-[#F1EDE6]'
-                          : 'border-[#141210]/12 bg-[#FAF8F5]'
-                      }`}
+                      htmlFor="booking-date"
+                      className="block text-xs font-semibold text-[#141210]"
                     >
-                      <span className="flex items-center gap-2.5">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleAddOn(addon.id)}
-                          className="h-4 w-4 accent-[#141210]"
-                        />
-                        <span className="font-medium text-[#141210]">{addon.name}</span>
-                      </span>
-                      <span className="text-[11px] text-[#5C564E]">{addon.detail}</span>
+                      Data desejada
                     </label>
-                  );
-                })}
-              </div>
-            </fieldset>
+                    <input
+                      id="booking-date"
+                      type="date"
+                      min={getStudioDate()}
+                      aria-invalid={Boolean(errors.preferredDate)}
+                      aria-describedby={errors.preferredDate ? 'booking-date-error' : undefined}
+                      value={preferredDate}
+                      onChange={(e) => setPreferredDate(e.target.value)}
+                      className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
+                    />
+                    {errors.preferredDate && (
+                      <p id="booking-date-error" role="alert" className="mt-1 text-xs font-medium text-[#B91C1C]">
+                        {errors.preferredDate}
+                      </p>
+                    )}
+                  </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="booking-date"
-                  className="block text-xs font-semibold text-[#141210]"
-                >
-                  Data desejada
-                </label>
-                <input
-                  id="booking-date"
-                  type="date"
-                  min={getStudioDate()}
-                  aria-invalid={Boolean(errors.preferredDate)}
-                  aria-describedby={errors.preferredDate ? 'booking-date-error' : undefined}
-                  value={preferredDate}
-                  onChange={(e) => setPreferredDate(e.target.value)}
-                  className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
-                />
-                {errors.preferredDate && (
-                  <p id="booking-date-error" role="alert" className="mt-1 text-xs font-medium text-[#B91C1C]">
-                    {errors.preferredDate}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="booking-period"
-                  className="block text-xs font-semibold text-[#141210]"
-                >
-                  Período de preferência
-                </label>
-                <select
-                  id="booking-period"
-                  value={preferredPeriod}
-                  onChange={(e) =>
-                    setPreferredPeriod(e.target.value as BookingInput['preferredPeriod'])
-                  }
-                  className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
-                >
-                  {BOOKING_PERIODS.map((period) => (
-                    <option key={period} value={period}>
-                      {period}
-                    </option>
-                  ))}
-                </select>
-                {errors.preferredPeriod && (
-                  <p className="mt-1 text-xs font-medium text-[#B91C1C]">
-                    {errors.preferredPeriod}
-                  </p>
-                )}
-              </div>
-            </div>
+                  <div>
+                    <label
+                      htmlFor="booking-period"
+                      className="block text-xs font-semibold text-[#141210]"
+                    >
+                      Período de preferência
+                    </label>
+                    <select
+                      id="booking-period"
+                      value={preferredPeriod}
+                      onChange={(e) =>
+                        setPreferredPeriod(e.target.value as BookingInput['preferredPeriod'])
+                      }
+                      className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
+                    >
+                      {BOOKING_PERIODS.map((period) => (
+                        <option key={period} value={period}>
+                          {period}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.preferredPeriod && (
+                      <p className="mt-1 text-xs font-medium text-[#B91C1C]">
+                        {errors.preferredPeriod}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             <div>
               <label
@@ -417,7 +435,7 @@ export function BookingModal({
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Ex: Primeira vez fazendo cílios, prefiro efeito mais natural."
+                placeholder={courseInquiry ? 'Ex: Gostaria de saber quando abre a próxima turma.' : 'Ex: Primeira vez fazendo cílios, prefiro efeito mais natural.'}
                 className="mt-1.5 w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] p-3 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
               />
               {errors.notes && <p className="mt-1 text-xs font-medium text-[#B91C1C]">{errors.notes}</p>}
@@ -430,7 +448,7 @@ export function BookingModal({
                   Atendimento direto com Lorrayne Nunes
                 </p>
                 <p className="text-[11px] text-[#5C564E]">
-                  Os dados seguem ao WhatsApp quando você abrir a conversa. Valores e horários serão confirmados pelo estúdio.
+                  {courseInquiry ? 'Os dados seguem ao WhatsApp quando você abrir a conversa.' : 'Os dados seguem ao WhatsApp quando você abrir a conversa. Valores e horários serão confirmados pelo estúdio.'}
                 </p>
               </div>
 

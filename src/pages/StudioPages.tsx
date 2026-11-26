@@ -137,6 +137,10 @@ export function CoursePage({ onBook }: BookingProps) {
       <ul className="course-topics"><li>Anatomia dos fios, saúde ocular e isolamento seguro</li><li>Mapping estratégico, Volume Brasileiro e Fox Eyes</li><li>Prática orientada presencial e suporte pós-curso</li></ul>
       <p>Com Lorrayne Nunes, {STUDIO_PROFILE.roleTitle}.</p>
       <p>Consulte diretamente as datas, condições e informações da formação.</p>
+      <dl className="border-t border-[#CFC1AE] pt-3">
+        <dt className="eyebrow">Investimento</dt>
+        <dd className="font-display text-3xl font-semibold tabular-nums">{formatServicePrice(STUDIO_COURSE)}</dd>
+      </dl>
       <button className="editorial-button" onClick={() => onBook(STUDIO_COURSE.id)}>Consultar informações do curso</button></div>
       <img src={import.meta.env.BASE_URL + 'src/assets/images/studio_lash_academy_1795019896448.jpg'} alt="Materiais de trabalho na formação de Lash Design" width="800" height="1000" />
     </div>
