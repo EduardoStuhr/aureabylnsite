@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, MapPin } from 'lucide-react';
+import { ArrowUpRight, Instagram, MapPin } from 'lucide-react';
 import { STUDIO_PROFILE } from '../data/studioData';
 
 interface FooterProps {
@@ -84,7 +84,18 @@ export function Footer({ onOpenBooking }: FooterProps) {
 
         <div className="mt-6 flex flex-col justify-between gap-2 text-xs text-[#9C9488] sm:flex-row sm:items-center">
           <p>© 2026 {STUDIO_PROFILE.fullTitle} · Todos os direitos reservados.</p>
-          <p>{STUDIO_PROFILE.roleTitle}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p>{STUDIO_PROFILE.roleTitle}</p>
+            <a
+              href="https://kisestudio.com.br"
+              className="inline-flex min-h-[44px] items-center"
+            >
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E7D5B3]/40 px-3 py-1.5 text-[#E7D5B3] transition-colors hover:bg-[#E7D5B3] hover:text-[#141210]">
+                Feito por Kise Studios
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
