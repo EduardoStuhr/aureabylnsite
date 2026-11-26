@@ -6,6 +6,6 @@ O workflow valida Pull Requests e publica somente após entrada na main. Em Sett
 
 Antes de aprovar o merge e a publicação, confirmar autorização de uso das fotografias e os textos comerciais existentes, incluindo formação, credenciais e disponibilidade do curso. Esses materiais foram preservados e sua presença no repositório não comprova autorização. O número comercial usado no agendamento e na página de contato é definido em `STUDIO_PROFILE.whatsappPhone`.
 
-Homologação contém noindex/nofollow e robots restritivo. Isso não restringe acesso público aos arquivos. A aplicação não usa as variáveis de exemplo Gemini nem contém chamadas de IA no frontend. Não inserir chaves privadas em variáveis VITE_.
+Homologação contém noindex/nofollow e robots restritivo. Isso não restringe acesso público aos arquivos. O site usa build estático e dispensa credenciais privadas ou variáveis VITE_. O Vite preview aplica os mesmos cabeçalhos globais de public/_headers usados no Cloudflare Pages.
 
 O build apresenta aviso de bundle acima de 500 kB. A otimização do bundle está fora deste ajuste de portfólio.
