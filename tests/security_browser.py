@@ -92,7 +92,7 @@ class SecurityTest(unittest.TestCase):
                     expect(page.locator("#booking-notes")).to_have_value("")
                     page.keyboard.press("Escape")
                     page.goto(base + "/curso")
-                    expect(page.get_by_text("Investimento", exact=True)).to_be_visible()
+                    expect(page.get_by_text("Valor", exact=True)).to_be_visible()
                     expect(page.get_by_text("R$ 1.200,00", exact=True)).to_be_visible()
                     page.get_by_role("button", name="Consultar informações do curso").click()
                     course = page.get_by_role("dialog", name="Conversar sobre o curso")
@@ -100,7 +100,7 @@ class SecurityTest(unittest.TestCase):
                     page.keyboard.press("Escape")
                     page.get_by_role("button", name="Agendar horário", exact=True).click()
                     page.locator("#booking-service").select_option("srv-curso-lash")
-                    expect(course.get_by_text("Investimento", exact=True)).to_be_visible()
+                    expect(course.get_by_text("Valor", exact=True)).to_be_visible()
                     expect(course.locator("#booking-date")).to_have_count(0)
                     course.locator("#booking-name").fill("Ana Teste")
                     course.get_by_role("button", name="Continuar para WhatsApp").click()
@@ -108,7 +108,10 @@ class SecurityTest(unittest.TestCase):
                     course_url = urlsplit(course.get_by_role("link", name="Conversar no WhatsApp").get_attribute("href"))
                     self.assertEqual((course_url.scheme, course_url.netloc, course_url.path),
                                      ("https", "wa.me", "/5527999202100"))
-                    self.assertIn("com investimento de R$ 1.200,00.", parse_qs(course_url.query)["text"][0])
+                    self.assertEqual(parse_qs(course_url.query)["text"][0],
+                                     "Olá! Tenho interesse no curso de Lash Design da ÁURA. "
+                                     "Gostaria de saber mais sobre as próximas turmas e condições de inscrição.\n\n"
+                                     "*Nome:* Ana Teste")
                     page.close()
             browser.close()
 

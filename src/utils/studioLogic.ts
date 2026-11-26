@@ -130,9 +130,8 @@ export function buildWhatsAppBookingUrl(
   const name = cleanMessageField(input.clientName);
   const notes = cleanMessageField(input.notes);
   if (primary.id === STUDIO_COURSE.id) {
-    const investment = formatServicePrice(primary).replace('\u00a0', ' ');
     const message = [
-      `Olá! Tenho interesse no curso de Lash Design da ÁURA, com investimento de ${investment}. Gostaria de saber mais sobre as próximas turmas e condições de inscrição.`,
+      'Olá! Tenho interesse no curso de Lash Design da ÁURA. Gostaria de saber mais sobre as próximas turmas e condições de inscrição.',
       '',
       `*Nome:* ${name}`,
     ];
