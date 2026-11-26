@@ -7,6 +7,7 @@ import {
   filterWorksByCategory,
   studioWhatsAppUrl,
   getStudioDate,
+  BOOKING_DATE_ERROR,
   type BookingInput,
   validateBookingInput,
 } from './studioLogic';
@@ -24,7 +25,6 @@ test('filterWorksByCategory filters by category and search query accurately', ()
 test('validateBookingInput rejects empty/invalid fields and accepts valid input', () => {
   const invalid = validateBookingInput({
     clientName: ' ',
-    whatsapp: '123',
     serviceId: '',
     preferredPeriod: '',
     preferredDate: '',
@@ -32,14 +32,12 @@ test('validateBookingInput rejects empty/invalid fields and accepts valid input'
   });
   assert.equal(invalid.valid, false);
   assert.ok(invalid.errors.clientName);
-  assert.ok(invalid.errors.whatsapp);
   assert.ok(invalid.errors.serviceId);
   assert.ok(invalid.errors.preferredPeriod);
   assert.ok(invalid.errors.preferredDate);
 
   const valid = validateBookingInput({
     clientName: 'Ana Paula Silva',
-    whatsapp: '(27) 99812-3456',
     serviceId: 'srv-hibrido',
     preferredPeriod: 'Tarde (13h30–18h)',
     preferredDate: '2026-11-25',
@@ -54,7 +52,6 @@ test('booking message encodes the selected price and duration', () => {
   const url = buildWhatsAppBookingUrl(
     {
       clientName: 'Beatriz Souza',
-      whatsapp: '27999887766',
       serviceId: service.id,
       preferredPeriod: 'Manhã (08h30–12h)',
       preferredDate: '2026-11-28',
@@ -69,7 +66,8 @@ test('booking message encodes the selected price and duration', () => {
   const decoded = destination.searchParams.get('text') ?? '';
   assert.deepEqual([...destination.searchParams.keys()], ['text']);
   assert.ok(decoded.includes('Preço & horário? + à tarde'));
-  assert.ok(decoded.includes('Beatriz Souza'));
+  assert.ok(decoded.includes('*Nome:* Beatriz Souza'));
+  assert.doesNotMatch(decoded, /^\*WhatsApp:\*/m);
   assert.ok(decoded.includes(service.name));
   assert.ok(decoded.includes('Incluir Design personalizado no mesmo atendimento'));
   assert.ok(decoded.includes(formatServicePrice(service)));
@@ -118,7 +116,7 @@ test('multiple procedures keep distinct services and calculate only confirmed am
   assert.match(summarizeBookingServices([brown]).priceLabel, /150,00/);
   assert.equal(summarizeBookingServices([brown]).durationLabel, 'Duração sob consulta');
   assert.match(summarizeBookingServices([fox, brown]).priceLabel, /310,00/);
-  const url = buildWhatsAppBookingUrl({ clientName: 'Ana Paula', whatsapp: '27999887766', serviceId: fox.id,
+  const url = buildWhatsAppBookingUrl({ clientName: 'Ana Paula', serviceId: fox.id,
     preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-12-01', notes: '' }, [fox, simple], []);
   const message = new URL(url).searchParams.get('text')!;
   assert.match(message, /Fox Eyes, Design simples/);
@@ -128,19 +126,20 @@ test('multiple procedures keep distinct services and calculate only confirmed am
 });
 
 test('booking rejects stale dates, unknown options and oversized fields in the studio time zone', () => {
-  const input: BookingInput = { clientName: 'Ana Teste', whatsapp: '+55 (27) 99988-7766',
+  const input: BookingInput = { clientName: 'Ana Teste',
     serviceId: 'srv-fox', preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-11-25', notes: '' };
   const before = new Date('2026-11-26T02:59:59Z');
   const after = new Date('2026-11-26T03:00:00Z');
   assert.equal(getStudioDate(before), '2026-11-25');
   assert.equal(getStudioDate(after), '2026-11-26');
   assert.equal(validateBookingInput(input, before).valid, true);
-  assert.ok(validateBookingInput(input, after).errors.preferredDate);
+  assert.equal(validateBookingInput(input, after).errors.preferredDate, BOOKING_DATE_ERROR);
+  assert.equal(validateBookingInput({ ...input, preferredDate: '2026-11-26' }, after).valid, true);
+  assert.equal(validateBookingInput({ ...input, preferredDate: '2026-11-27' }, after).valid, true);
   assert.ok(validateBookingInput({ ...input, preferredDate: '2027-02-29' }, before).errors.preferredDate);
   assert.ok(validateBookingInput({ ...input, serviceId: 'inexistente' }, before).errors.serviceId);
   assert.ok(validateBookingInput({ ...input, preferredPeriod: 'noite' as BookingInput['preferredPeriod'] }, before).errors.preferredPeriod);
   assert.ok(validateBookingInput({ ...input, clientName: 'a'.repeat(101) }, before).errors.clientName);
-  assert.ok(validateBookingInput({ ...input, whatsapp: 'nome 27999887766' }, before).errors.whatsapp);
   assert.ok(validateBookingInput({ ...input, notes: 'a'.repeat(501) }, before).errors.notes);
 });
 
@@ -148,7 +147,7 @@ test('booking uses catalog estimates and keeps free text on a single message lin
   const fox = STUDIO_SERVICES.find(item => item.id === 'srv-fox')!;
   const addOn = BOOKING_ADDONS[0];
   const url = new URL(buildWhatsAppBookingUrl({
-    clientName: 'Ana\r\nTeste', whatsapp: '+55 (27) 99988-7766', serviceId: fox.id,
+    clientName: 'Ana\r\nTeste', serviceId: fox.id,
     preferredPeriod: 'Tarde (13h30–18h)', preferredDate: '2026-11-26',
     notes: 'ÁURA & a+b\r\nlinha dois',
   }, [{ ...fox, priceCents: 1 }, { ...fox, id: 'inexistente', name: 'Desconhecido' }], [{ ...addOn, name: 'Alterado' }]));

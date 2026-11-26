@@ -6,7 +6,7 @@ Base `de7bc7d233e443716d23f8f25db143d7469169bb`, merge do PR #29. Revisão dos P
 
 React, Vite e React Router geram arquivos estáticos. Rotas públicas — `/`, `/portfolio`, `/servicos`, `/servicos/:slug`, `/curso`, `/sobre`, `/diario` e `/contato`. O catálogo resolve `procedimento` e `tecnica` com dados locais. Cloudflare Pages hospeda produção e previews. GitHub Actions valida e também prepara publicação no GitHub Pages em job próprio.
 
-O formulário mantém nome, telefone, procedimentos, complementos, data, período e observações em memória. Gera um link comercial e entrega os dados ao WhatsApp quando o visitante abre esse link. O envio da mensagem é feito no WhatsApp. As outras integrações identificadas foram Google Fonts e links do Instagram. GSAP e Three.js executam no cliente.
+O formulário mantém nome, procedimentos, complementos, data, período e observações em memória. Gera um link comercial e entrega os dados ao WhatsApp quando o visitante abre esse link. O envio da mensagem é feito no WhatsApp. As outras integrações identificadas foram Google Fonts e links do Instagram. GSAP e Three.js executam no cliente.
 
 ## Verificações obrigatórias
 

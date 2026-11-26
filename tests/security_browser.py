@@ -1,5 +1,6 @@
 """Exercise the static site's security boundaries without sending messages."""
 import os
+from datetime import datetime, timezone
 import unittest
 from urllib.parse import parse_qs, urlencode, urlsplit
 
@@ -39,19 +40,21 @@ class SecurityTest(unittest.TestCase):
                         self.assertEqual(destination.scheme, "https")
                         self.assertIn(destination.hostname, {"www.instagram.com", "wa.me"})
 
+                    page.clock.set_fixed_time(datetime(2026, 11, 26, 3, tzinfo=timezone.utc))
                     page.goto(base + "/servicos/fox")
                     expect(page.get_by_role("heading", name="Fox Eyes")).to_be_visible()
                     page.get_by_role("button", name="Consultar este procedimento").click()
                     page.locator("#booking-name").fill(marker)
-                    page.locator("#booking-whatsapp").fill("27999887766")
+                    expect(page.get_by_role("dialog").locator('input[type="tel"]')).to_have_count(0)
                     page.locator("#booking-notes").fill(marker)
                     date = page.locator("#booking-date")
-                    today = date.input_value()
+                    today = "2026-11-26"
+                    expect(date).to_have_value(today)
                     expect(date).to_have_attribute("min", today)
-                    date.fill("2000-01-01")
+                    date.fill("2026-11-25")
                     submit = page.get_by_role("button", name="Continuar para WhatsApp")
                     submit.click()
-                    expect(page.get_by_text("Escolha uma data válida a partir de hoje.")).to_be_visible()
+                    expect(page.get_by_text("Selecione uma data igual ou posterior ao dia de hoje.")).to_be_visible()
                     date.fill(today)
                     submit.click()
                     link = page.get_by_role("link", name="Conversar no WhatsApp")
@@ -63,15 +66,29 @@ class SecurityTest(unittest.TestCase):
                     query = parse_qs(url.query)
                     self.assertEqual(set(query), {"text"})
                     self.assertIn(marker, query["text"][0])
+                    self.assertNotIn("*WhatsApp:*", query["text"][0])
+                    self.assertIn(today, query["text"][0])
                     self.assertIn("160,00", query["text"][0])
                     self.assertEqual(page.evaluate("window.cspViolations"), [])
                     self.assertEqual(page.evaluate("[localStorage.length, sessionStorage.length]"), [0, 0])
                     self.assertEqual(page.context.cookies(), [])
 
+                    # A prepared link must be rechecked if the date changes at midnight.
+                    page.clock.set_fixed_time(datetime(2026, 11, 27, 3, tzinfo=timezone.utc))
+                    link.click()
+                    expect(page.get_by_role("alert")).to_have_text("Selecione uma data igual ou posterior ao dia de hoje.")
+                    expect(date).to_have_attribute("min", "2026-11-27")
+                    date.fill("2026-11-28")
+                    submit.click()
+                    expect(link).to_be_focused()
+                    self.assertIn("2026-11-28", parse_qs(urlsplit(link.get_attribute("href")).query)["text"][0])
+
                     page.keyboard.press("Escape")
+                    page.clock.set_fixed_time(datetime(2026, 11, 29, 3, tzinfo=timezone.utc))
                     page.get_by_role("button", name="Consultar este procedimento").click()
                     expect(page.locator("#booking-name")).to_have_value("")
-                    expect(page.locator("#booking-whatsapp")).to_have_value("")
+                    expect(date).to_have_attribute("min", "2026-11-29")
+                    expect(date).to_have_value("2026-11-29")
                     expect(page.locator("#booking-notes")).to_have_value("")
                     page.close()
             browser.close()

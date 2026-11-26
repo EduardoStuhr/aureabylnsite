@@ -3,12 +3,20 @@ import { BOOKING_ADDONS, STUDIO_COURSE, STUDIO_PROFILE, STUDIO_SERVICES, type Ad
 export const studioWhatsAppUrl = `https://wa.me/${STUDIO_PROFILE.whatsappPhone.replace(/\D/g, '')}`;
 
 export const BOOKING_PERIODS = ['Manhã (08h30–12h)', 'Tarde (13h30–18h)', 'Sábado (08h–14h)'] as const;
-export const BOOKING_LIMITS = { clientName: 100, whatsapp: 24, notes: 500 };
+export const BOOKING_LIMITS = { clientName: 100, notes: 500 };
 
 const studioDate = new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Sao_Paulo', dateStyle: 'short' });
 
 export function getStudioDate(now = new Date()): string {
   return studioDate.format(now);
+}
+
+export const BOOKING_DATE_ERROR = 'Selecione uma data igual ou posterior ao dia de hoje.';
+
+export function isBookingDateAllowed(value: string, now = new Date()): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value < getStudioDate(now)) return false;
+  const date = new Date(value + 'T00:00:00Z');
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
 function findBookingService(id: string): ServiceItem | undefined {
@@ -21,7 +29,6 @@ function cleanMessageField(value: string): string {
 
 export interface BookingInput {
   clientName: string;
-  whatsapp: string;
   serviceId: string;
   preferredPeriod: (typeof BOOKING_PERIODS)[number] | '';
   preferredDate: string;
@@ -54,15 +61,9 @@ export function filterWorksByCategory(
 export function validateBookingInput(input: BookingInput, now = new Date()): BookingValidationResult {
   const errors: Partial<Record<keyof BookingInput, string>> = {};
   const trimmedName = cleanMessageField(input.clientName);
-  const digitsOnly = input.whatsapp.replace(/\D/g, '');
 
   if (trimmedName.length < 2 || input.clientName.length > BOOKING_LIMITS.clientName) {
     errors.clientName = 'Informe um nome de 2 a 100 caracteres.';
-  }
-
-  if (input.whatsapp.length > BOOKING_LIMITS.whatsapp ||
-      !/^[+0-9(). -]+$/.test(input.whatsapp) || !/^(?:55)?[1-9][0-9]{9,10}$/.test(digitsOnly)) {
-    errors.whatsapp = 'Digite um WhatsApp válido com DDD.';
   }
 
   if (!findBookingService(input.serviceId)) {
@@ -73,10 +74,8 @@ export function validateBookingInput(input: BookingInput, now = new Date()): Boo
     errors.preferredPeriod = 'Selecione o período de preferência.';
   }
 
-  const date = new Date(input.preferredDate + 'T00:00:00Z');
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.preferredDate) || Number.isNaN(date.getTime()) ||
-      date.toISOString().slice(0, 10) !== input.preferredDate || input.preferredDate < getStudioDate(now)) {
-    errors.preferredDate = 'Escolha uma data válida a partir de hoje.';
+  if (!isBookingDateAllowed(input.preferredDate, now)) {
+    errors.preferredDate = BOOKING_DATE_ERROR;
   }
 
   if (input.notes.length > BOOKING_LIMITS.notes) {
@@ -136,7 +135,6 @@ export function buildWhatsAppBookingUrl(
     `Olá, Lorrayne! Gostaria de consultar horários e valores no *ÁURA Studio Beauty* (@aurabyln).`,
     ``,
     `*Nome:* ${cleanMessageField(input.clientName)}`,
-    `*WhatsApp:* ${input.whatsapp.replace(/\D/g, '')}`,
     `*Interesse:* ${summary.services.map(item => item.name).join(', ')}`,
     ...summary.services.map(item => `• ${item.name} — ${formatServicePrice(item)} · ${formatServiceDuration(item)}`),
     `*Valor estimado:* ${summary.priceLabel}`,

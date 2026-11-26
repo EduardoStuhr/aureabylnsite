@@ -106,7 +106,6 @@ class StudioTest(unittest.TestCase):
                     if width in [390, 1440]:
                         page.screenshot(path=f"test-results/{width}-agendamento-multiplo.png")
                     page.get_by_label("Seu nome completo").fill("Beatriz Souza")
-                    page.get_by_label("WhatsApp com DDD").fill("27999887766")
                     page.get_by_label("Observações (opcional)").fill("Preço & horário? + à tarde")
                     page.get_by_role("button", name="Continuar para WhatsApp").click()
                     link = page.get_by_role("link", name="Conversar no WhatsApp")

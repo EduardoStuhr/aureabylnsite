@@ -7,10 +7,12 @@ import {
   STUDIO_SERVICES,
 } from '../data/studioData';
 import {
+  BOOKING_DATE_ERROR,
   BOOKING_LIMITS,
   BOOKING_PERIODS,
   buildWhatsAppBookingUrl,
   getStudioDate,
+  isBookingDateAllowed,
   formatServicePrice,
   formatServiceDuration,
   validateBookingInput,
@@ -33,7 +35,6 @@ export function BookingModal({
   const confirmationLinkRef = useRef<HTMLAnchorElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [clientName, setClientName] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
   const [serviceId, setServiceId] = useState(initialServiceId || STUDIO_SERVICES[0].id);
   const [extraServiceIds, setExtraServiceIds] = useState<string[]>([]);
   const [extraServiceId, setExtraServiceId] = useState('');
@@ -64,7 +65,6 @@ export function BookingModal({
       });
     } else {
       setClientName('');
-      setWhatsapp('');
       setNotes('');
       setSubmittedUrl(null);
     }
@@ -128,7 +128,6 @@ export function BookingModal({
     event.preventDefault();
     const input: BookingInput = {
       clientName,
-      whatsapp,
       serviceId: courseInquiry ? STUDIO_COURSE.id : serviceId,
       preferredPeriod,
       preferredDate,
@@ -212,6 +211,13 @@ export function BookingModal({
               <a
                 ref={confirmationLinkRef}
                 href={submittedUrl}
+                onClick={event => {
+                  if (isBookingDateAllowed(preferredDate)) return;
+                  event.preventDefault();
+                  setSubmittedUrl(null);
+                  setErrors({ preferredDate: BOOKING_DATE_ERROR });
+                  closeButtonRef.current?.focus();
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-full bg-[#141210] px-6 py-3 text-xs font-semibold text-[#FAF8F5] transition-colors hover:bg-[#2B2621]"
@@ -233,52 +239,27 @@ export function BookingModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="mt-5 space-y-5">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="booking-name"
-                  className="block text-xs font-semibold text-[#141210]"
-                >
-                  Seu nome completo
-                </label>
-                <input
-                  id="booking-name"
-                  maxLength={BOOKING_LIMITS.clientName}
-                  type="text"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  placeholder="Ex: Maria Clara Oliveira"
-                  className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
-                />
-                {errors.clientName && (
-                  <p className="mt-1 text-xs font-medium text-[#B91C1C]">
-                    {errors.clientName}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="booking-whatsapp"
-                  className="block text-xs font-semibold text-[#141210]"
-                >
-                  WhatsApp com DDD
-                </label>
-                <input
-                  id="booking-whatsapp"
-                  maxLength={BOOKING_LIMITS.whatsapp}
-                  type="tel"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  autoComplete="tel"
-                  className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
-                />
-                {errors.whatsapp && (
-                  <p className="mt-1 text-xs font-medium text-[#B91C1C]">
-                    {errors.whatsapp}
-                  </p>
-                )}
-              </div>
+            <div>
+              <label
+                htmlFor="booking-name"
+                className="block text-xs font-semibold text-[#141210]"
+              >
+                Seu nome completo
+              </label>
+              <input
+                id="booking-name"
+                maxLength={BOOKING_LIMITS.clientName}
+                type="text"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="Ex: Maria Clara Oliveira"
+                className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
+              />
+              {errors.clientName && (
+                <p className="mt-1 text-xs font-medium text-[#B91C1C]">
+                  {errors.clientName}
+                </p>
+              )}
             </div>
 
             <div>
@@ -381,12 +362,14 @@ export function BookingModal({
                   id="booking-date"
                   type="date"
                   min={getStudioDate()}
+                  aria-invalid={Boolean(errors.preferredDate)}
+                  aria-describedby={errors.preferredDate ? 'booking-date-error' : undefined}
                   value={preferredDate}
                   onChange={(e) => setPreferredDate(e.target.value)}
                   className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
                 />
                 {errors.preferredDate && (
-                  <p className="mt-1 text-xs font-medium text-[#B91C1C]">
+                  <p id="booking-date-error" role="alert" className="mt-1 text-xs font-medium text-[#B91C1C]">
                     {errors.preferredDate}
                   </p>
                 )}
