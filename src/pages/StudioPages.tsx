@@ -167,7 +167,7 @@ export function ContactPage({ onBook }: BookingProps) {
     <div className="contact-procedures"><h2 className="font-display">Qual cuidado você procura?</h2>
       {STUDIO_SERVICES.map(service => <button key={service.id} onClick={() => onBook(service.id)}>{service.name}<span>Consultar →</span></button>)}
     </div>
-    <a className="editorial-link" href={studioWhatsAppUrl} target="_blank" rel="noopener noreferrer">WhatsApp {STUDIO_PROFILE.whatsappPhone} ↗</a>
+    <a className="editorial-link" href={studioWhatsAppUrl} target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span></a>
   </section>;
 }
 

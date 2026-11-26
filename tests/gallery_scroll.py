@@ -26,7 +26,7 @@ class StudioTest(unittest.TestCase):
                         if path == "/":
                             self.check_marquee(page, width)
                         if path == "/contato":
-                            expect(page.get_by_role("link", name="WhatsApp +55 27 99920-2100")).to_have_attribute(
+                            expect(page.get_by_role("link", name="WhatsApp", exact=True)).to_have_attribute(
                                 "href", "https://wa.me/5527999202100"
                             )
                         if width in [390, 1440] and path != "/inexistente":
