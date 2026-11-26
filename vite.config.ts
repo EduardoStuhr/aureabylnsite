@@ -4,9 +4,19 @@ import fs from 'fs';
 import path from 'path';
 import {defineConfig} from 'vite';
 
+// Apply the production rules to Vite preview. This file has one global Pages rule.
+const previewHeaders = Object.fromEntries(
+  fs.readFileSync(new URL('./public/_headers', import.meta.url), 'utf8')
+    .trim().split(/\r?\n/).slice(1).map(line => {
+      const separator = line.indexOf(':');
+      return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
+    }),
+);
+
 export default defineConfig(() => {
   return {
     base: process.env.GITHUB_PAGES === 'true' ? '/aureabylnsite/' : '/',
+    envPrefix: [],
     plugins: [
       react(),
       tailwindcss(),
@@ -24,7 +34,11 @@ export default defineConfig(() => {
           const srcAssets = path.resolve(__dirname, 'src/assets');
           const distAssets = path.resolve(distDir, 'src/assets');
           if (fs.existsSync(distDir) && fs.existsSync(srcAssets)) {
-            fs.cpSync(srcAssets, distAssets, {recursive: true, force: true});
+            fs.cpSync(srcAssets, distAssets, {
+            recursive: true,
+            force: true,
+            filter: (file) => fs.statSync(file).isDirectory() || /\.(?:avif|jpe?g|png|webp)$/i.test(file),
+          });
           }
         },
       },
@@ -34,6 +48,7 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    preview: { headers: previewHeaders },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.

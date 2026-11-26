@@ -7,7 +7,10 @@ import {
   STUDIO_SERVICES,
 } from '../data/studioData';
 import {
+  BOOKING_LIMITS,
+  BOOKING_PERIODS,
   buildWhatsAppBookingUrl,
+  getStudioDate,
   formatServicePrice,
   formatServiceDuration,
   validateBookingInput,
@@ -20,12 +23,6 @@ interface BookingModalProps {
   initialServiceId: string;
   onClose: () => void;
 }
-
-const PERIOD_OPTIONS: BookingInput['preferredPeriod'][] = [
-  'Manhã (08h30–12h)',
-  'Tarde (13h30–18h)',
-  'Sábado (08h–14h)',
-];
 
 export function BookingModal({
   isOpen,
@@ -43,7 +40,7 @@ export function BookingModal({
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const [preferredPeriod, setPreferredPeriod] =
     useState<BookingInput['preferredPeriod']>('Tarde (13h30–18h)');
-  const [preferredDate, setPreferredDate] = useState('2026-11-25');
+  const [preferredDate, setPreferredDate] = useState(getStudioDate);
   const [notes, setNotes] = useState('');
   const [errors, setErrors] = useState<Partial<Record<keyof BookingInput, string>>>({});
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
@@ -61,6 +58,15 @@ export function BookingModal({
       setExtraServiceIds([]);
       setExtraServiceId('');
       setSelectedAddOnIds([]);
+      setPreferredDate(current => {
+        const today = getStudioDate();
+        return current >= today ? current : today;
+      });
+    } else {
+      setClientName('');
+      setWhatsapp('');
+      setNotes('');
+      setSubmittedUrl(null);
     }
   }, [isOpen]);
 
@@ -123,7 +129,7 @@ export function BookingModal({
     const input: BookingInput = {
       clientName,
       whatsapp,
-      serviceId,
+      serviceId: courseInquiry ? STUDIO_COURSE.id : serviceId,
       preferredPeriod,
       preferredDate,
       notes,
@@ -237,6 +243,7 @@ export function BookingModal({
                 </label>
                 <input
                   id="booking-name"
+                  maxLength={BOOKING_LIMITS.clientName}
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
@@ -259,6 +266,7 @@ export function BookingModal({
                 </label>
                 <input
                   id="booking-whatsapp"
+                  maxLength={BOOKING_LIMITS.whatsapp}
                   type="tel"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
@@ -372,6 +380,7 @@ export function BookingModal({
                 <input
                   id="booking-date"
                   type="date"
+                  min={getStudioDate()}
                   value={preferredDate}
                   onChange={(e) => setPreferredDate(e.target.value)}
                   className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
@@ -398,7 +407,7 @@ export function BookingModal({
                   }
                   className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] px-3.5 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
                 >
-                  {PERIOD_OPTIONS.map((period) => (
+                  {BOOKING_PERIODS.map((period) => (
                     <option key={period} value={period}>
                       {period}
                     </option>
@@ -421,12 +430,14 @@ export function BookingModal({
               </label>
               <textarea
                 id="booking-notes"
+                maxLength={BOOKING_LIMITS.notes}
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Ex: Primeira vez fazendo cílios, prefiro efeito mais natural."
                 className="mt-1.5 w-full rounded-xl border border-[#141210]/20 bg-[#FAF8F5] p-3 text-sm text-[#141210] focus:border-[#9A742E] focus:outline-none"
               />
+              {errors.notes && <p className="mt-1 text-xs font-medium text-[#B91C1C]">{errors.notes}</p>}
             </div>
 
             {/* Direct Contact Footer & Submit */}
@@ -436,7 +447,7 @@ export function BookingModal({
                   Atendimento direto com Lorrayne Nunes
                 </p>
                 <p className="text-[11px] text-[#5C564E]">
-                  Valores e horários confirmados diretamente via WhatsApp
+                  Os dados seguem ao WhatsApp quando você abrir a conversa. Valores e horários serão confirmados pelo estúdio.
                 </p>
               </div>
 
