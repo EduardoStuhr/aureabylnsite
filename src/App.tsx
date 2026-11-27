@@ -4,6 +4,7 @@ import { BookingModal } from './components/BookingModal';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { studioAddress } from './data/studioLocation';
 import { STUDIO_SERVICES } from './data/studioData';
 import { HomePage, PortfolioPage as Portfolio, ServicesPage as Services, ServicePage as Service,
   CoursePage as Course, AboutPage as About, DiaryPage as Diary, ContactPage as Contact,
@@ -22,13 +23,13 @@ function PageMetadata() {
   useEffect(() => {
     const title = (work?.name ?? titles[pathname] ?? 'Página não encontrada') + ' | ÁURA';
     const description = (work ? (work.description || `Informações, valor e duração de ${work.name} na ÁURA Beauty Studio.`) : undefined) ?? ({
-      '/': 'Cílios, sobrancelhas e formação profissional com Lorrayne Nunes em Afonso Cláudio.',
+      '/': `Cílios, sobrancelhas e formação profissional com Lorrayne Nunes. ${studioAddress}.`,
       '/portfolio': 'Resultados da ÁURA em fotografias reais do estúdio.',
       '/servicos': 'Conheça os procedimentos de cílios e sobrancelhas da ÁURA.',
       '/curso': 'Informações sobre a formação presencial de Lash Design com Lorrayne Nunes.',
       '/sobre': 'Conheça o posicionamento e a filosofia de cuidado de Lorrayne Nunes.',
       '/diario': 'Publicações e momentos do estúdio ÁURA.',
-      '/contato': 'Entre em contato com a ÁURA e consulte procedimentos e agendamento.',
+      '/contato': `Entre em contato com a ÁURA ou visite o estúdio. ${studioAddress}.`,
     } as Record<string, string>)[pathname] ?? 'Navegue pelo site da ÁURA Beauty Studio.';
     document.title = pathname === '/' ? 'Áura' : title;
     for (const selector of ['meta[name="description"]', 'meta[property="og:description"]']) {

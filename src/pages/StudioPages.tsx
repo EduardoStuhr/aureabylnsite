@@ -1,5 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ClientsShowcase } from '../components/ClientsShowcase';
+import { StudioAddress, StudioLocation } from '../components/StudioLocation';
+import { studioDirectionsUrl } from '../data/studioLocation';
 import { HeroSection } from '../components/HeroSection';
 import { InstagramArchive } from '../components/InstagramArchive';
 import { STUDIO_COURSE, STUDIO_PROFILE, STUDIO_SERVICES, STUDIO_WORKS } from '../data/studioData';
@@ -39,6 +41,7 @@ export function HomePage({ onBook }: BookingProps) {
         alt="Materiais da formação de Lash Design" width="800" height="1000" loading="lazy" />
     </section>
     <ContactCallout onBook={onBook} />
+    <StudioLocation />
   </>;
 }
 
@@ -172,6 +175,11 @@ export function ContactPage({ onBook }: BookingProps) {
       {STUDIO_SERVICES.map(service => <button key={service.id} onClick={() => onBook(service.id)}>{service.name}<span>Consultar →</span></button>)}
     </div>
     <a className="editorial-link" href={studioWhatsAppUrl} target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span></a>
+    <div className="mt-8">
+      <h2 className="font-display">Nossa localização</h2>
+      <StudioAddress />
+      <a className="editorial-link" href={studioDirectionsUrl}>Como chegar ↗</a>
+    </div>
   </section>;
 }
 

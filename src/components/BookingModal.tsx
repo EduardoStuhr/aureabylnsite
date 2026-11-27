@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react';
+import { studioAddress, studioDirectionsUrl } from '../data/studioLocation';
 import { CheckCircle2, ExternalLink, X } from 'lucide-react';
 import {
   BOOKING_ADDONS,
@@ -166,7 +167,7 @@ export function BookingModal({
         <div className="flex items-start justify-between gap-4 border-b border-[#141210]/10 pb-4">
           <div>
             <p className="text-xs font-medium text-[#9A742E]">
-              {STUDIO_PROFILE.fullTitle} · {STUDIO_PROFILE.city}
+              {STUDIO_PROFILE.fullTitle}<br /><a className="underline underline-offset-2" href={studioDirectionsUrl} target="_blank" rel="noopener noreferrer">{studioAddress}</a>
             </p>
             <h2
               id="booking-modal-title"
