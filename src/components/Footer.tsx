@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Instagram, MapPin } from 'lucide-react';
+import { StudioAddress } from './StudioLocation';
+import { studioDirectionsUrl } from '../data/studioLocation';
 import { STUDIO_PROFILE } from '../data/studioData';
 
 interface FooterProps {
@@ -60,8 +62,9 @@ export function Footer({ onOpenBooking }: FooterProps) {
             <div className="mt-3 space-y-2.5 text-sm text-[#D7D0C6]">
               <p className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0 text-[#C6A464]" aria-hidden="true" />
-                <span>{STUDIO_PROFILE.city}</span>
+                <a className="underline underline-offset-4 hover:text-[#FAF8F5]" href={studioDirectionsUrl}>Como chegar ↗</a>
               </p>
+              <StudioAddress />
               <a
                 href={STUDIO_PROFILE.instagramUrl}
                 target="_blank"

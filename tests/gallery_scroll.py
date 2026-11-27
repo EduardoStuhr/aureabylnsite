@@ -25,6 +25,21 @@ class StudioTest(unittest.TestCase):
                         self.assertNotIn("undefined", page.title())
                         if path == "/":
                             self.check_marquee(page, width)
+                            location = page.get_by_role("region", name="Nossa localização")
+                            expect(location.get_by_text("Prédio do Sinfrônio", exact=True)).to_be_visible()
+                            destination = urlsplit(location.get_by_role("link", name="Como chegar").get_attribute("href"))
+                            self.assertEqual(destination.netloc, "www.google.com")
+                            self.assertEqual(parse_qs(destination.query)["destination"], ["-20.0656706,-41.1151096"])
+                            if width in [390, 1440]:
+                                expect(location.locator("iframe")).to_have_count(0)
+                                page.route("https://www.google.com/maps?**", lambda route: route.fulfill(
+                                    content_type="text/html", body="<p>Mapa de teste</p>"))
+                                location.get_by_role("button", name="Carregar mapa interativo").click()
+                                expect(location.frame_locator("iframe").get_by_text("Mapa de teste")).to_be_visible()
+                                frame_url = urlsplit(location.locator("iframe").get_attribute("src"))
+                                self.assertEqual(parse_qs(frame_url.query)["q"], parse_qs(destination.query)["destination"])
+                                expect(location.get_by_role("link", name="Abrir no Google Maps")).to_be_visible()
+                                page.unroute("https://www.google.com/maps?**")
                         if path == "/contato":
                             expect(page.get_by_role("link", name="WhatsApp", exact=True)).to_have_attribute(
                                 "href", "https://wa.me/5527999202100"

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 import {defineConfig} from 'vite';
+import { studioAddress, studioStructuredData } from './src/data/studioLocation.ts';
 
 // Apply the production rules to Vite preview. This file has one global Pages rule.
 const previewHeaders = Object.fromEntries(
@@ -18,6 +19,13 @@ export default defineConfig(() => {
     base: process.env.GITHUB_PAGES === 'true' ? '/aureabylnsite/' : '/',
     envPrefix: [],
     plugins: [
+      {
+        name: 'studio-location-metadata',
+        transformIndexHtml: () => [
+          { tag: 'meta', attrs: { name: 'description', content: `ÁURA BY LN — Studio Beauty. ${studioAddress}.` }, injectTo: 'head' },
+          { tag: 'script', attrs: { type: 'application/ld+json' }, children: JSON.stringify(studioStructuredData).replace(/</g, '\\u003c'), injectTo: 'head' },
+        ],
+      },
       react(),
       tailwindcss(),
       // Copies src/assets into dist/ so root-relative URLs like
