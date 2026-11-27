@@ -41,7 +41,6 @@ export function StudioLocation() {
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-3 px-5 text-center">
                 <MapPin className="text-[#795A3E]" aria-hidden="true" />
-                <p className="text-sm font-semibold">{STUDIO_LOCATION.building}</p>
                 <p className="text-sm">Ao carregar o mapa, seu navegador se conecta ao Google Maps.</p>
                 <button
                   type="button"
