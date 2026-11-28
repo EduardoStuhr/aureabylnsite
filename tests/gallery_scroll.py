@@ -13,6 +13,8 @@ class StudioTest(unittest.TestCase):
             for width in [320, 375, 390, 768, 1024, 1440, 1920]:
                 with self.subTest(width=width):
                     page = browser.new_page(viewport={"width": width, "height": 900})
+                    page.route("https://www.google.com/maps?**", lambda route: route.fulfill(
+                        content_type="text/html", body="<p>Mapa de teste</p>"))
                     errors = []
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     base = os.environ["PREVIEW_URL"].rstrip("/")
@@ -31,15 +33,13 @@ class StudioTest(unittest.TestCase):
                             self.assertEqual(destination.netloc, "www.google.com")
                             self.assertEqual(parse_qs(destination.query)["destination"], ["-20.0656706,-41.1151096"])
                             if width in [390, 1440]:
-                                expect(location.locator("iframe")).to_have_count(0)
-                                page.route("https://www.google.com/maps?**", lambda route: route.fulfill(
-                                    content_type="text/html", body="<p>Mapa de teste</p>"))
-                                location.get_by_role("button", name="Carregar mapa interativo").click()
+                                frame = location.locator("iframe")
+                                expect(frame).to_have_attribute("loading", "lazy")
+                                frame.scroll_into_view_if_needed()
                                 expect(location.frame_locator("iframe").get_by_text("Mapa de teste")).to_be_visible()
-                                frame_url = urlsplit(location.locator("iframe").get_attribute("src"))
+                                frame_url = urlsplit(frame.get_attribute("src"))
                                 self.assertEqual(parse_qs(frame_url.query)["q"], parse_qs(destination.query)["destination"])
                                 expect(location.get_by_role("link", name="Abrir no Google Maps")).to_be_visible()
-                                page.unroute("https://www.google.com/maps?**")
                         if path == "/contato":
                             expect(page.get_by_role("link", name="WhatsApp", exact=True)).to_have_attribute(
                                 "href", "https://wa.me/5527999202100"
